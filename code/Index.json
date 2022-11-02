@@ -1,0 +1,31 @@
+{
+  "title": "Smart Locker System",
+  "team": [
+    {
+      "name": "Nimnad Mihiranga Kodituwakku",
+      "email": "e18180@eng.pdn.ac.lk",
+      "eNumber": "E/18/180"
+    },
+    {
+      "name": "Nisala Induwara",
+      "email": "e18266@eng.pdn.ac.lk",
+      "eNumber": "E/18/266"
+    },
+    {
+      "name": "Shamod Geevinda",
+      "email": "e18397@eng.pdn.ac.lk",
+      "eNumber": "E/18/397"
+    }
+  ],
+  "supervisors": [
+    {
+        "name": "Dr. Isuru Nawinne",
+        "email": "isurunawinne@eng.pdn.ac.lk"
+    },
+    {
+        "name": "Dr. Mahanama Wickramasinghe",
+        "email": "mahanamaw@eng.pdn.ac.lk"
+    }
+],
+"tags": ["Web", "Embedded Systems"]
+}
