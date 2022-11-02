@@ -18,22 +18,22 @@ These projects will be automatically added into [https://projects.ce.pdn.ac.lk](
 
 ```
 {
-  "title": "This is the title of the project",
+  "title": "Smart Locker System",
   "team": [
     {
-      "name": "Team Member Name 1",
-      "email": "email@eng.pdn.ac.lk",
-      "eNumber": "E/yy/xxx"
+      "name": "Nimnad Mihiranga Kodituwakku",
+      "email": "e18180@eng.pdn.ac.lk",
+      "eNumber": "E/18/180"
     },
     {
-      "name": "Team Member Name 2",
-      "email": "email@eng.pdn.ac.lk",
-      "eNumber": "E/yy/xxx"
+      "name": "Nisala Induwara",
+      "email": "e18266@eng.pdn.ac.lk",
+      "eNumber": "E/18/266"
     },
     {
-      "name": "Team Member Name 3",
-      "email": "email@eng.pdn.ac.lk",
-      "eNumber": "E/yy/xxx"
+      "name": "Shamod Geevinda",
+      "email": "e18397@eng.pdn.ac.lk",
+      "eNumber": "E/18/397"
     }
   ],
   "supervisors": [
