@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "577241791689",
+    "project_id": "slocker-6a0e7",
+    "storage_bucket": "slocker-6a0e7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:577241791689:android:fb8c59cbdfefbf29e86118",
+        "android_client_info": {
+          "package_name": "com.example.slocker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "577241791689-9j6du10ds857n4s6a6onhuisb7ta55tc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZ-1C80ncmZcB7ZreY3lienFpzc8jf3Ys"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "577241791689-9j6du10ds857n4s6a6onhuisb7ta55tc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
