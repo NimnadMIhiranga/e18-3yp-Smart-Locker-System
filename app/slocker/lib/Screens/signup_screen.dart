@@ -39,24 +39,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 padding: EdgeInsets.fromLTRB(4.w, 2.h, 4.w, 2.h),
                 child: Column(
                   children: <Widget>[
+                    SizedBox(
+                      height: 2.h,
+                    ),
                     //language(context, () {}),
                     Text(
-                      "Sign Up".tr,
+                      "Register User".tr,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 4.h,
-                        color: mPrimaryColor,
+                        color: mSecondTextColor,
                       ),
                     ),
-                    // Image.asset(
-                    //   "assets/icons/sample.png",
-                    //   fit: BoxFit.fitWidth,
-                    //   width: 35.h,
-                    //   height: 35.h,
-                    //   color: mPrimaryTextColor,
-                    // ),
                     SizedBox(
-                      height: 1.h,
+                      height: 2.h,
+                    ),
+                    Image.asset(
+                      "assets/images/reg.png",
+                      fit: BoxFit.fitWidth,
+                      width: 35.h,
+                      height: 35.h,
+                      color: Color(0xFF6892c9),
+                      // /color: mNewColor,
+                    ),
+                    SizedBox(
+                      height: 2.h,
                     ),
 
                     reusableTextField("Enter Username".tr, Icons.person_sharp,
@@ -72,7 +79,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     reusableTextField("Enter the password".tr, Icons.lock_sharp,
                         true, _passwordTextController, validatePassword),
-                    firebaseUIButton(context, "signup".tr, () async {
+                    firebaseUIButton(context, "SIGN UP".tr, () async {
                       if (_key2.currentState!.validate()) {
                         try {
                           await FirebaseAuth.instance
@@ -130,7 +137,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text("Have acoount? ".tr,
+        Text("Have an acoount? ".tr,
             style: TextStyle(color: mPrimaryTextColor, fontSize: 13)),
         GestureDetector(
           onTap: () {
@@ -138,7 +145,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 MaterialPageRoute(builder: (context) => SignInScreen()));
           },
           child: Text(
-            "Sign In".tr,
+            "SIGN IN".tr,
             style: TextStyle(
                 color: mPrimaryTextColor,
                 fontWeight: FontWeight.bold,

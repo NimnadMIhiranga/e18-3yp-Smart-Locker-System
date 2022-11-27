@@ -18,7 +18,7 @@ TextFormField reusableTextField(String text, IconData icon, bool isPasswordType,
     obscureText: isPasswordType,
     enableSuggestions: !isPasswordType,
     autocorrect: !isPasswordType,
-    cursorColor: Colors.brown,
+    cursorColor: Color(0xFF6892c9),
     style: TextStyle(color: Colors.black38, fontSize: 3.h),
     decoration: InputDecoration(
       prefixIcon: Icon(
@@ -143,7 +143,7 @@ TextFormField reusableTextField3(
     obscureText: isPasswordType,
     enableSuggestions: !isPasswordType,
     autocorrect: !isPasswordType,
-    cursorColor: Colors.brown,
+    cursorColor: Color(0xFF6892c9),
     style: TextStyle(color: Colors.black38),
     decoration: InputDecoration(
       prefixIcon: Icon(
@@ -202,7 +202,7 @@ TextFormField reusableTextField2(
     obscureText: isPasswordType,
     enableSuggestions: !isPasswordType,
     autocorrect: !isPasswordType,
-    cursorColor: Colors.brown,
+    cursorColor: Color(0xFF6892c9),
     style: TextStyle(color: Colors.black38, fontSize: 3.h),
     decoration: InputDecoration(
       suffixText: unit,
