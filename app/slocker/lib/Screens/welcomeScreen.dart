@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:slocker/Screens/loading.dart';
 import 'package:slocker/Screens/signin_screen.dart';
 import 'package:slocker/constants.dart';
+import 'package:sizer/sizer.dart';
+import 'package:slocker/net/auth.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -10,10 +13,12 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   Widget currentPage = SignInScreen();
+  final storage = new FlutterSecureStorage();
+  AuthClass auth = AuthClass();
 
   @override
   void initState() {
-    var d = Duration(seconds: 3);
+    var d = Duration(seconds: 2);
     // delayed 3 seconds to next page
     Future.delayed(d, () {
       // to next page and close this page
@@ -46,18 +51,18 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              // Image.asset(
-              //   "assets/images/sample.png",
-              //   fit: BoxFit.fitWidth,
-              //   width: 35,
-              //   height: 35,
-              // ),
+              Image.asset(
+                "assets/images/lockericon.png",
+                fit: BoxFit.fitWidth,
+                width: 35.h,
+                height: 35.h,
+              ),
               Text(
                 "S Locker",
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 4,
-                    color: mTitleTextColor),
+                    fontSize: 4.h,
+                    color: mSecondTextColor),
               ),
             ]),
       ),
@@ -65,15 +70,15 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void checklogin() async {
-    //   String? token = await auth.getToken();
-    //   // print("Shamod : " + token.toString());
-    //   if (token != null) {
-    //     // print("Shamod : login checking...");
-    //     currentPage = SelectionScreen();
-    //     // setState(() {});
-    //   } else {
-    //     currentPage = SignInScreen();
-    //     //setState(() {});
-    //   }
+    String? token = await auth.getToken();
+    // print("Shamod : " + token.toString());
+    if (token != null) {
+      // print("Shamod : login checking...");
+      currentPage = Loading();
+      // setState(() {});
+    } else {
+      currentPage = SignInScreen();
+      //setState(() {});
+    }
   }
 }

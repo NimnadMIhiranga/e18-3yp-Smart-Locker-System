@@ -27,7 +27,8 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      ///onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      debugShowCheckedModeBanner: false,
+      //onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       home: Form(
         key: _key,
         child: Scaffold(
@@ -44,27 +45,26 @@ class _SignInScreenState extends State<SignInScreen> {
                       height: 2.h,
                     ),
                     Text(
-                      "SignIn",
+                      "User Login",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 4.h,
-                        color: mPrimaryColor,
+                        color: mSecondTextColor,
                       ),
                     ),
                     SizedBox(
                       height: 2.h,
                     ),
-                    // Image.asset(
-                    //   "assets/icons/sample.png",
-                    //   fit: BoxFit.fitWidth,
-                    //   width: 35.h,
-                    //   height: 35.h,
-                    //   color: mPrimaryTextColor,
-                    // ),
+                    Image.asset("assets/images/lockericon.png",
+                        fit: BoxFit.fitWidth,
+                        width: 35.h,
+                        height: 35.h,
+                        color: Color(0xFF6892c9)
+                        //color: mSecondTextColor,
+                        ),
                     SizedBox(
                       height: 2.h,
                     ),
-
                     reusableTextField("Enter the e-mail", Icons.person_sharp,
                         false, _emailTextController, validateEmail),
                     SizedBox(
@@ -72,7 +72,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                     reusableTextField("Enter the password", Icons.lock_sharp,
                         true, _passwordTextController, validatePasswordSignIn),
-                    firebaseUIButton(context, "SignIn", () async {
+                    firebaseUIButton(context, "SIGN IN", () async {
                       if (_key.currentState!.validate()) {
                         try {
                           auth
@@ -83,7 +83,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           ))
                               .then((value) {
                             Fluttertoast.showToast(
-                                msg: 'Signed In',
+                                msg: 'SIGNED IN',
                                 toastLength: Toast.LENGTH_SHORT,
                                 gravity: ToastGravity.BOTTOM,
                                 timeInSecForIosWeb: 1,
@@ -124,14 +124,15 @@ class _SignInScreenState extends State<SignInScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text("Don't have account ", style: TextStyle(color: mPrimaryTextColor)),
+        Text("Don't have an account ",
+            style: TextStyle(color: mPrimaryTextColor)),
         GestureDetector(
           onTap: () {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => SignUpScreen()));
           },
           child: Text(
-            "signup",
+            "SIGNUP",
             style: TextStyle(
                 color: mPrimaryTextColor, fontWeight: FontWeight.bold),
           ),
