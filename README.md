@@ -1,57 +1,7 @@
 ___
-# DELETE THIS INSTRUCTIONS AND ADD AN INTRODUCTION ABOUT YOUR PROJECT
+# Smart Locker System
 ___
 
-# eYY-3yp-project-template
+These days we have heard some cases of stolen bags and laptops of engineering faculty students inside the engineering faculty. It happens mostly when students go to the library or laboratories. Because when they must go to those places, they should leave their bag outside. But there aren’t enough facilities to confirm the protection of their bags and laptops. So as a solution, we will develop an intelligent locker system for those places.
 
-This is a sample repository you can use for your Embedded Systems project. Once you followed these instructions, remove the text and add a brief introduction to here.
-
-### Enable GitHub Pages
-
-You can put the things to be shown in GitHub pages into the _docs/_ folder. Both html and md file formats are supported. You need to go to settings and enable GitHub pages and select _main_ branch and _docs_ folder from the dropdowns, as shown in the below image.
-
-![image](https://user-images.githubusercontent.com/11540782/98789936-028d3600-2429-11eb-84be-aaba665fdc75.png)
-
-### Special Configurations
-
-These projects will be automatically added into [https://projects.ce.pdn.ac.lk](). If you like to show more details about your project on this site, you can fill the parameters in the file, _/docs/index.json_
-
-```
-{
-  "title": "Smart Locker System",
-  "team": [
-    {
-      "name": "Nimnad Mihiranga Kodituwakku",
-      "email": "e18180@eng.pdn.ac.lk",
-      "eNumber": "E/18/180"
-    },
-    {
-      "name": "Nisala Induwara",
-      "email": "e18266@eng.pdn.ac.lk",
-      "eNumber": "E/18/266"
-    },
-    {
-      "name": "Shamod Geevinda",
-      "email": "e18397@eng.pdn.ac.lk",
-      "eNumber": "E/18/397"
-    }
-  ],
-  "supervisors": [
-    {
-      "name": "Dr. Supervisor 1",
-      "email": "email@eng.pdn.ac.lk"
-    },
-    {
-      "name": "Supervisor 2",
-      "email": "email@eng.pdn.ac.lk"
-    }
-  ],
-  "tags": ["Web", "Embedded Systems"]
-}
-```
-
-Once you filled this _index.json_ file, please verify the syntax is correct. (You can use [this](https://jsonlint.com/) tool).
-
-### Page Theme
-
-A custom theme integrated with this GitHub Page, which is based on [github.com/cepdnaclk/eYY-project-theme](https://github.com/cepdnaclk/eYY-project-theme). If you like to remove this default theme, you can remove the file, _docs/\_config.yml_ and use HTML based website.
+There are some lockers to put our bags in those places, but they need more safety. So, considering our locker system, a considerable number of lockers relate to the mobile application. Students can book a locker using the application, but the booking will only be available for 30 minutes. To unlock a locker, students should select the locker number and open it using the mobile application and fingerprint system. After getting the bag also, students should lock the vault. If a student needs to remember to get full bags from the locker, there will be an indicator indicating that the student is not allowed to lock it when remaining some bags. The system will include a rechargeable battery as a power backup to tolerate the effects of power cuts.
