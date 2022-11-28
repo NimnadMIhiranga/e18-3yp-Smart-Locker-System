@@ -1,0 +1,46 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+web/registration/node_modules
+web/registration/.pnp
+web/registration/.pnp.js
+
+# testing
+web/registration/coverage
+
+# production
+web/registration/build
+
+# misc
+web/registration/.DS_Store
+web/registration/.env.local
+web/registration/.env.development.local
+web/registration/.env.test.local
+web/registration/.env.production.local
+
+web/registration/npm-debug.log*
+web/registration/yarn-debug.log*
+web/registration/yarn-error.log*
+
+
+# dependencies
+web/hello-world/node_modules
+web/hello-world/.pnp
+web/hello-world/.pnp.js
+
+# testing
+web/hello-world/coverage
+
+# production
+web/hello-world/build
+
+# misc
+web/hello-world/.DS_Store
+web/hello-world/.env.local
+web/hello-world/.env.development.local
+web/hello-world/.env.test.local
+web/hello-world/.env.production.local
+
+web/hello-world/npm-debug.log*
+web/hello-world/yarn-debug.log*
+web/hello-world/yarn-error.log*
