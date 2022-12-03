@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sizer/sizer.dart';
 import 'package:slocker/Screens/loading.dart';
 import 'package:slocker/Screens/signup_screen.dart';
+import 'package:slocker/Screens/verifyemail.dart';
 import 'package:slocker/net/auth.dart';
 import 'package:slocker/reusable.dart';
 
@@ -93,7 +94,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Loading()));
+                                    builder: (context) => verifyemail()));
                           });
                           errorMessage = '';
                         } on FirebaseAuthException catch (error) {
