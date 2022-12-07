@@ -6,6 +6,7 @@ import 'package:sizer/sizer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:slocker/Screens/loading.dart';
 import 'package:slocker/Screens/signin_screen.dart';
+import 'package:slocker/Screens/verifyemail.dart';
 import 'package:slocker/reusable.dart';
 
 import '../constants.dart';
@@ -106,7 +107,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Loading()));
+                                    builder: (context) => verifyemail()));
                           });
                           errorMessage = '';
                         } on FirebaseAuthException catch (error) {

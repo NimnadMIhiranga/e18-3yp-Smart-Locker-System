@@ -1,3 +1,5 @@
+import 'package:flutter/src/widgets/container.dart';
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -5,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sizer/sizer.dart';
 import 'package:slocker/Screens/loading.dart';
 import 'package:slocker/Screens/pass_reset.dart';
+import 'package:slocker/Screens/signin_screen.dart';
 import 'package:slocker/Screens/signup_screen.dart';
 import 'package:slocker/Screens/verifyemail.dart';
 import 'package:slocker/net/auth.dart';
@@ -12,20 +15,26 @@ import 'package:slocker/reusable.dart';
 
 import '../constants.dart';
 
-class SignInScreen extends StatefulWidget {
-  const SignInScreen({Key? key}) : super(key: key);
+class passwordReset extends StatefulWidget {
+  const passwordReset({super.key});
 
   @override
-  State<SignInScreen> createState() => _SignInScreenState();
+  State<passwordReset> createState() => _passwordResetState();
 }
 
-class _SignInScreenState extends State<SignInScreen> {
+class _passwordResetState extends State<passwordReset> {
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
   String errorMessage = '';
   AuthClass auth = AuthClass();
 
-  final TextEditingController _passwordTextController = TextEditingController();
   final TextEditingController _emailTextController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailTextController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -47,7 +56,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       height: 2.h,
                     ),
                     Text(
-                      "User Login",
+                      "Password Reset",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 4.h,
@@ -57,7 +66,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     SizedBox(
                       height: 2.h,
                     ),
-                    Image.asset("assets/images/lockericon.png",
+                    Image.asset("assets/images/passreset.png",
                         fit: BoxFit.fitWidth,
                         width: 35.h,
                         height: 35.h,
@@ -65,27 +74,29 @@ class _SignInScreenState extends State<SignInScreen> {
                         //color: mSecondTextColor,
                         ),
                     SizedBox(
-                      height: 2.h,
+                      height: 3.h,
                     ),
                     reusableTextField("Enter the e-mail", Icons.person_sharp,
                         false, _emailTextController, validateEmail),
                     SizedBox(
                       height: 2.h,
                     ),
-                    reusableTextField("Enter the password", Icons.lock_sharp,
-                        true, _passwordTextController, validatePasswordSignIn),
-                    firebaseUIButton(context, "SIGN IN", () async {
+                    firebaseUIButton(context, "Reset Password", () async {
+                      showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (context) =>
+                              Center(child: CircularProgressIndicator()));
                       if (_key.currentState!.validate()) {
                         try {
-                          auth
-                              .storetokenanddata(await FirebaseAuth.instance
-                                  .signInWithEmailAndPassword(
-                            email: _emailTextController.text,
-                            password: _passwordTextController.text,
-                          ))
+                          await FirebaseAuth.instance
+                              .sendPasswordResetEmail(
+                                  email: _emailTextController.text.trim())
                               .then((value) {
+                            Navigator.of(context)
+                                .popUntil((route) => route.isFirst);
                             Fluttertoast.showToast(
-                                msg: 'SIGNED IN',
+                                msg: 'Password Reset mail sent',
                                 toastLength: Toast.LENGTH_SHORT,
                                 gravity: ToastGravity.BOTTOM,
                                 timeInSecForIosWeb: 1,
@@ -95,11 +106,12 @@ class _SignInScreenState extends State<SignInScreen> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => verifyemail()));
+                                    builder: (context) => SignInScreen()));
                           });
                           errorMessage = '';
                         } on FirebaseAuthException catch (error) {
                           errorMessage = error.message!;
+                          Navigator.of(context).pop();
                           Fluttertoast.showToast(
                               msg: errorMessage,
                               toastLength: Toast.LENGTH_SHORT,
@@ -111,11 +123,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         setState(() {});
                       }
                     }),
-                    signUpOption(),
-                    SizedBox(
-                      height: 1.h,
-                    ),
-                    SignUpOption2()
+                    signUpOption()
                   ],
                 ),
               ),
@@ -133,35 +141,17 @@ class _SignInScreenState extends State<SignInScreen> {
         GestureDetector(
           onTap: () {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => passwordReset()));
+                MaterialPageRoute(builder: (context) => SignInScreen()));
           },
           child: Text(
-            "Forgot Password?",
+            "Sign In".tr,
             style: TextStyle(
-                color: mPrimaryTextColor, fontWeight: FontWeight.bold),
+                color: mPrimaryTextColor,
+                fontWeight: FontWeight.bold,
+                fontSize: 13),
           ),
         ),
-      ],
-    );
-  }
-
-  Row SignUpOption2() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text("Don't have an account ",
-            style: TextStyle(color: mPrimaryTextColor)),
-        GestureDetector(
-          onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => SignUpScreen()));
-          },
-          child: Text(
-            "SIGN UP",
-            style: TextStyle(
-                color: mPrimaryTextColor, fontWeight: FontWeight.bold),
-          ),
-        )
+        Text(" with account ", style: TextStyle(color: mPrimaryTextColor)),
       ],
     );
   }
@@ -175,31 +165,6 @@ String? validateEmail(String? formEmail) {
   String pattern = r'\w+@\w+\.\w+';
   RegExp regex = RegExp(pattern);
   if (!regex.hasMatch(formEmail)) return 'Invalid E-mail Address format.';
-
-  return null;
-}
-
-String? validatePassword(String? formPassword) {
-  if (formPassword == null || formPassword.isEmpty) {
-    return 'Password is required.';
-  }
-
-  String pattern =
-      r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
-  RegExp regex = RegExp(pattern);
-  if (!regex.hasMatch(formPassword))
-    return '''
-      Password must be at least 8 characters,
-      include an uppercase letter, number and symbol.
-      ''';
-
-  return null;
-}
-
-String? validatePasswordSignIn(String? formPassword) {
-  if (formPassword == null || formPassword.isEmpty) {
-    return 'Password is required.';
-  }
 
   return null;
 }

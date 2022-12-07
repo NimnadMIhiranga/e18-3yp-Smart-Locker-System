@@ -68,6 +68,7 @@ flutter:
   assets:
     - assets/images/lockericon.png
     - assets/images/reg.png
+    - assets/images/passreset.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
