@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:slocker/Screens/signin_screen.dart';
 import 'package:slocker/net/auth.dart';
 
@@ -72,7 +73,7 @@ class _ItemViewState extends State<Loading> {
         ),
         body: TabBarView(
           children: [
-            tab1(),
+            tab1(context),
             tab2(),
             tab3(),
           ],
@@ -82,10 +83,32 @@ class _ItemViewState extends State<Loading> {
   }
 }
 
-Widget tab1() {
-  return Container(
-    child: Center(
-      child: Text("See your locker reservations here"),
+Widget tab1(BuildContext context) {
+  return Scaffold(
+    body: Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          const Text(
+            'Your Reservations Here',
+          ),
+          // Text(
+          //   '$_counter',
+          //   style: Theme.of(context).textTheme.headline4,
+          // ),
+        ],
+      ),
+    ),
+    floatingActionButton: FloatingActionButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SignInScreen(),
+          ),
+        );
+      },
+      child: const Icon(Icons.add),
     ),
   );
 }
