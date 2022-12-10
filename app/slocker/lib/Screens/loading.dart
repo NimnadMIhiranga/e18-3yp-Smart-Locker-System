@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:slocker/Screens/locationView.dart';
+
 import 'package:slocker/Screens/signin_screen.dart';
 import 'package:slocker/net/auth.dart';
 
@@ -54,16 +56,16 @@ class _ItemViewState extends State<Loading> {
           bottom: const TabBar(
             tabs: [
               Tab(
+                icon: Icon(Icons.history),
+                text: "History",
+              ),
+              Tab(
                 icon: Icon(Icons.list),
                 text: "Reservations",
               ),
               Tab(
                 icon: Icon(Icons.settings),
                 text: "Settings",
-              ),
-              Tab(
-                icon: Icon(Icons.history),
-                text: "History",
               ),
             ],
           ),
@@ -72,9 +74,9 @@ class _ItemViewState extends State<Loading> {
         ),
         body: TabBarView(
           children: [
-            tab1(),
-            tab2(),
             tab3(),
+            tab1(context),
+            tab2(),
           ],
         ),
       ),
@@ -82,10 +84,32 @@ class _ItemViewState extends State<Loading> {
   }
 }
 
-Widget tab1() {
-  return Container(
-    child: Center(
-      child: Text("See your locker reservations here"),
+Widget tab1(BuildContext context) {
+  return Scaffold(
+    body: Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          const Text(
+            'Your Reservations Here',
+          ),
+          // Text(
+          //   '$_counter',
+          //   style: Theme.of(context).textTheme.headline4,
+          // ),
+        ],
+      ),
+    ),
+    floatingActionButton: FloatingActionButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LocationView(),
+          ),
+        );
+      },
+      child: const Icon(Icons.add),
     ),
   );
 }
