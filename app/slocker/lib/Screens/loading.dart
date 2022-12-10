@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:slocker/Screens/locationView.dart';
 
 import 'package:slocker/Screens/signin_screen.dart';
 import 'package:slocker/net/auth.dart';
@@ -55,16 +56,16 @@ class _ItemViewState extends State<Loading> {
           bottom: const TabBar(
             tabs: [
               Tab(
+                icon: Icon(Icons.history),
+                text: "History",
+              ),
+              Tab(
                 icon: Icon(Icons.list),
                 text: "Reservations",
               ),
               Tab(
                 icon: Icon(Icons.settings),
                 text: "Settings",
-              ),
-              Tab(
-                icon: Icon(Icons.history),
-                text: "History",
               ),
             ],
           ),
@@ -73,9 +74,9 @@ class _ItemViewState extends State<Loading> {
         ),
         body: TabBarView(
           children: [
+            tab3(),
             tab1(context),
             tab2(),
-            tab3(),
           ],
         ),
       ),
@@ -104,7 +105,7 @@ Widget tab1(BuildContext context) {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => SignInScreen(),
+            builder: (context) => LocationView(),
           ),
         );
       },
