@@ -31,14 +31,18 @@ class _addReservationState extends State<addReservation> {
   String? selectedItem;
   DateTime sdate =
       DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-
+  TimeOfDay time = TimeOfDay(hour: 10, minute: 30);
   //GlobalKey<FormState> formKey = GlobalKey<FormState>();
   //late String _username,_password;
 
   final TextEditingController _startDateController = TextEditingController();
+  final TextEditingController _timeController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    final hours = time.hour.toString().padLeft(2, '0');
+    final minutes = time.minute.toString().padLeft(2, '0');
+
     return Form(
       child: Scaffold(
         //key: formKey,
@@ -75,6 +79,7 @@ class _addReservationState extends State<addReservation> {
                   // reusableTextField("Text".tr, Icons.house, false,
                   //     _NameController, null),
 
+// time time time
                   Row(
                     //mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,6 +148,74 @@ class _addReservationState extends State<addReservation> {
                             ),
                             child: Text(
                               "Set Date".tr,
+                              style: TextStyle(color: Colors.black38),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    //mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 6.0, vertical: 15.0),
+                          child: reusableTextField3('$hours:$minutes',
+                              Icons.watch, false, _timeController, null, false),
+                        ),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 6.0, vertical: 15.0),
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              TimeOfDay? nTime = await showTimePicker(
+                                context: context,
+                                initialTime: time,
+                                builder: (context, child) {
+                                  return Theme(
+                                    data: Theme.of(context).copyWith(
+                                      colorScheme: ColorScheme.light(
+                                        primary: mNewColor,
+                                        onPrimary: Colors.white, // <-- SEE HERE
+                                        onSurface: mSecondColor, // <-- SEE HERE
+                                      ),
+                                      textButtonTheme: TextButtonThemeData(
+                                        style: TextButton.styleFrom(
+                                          primary:
+                                              mPrimaryColor, // button text color
+                                        ),
+                                      ),
+                                    ),
+                                    child: child!,
+                                  );
+                                },
+                              );
+                              if (nTime == null) return;
+                              setState(() => time = nTime);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              fixedSize: const Size(180, 50),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                  side: BorderSide(
+                                    width: 2.0,
+                                    color: mPrimaryColor,
+                                  )),
+                              primary: mBackgroundColor,
+                              elevation: 20,
+                              shadowColor: Colors.transparent,
+                              textStyle: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            child: Text(
+                              "Set Time".tr,
                               style: TextStyle(color: Colors.black38),
                             ),
                           ),
