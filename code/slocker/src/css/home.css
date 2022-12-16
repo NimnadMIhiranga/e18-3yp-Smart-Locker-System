@@ -1,23 +1,45 @@
-.wrapper{
-    overflow-x: hidden;
-    overflow-y: auto;
+*{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    scroll-behavior: smooth;
 }
 
+body{
+    background: var(--color-bg)
+}
+
+a {
+    color: unset;
+    text-decoration: none;
+}
+
+.gradient__bg{
+    background:-moz-radial-gradient(circle at 3% 25%, rgba(0, 40, 83, 1) 0%, rgba(4, 12, 24, 1) 25%);
+  
+    /* safari 5.1+,chrome 10+ */
+    background:-webkit-radial-gradient(circle at 3% 25%, rgba(0, 40, 83, 1) 0%, rgba(4, 12, 24, 1) 25%);
+  
+    /* opera 11.10+ */
+    background:-o-radial-gradient(circle at 3% 25%, rgba(0, 40, 83, 1) 0%, rgba(4, 12, 24, 1) 25%);
+  
+    /* ie 10+ */
+    background:-ms-radial-gradient(circle at 3% 25%, rgba(0, 40, 83, 1) 0%, rgba(4, 12, 24, 1) 25%);
+  
+    /* global 92%+ browsers support */
+    background:radial-gradient(circle at 3% 25%, rgba(0, 40, 83, 1) 0%, rgba(4, 12, 24, 1) 25%);
+  }
+
+
+
 .navbox{
-    width : 100%;
-    height: auto;
-    border-bottom: 1px solid white;
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding: 7px 25px;
-    background-color: blueviolet;
+    padding: 2rem 6rem;
 }
 
 .navbox .leftside{
-    width: 80px;
-    height: 80px;
     margin-right: 2rem;
     color: #fff;
     font-family: var(--font-family);
@@ -25,20 +47,106 @@
     font-size: 25px;
     line-height: 25px;
     text-transform: capitalize;
-    align-items: left;
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
 }
 
 .navbox .rightside{
     display: flex;
-    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
 }
 
 .navbox .rightside .navlink{
-    font-size: 12px;
-    color: black;
-    font-weight: 600;
-    margin: auto 10px;
+    font-size: 18px;
+    color: white;
+    font-weight: 500;
+    margin: 0 1rem;
+    font-family: var(--font-family);
+    margin: 0 1rem;
+    cursor: pointer;
+    line-height: 25px;
 }
+
+.navbox .rightside .navlink1 {
+    padding: 0.3rem 0.5rem;
+    color: #fff;
+    background: #FF4820;
+    font-family: var(--font-family);
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 25px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.locker__header {
+    display: flex;
+    flex-direction: row;
+}
+
+.locker__header-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+
+    margin-right: 5rem;
+}
+
+.locker__header-content h1 {
+    font-family: var(--font-family);
+    font-weight: 800;
+    font-size: 62px;
+    line-height: 75px;
+    letter-spacing: -0.04em;
+}
+
+.locker__header-content p {
+    font-family: var(--font-family);
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 28px;
+    color: var(--color-text);
+
+    margin-top: 1.5rem;
+}
+
+.gradient__text{
+    background: var(--gradient-text);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.lockerimage {
+    flex: 0.8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.section__padding{
+    padding: 4rem 6rem;
+}
+
+.section__margin{
+    padding: 4rem 6rem;
+}
+
+.scale-up-center {
+	-webkit-animation: scale-up-center 0.4s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+	        animation: scale-up-center 0.4s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+}
+
+
+
+
 
 
 
