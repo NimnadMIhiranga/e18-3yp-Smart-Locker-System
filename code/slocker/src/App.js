@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import { home } from './components/home'
 import { Signup } from './components/Signup'
+import { UserDashboard } from './components/UserDashboard'
 import { Signin } from './components/Signin'
 
 

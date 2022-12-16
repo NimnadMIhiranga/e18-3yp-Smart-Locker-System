@@ -1,8 +1,6 @@
 import React from 'react'
 import '../css/Signup.css'
 import profile from '../assets/profile.png';
-import email from '../assets/email.png';
-import password from '../assets/password.png';
 import user from '../assets/user.png';
 
 export const Signup = () => {
