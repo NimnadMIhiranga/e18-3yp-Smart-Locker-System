@@ -76,8 +76,13 @@ class _passwordResetState extends State<passwordReset> {
                     SizedBox(
                       height: 3.h,
                     ),
-                    reusableTextField("Enter the e-mail", Icons.person_sharp,
-                        false, _emailTextController, validateEmail),
+                    reusableTextField(
+                        "Enter the e-mail",
+                        Icons.person_sharp,
+                        false,
+                        _emailTextController,
+                        validateEmail,
+                        "password-field"),
                     SizedBox(
                       height: 2.h,
                     ),
