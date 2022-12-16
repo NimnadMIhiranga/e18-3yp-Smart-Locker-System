@@ -301,8 +301,8 @@ class _addReservationState extends State<addReservation> {
         DocumentSnapshot<Map<String, dynamic>> snapshot =
             await transaction.get(documentReference);
         if (!snapshot.exists) {
-          documentReference
-              .set({'Location': Location, 'Date': Date, 'Time': Time});
+          documentReference.set(
+              {'Location': Location, 'Date': Date, 'Time': Time, 'UID': uid});
           return true;
         }
       });
