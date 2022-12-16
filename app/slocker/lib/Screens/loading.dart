@@ -21,6 +21,7 @@ class _ItemViewState extends State<Loading> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Hi, Shamod !'),
+          automaticallyImplyLeading: false,
           actions: <Widget>[
             // IconButton(
             //   icon: Icon(Icons.notifications),
