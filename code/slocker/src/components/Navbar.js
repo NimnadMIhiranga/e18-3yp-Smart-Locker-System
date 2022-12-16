@@ -7,11 +7,11 @@ export const Navbar = () => {
     return (
       <div className='navbox'>
         <div className='leftside'>
+        <h1>SLocker</h1>
         </div>
-          <h1>SLocker</h1>
         <div className='rightside'>
             <Link to="signin" className='navlink'>SIGN IN</Link>
-            <Link to="signup" className='navlink'>SIGN UP</Link>
+            <Link to="Signup" className='navlink1'><button className='navlink1'>SIGN UP</button></Link>
         </div>
       </div>
     )
