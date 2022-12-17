@@ -11,8 +11,9 @@ hexStringColor(String hexColor) {
 }
 
 TextFormField reusableTextField(String text, IconData icon, bool isPasswordType,
-    TextEditingController controller, validator) {
+    TextEditingController controller, validator, String key) {
   return TextFormField(
+    key: Key(key),
     controller: controller,
     validator: validator,
     obscureText: isPasswordType,

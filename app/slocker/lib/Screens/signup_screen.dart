@@ -68,18 +68,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
 
                     reusableTextField("Enter Username".tr, Icons.person_sharp,
-                        false, _userNameTextController, null),
+                        false, _userNameTextController, null, "username-field"),
                     SizedBox(
                       height: 2.h,
                     ),
 
                     reusableTextField("Enter the e-mail".tr, Icons.email, false,
-                        _emailTextController, validateEmail),
+                        _emailTextController, validateEmail, "email-field"),
                     SizedBox(
                       height: 2.h,
                     ),
-                    reusableTextField("Enter the password".tr, Icons.lock_sharp,
-                        true, _passwordTextController, validatePassword),
+                    reusableTextField(
+                        "Enter the password".tr,
+                        Icons.lock_sharp,
+                        true,
+                        _passwordTextController,
+                        validatePassword,
+                        "password-field"),
                     firebaseUIButton(context, "SIGN UP".tr, () async {
                       if (_key2.currentState!.validate()) {
                         try {
