@@ -1,6 +1,8 @@
 import React from 'react'
 import '../css/home.css'
-import locker from '../assets/locker.png';
+import { Link } from 'react-router-dom'
+
+
 
 export const Header = () =>  {
     return (
@@ -12,9 +14,27 @@ export const Header = () =>  {
       using our web interface or our mobile application to get the benifit of this app.
       Currently our locker system is located in engineering faculty premises.</p>
             </div>
-            <div className="lockerimage">
-            <img src={locker} alt="locker" />
-    </div>
+            <div className="container">
+                <h1 className="signintext">Sign In</h1>
+                <br/>
+                <form autoComplete="off" className='form-group' onSubmit={Header}>
+                <label htmlFor="email" className='formtext'>Email</label>
+                <br /><br />
+                <input type="email" className='form-control' required/>
+                <br /><br /><br />
+                <label htmlFor="passowrd" className='formtext'>Password</label>
+                <br /><br />
+                <input type="password" className='form-control' required/>
+                <br /><br /><br />
+                <Link to="UserDashboard" ><button type="submit" className='submitbutton'>Sign in</button></Link>
+                </form>
+                <br/><br/>
+                <span className='signuphere'>If you dont have an account? please signup
+                <Link to="Signup" className='signuplink'> Here</Link>
+            </span>
+
+            </div>
+            
         </div>
     )
   }
