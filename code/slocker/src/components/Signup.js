@@ -1,20 +1,30 @@
-import React, {useState} from "react";
-import "../css/Signup.css";
-import { Link } from "react-router-dom";
+import React, {useState} from "react"
+import "../css/Signup.css"
+import {auth, db} from "../config/Config"
 
 
-export const Signup = () => {
+export const Signup = (props) => {
 
-    const[name, setName]=useState('');
+    const[userName, setName]=useState('');
     const[email, setEmail]=useState('');
     const[password, setPassword]=useState('');
     const[error, setError]=useState('');
 
-    const Signup = (e) =>{
-        e.preventDefault();
-        //console.log('form submitted');
-        //console.log('name, email, password');
-    }
+    const signup = (e) => {
+      e.preventDefault();
+      auth.createUserWithEmailAndPassword(email, password).then((cred) => {
+          db.collection('User Data').doc(cred.user.uid).set({
+              Name: userName,
+              Email: email,
+              uid: cred.user.uid
+          }).then(() => {
+              setName('');
+              setEmail('');
+              setError('');
+              props.history.push('/');
+          }).catch(err => setError(err.message));
+      }).catch(err => setError(err.message));
+  }
 
   return (
     <div className="bgradient__bg">
@@ -23,14 +33,14 @@ export const Signup = () => {
           <h1 className="gradient__text">Sign Up</h1>
           <br />
           <br />
-          <form autoComplete="off" className="form-group" onSubmit={Signup}>
+          <form autoComplete="off" className="form-group" onSubmit={signup}>
             <label htmlFor="name" className="formtext">
               Name
             </label>
             {/* <br /> */}
             <br />
             <input type="text" className="form-control" required 
-            onChange={(e)=>setName(e.target.value)} value={name}/>
+            onChange={(e) => setName(e.target.value)} value={userName}/>
             <br />
             <br />
             {/* <br /> */}
@@ -40,7 +50,7 @@ export const Signup = () => {
             {/* <br /> */}
             <br />
             <input type="email" className="form-control" required 
-            onChange={(e)=>setEmail(e.target.value)} value={name}/>
+            onChange={(e) => setEmail(e.target.value)} value={email}/>
             <br />
             <br />
             {/* <br /> */}
@@ -50,21 +60,21 @@ export const Signup = () => {
             {/* <br /> */}
             <br />
             <input type="password" className="form-control" required 
-            onChange={(e)=>setPassword(e.target.value)} value={name}/>
+            onChange={(e) => setPassword(e.target.value)} value={password}/>
             <br />
             <br />
             <br />
-            <Link to="UserDashboard">
+            
               <button type="submit" className="submitbutton">
                 Sign up
               </button>
-            </Link>
+            
           </form>
-          {error && <div className='error-msg'></div>}
+          {error && <span className='error-msg'>{error}</span>}
         </div>
       </div>
     </div>
   );
 };
 
-export default Signup;
+//export default Signup;

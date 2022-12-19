@@ -30,3 +30,12 @@ a {
     /* global 92%+ browsers support */
     background:radial-gradient(circle at 3% 25%, rgba(0, 40, 83, 1) 0%, rgba(4, 12, 24, 1) 25%);
   }
+
+  .error-msg{
+    color: red;
+    font-family: var(--font-family);
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 28px;
+    margin-top: 1.5rem;
+  }
