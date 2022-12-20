@@ -1,15 +1,30 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import lock from '../assets/lock.png';
-import chat from '../assets/chat.png';
-import history from '../assets/history.png';
-import settings from '../assets/settings.png';
+import React, { useContext } from 'react'
+import { LocationContext } from '../global/LocationContext'
+import '../css/LockerDashboard.css'
+
 
 
 export const Lockershow= () => {
+
+  const { locations } = useContext(LocationContext);
+
   return (
-    <div >
-      No Location added
+    <div>
+    {locations.length !== 0 && <h1 className="show">Already Added Locations</h1>}
+    <div className='container1'></div>
+    {locations.length === 0 && <div className='error-msg'>slow internet...no locations to display</div>}
+    {locations.map(location => (
+        <div className='card' key={location.LocationID}>
+          <div className='name'>
+              Location  - {location.LocationName}
+          </div>
+          <div className='count'>
+               Number of lockers -  {location.LocationCount}
+          </div>
+          <button className='gobutton'>Go to lockers</button>
+        </div>
+    ))}
     </div>
+
   )
 }
