@@ -105,7 +105,7 @@ export const Signup = (props) => {
           <br />
           <span className="signuphere">
             Already have an account? please Sign In
-            <Link to="Signin" className="signuplink">
+            <Link to="/" className="signuplink">
               {" "}
               Here
             </Link>
