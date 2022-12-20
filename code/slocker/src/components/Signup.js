@@ -48,8 +48,6 @@ export const Signup = (props) => {
       <div className="locker__header section__padding" id="signup">
         <div className="locker__header-content">
           <h1 className="gradient__text">Sign Up</h1>
-          <br />
-          <br />
           <form autoComplete="off" className="form-group" onSubmit={signup}>
             <label htmlFor="name" className="formtext">
               Name
@@ -63,8 +61,6 @@ export const Signup = (props) => {
               onChange={(e) => setName(e.target.value)}
               value={userName}
             />
-            <br />
-            <br />
             {/* <br /> */}
             <label htmlFor="email" className="formtext">
               Email
@@ -78,8 +74,6 @@ export const Signup = (props) => {
               onChange={(e) => setEmail(e.target.value)}
               value={email}
             />
-            <br />
-            <br />
             {/* <br /> */}
             <label htmlFor="passowrd" className="formtext">
               Password
@@ -93,8 +87,6 @@ export const Signup = (props) => {
               onChange={(e) => setPassword(e.target.value)}
               value={password}
             />
-            <br />
-            <br />
             <br />
 
             <button type="submit" className="submitbutton">
