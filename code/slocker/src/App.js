@@ -11,7 +11,6 @@ export class App extends Component {
         <Switch>
           <Route exact path="/" component={home} />
           <Route path="/signup" component={Signup} />
-          <Route path="/" component={home} />
           <Route path="/UserDashboard" component={UserDashboard} />
         </Switch>
       </BrowserRouter>
