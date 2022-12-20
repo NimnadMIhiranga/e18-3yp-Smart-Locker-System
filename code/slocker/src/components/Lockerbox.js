@@ -1,9 +1,9 @@
 import React , { useState } from 'react'
-import { useHistory , Link} from 'react-router-dom'
-import '../css/UserDashboard.css'
+import { useHistory, Link } from 'react-router-dom'
+import '../css/LockerDashboard.css'
 import { auth } from "../config/config"
 
-export const Userbox = ({ user }) =>  {
+export const Lockerbox =({ user }) => {
 
   const [error, setError] = useState("")
   const history = useHistory()
@@ -19,20 +19,19 @@ export const Userbox = ({ user }) =>  {
     }
   }
 
-    return (
-        <div className='userbox'>
+  return (
+    <div className='userbox'>
         <div className='leftside'>
-        <h1>Hello  {user}</h1>
-
+        <h1>Hello {user}</h1>
         </div>
         <div className='rightside'>
+        <Link to="AddLocation" ><button className='button5'>+ Add a new location</button></Link>
         <button variant="link" onClick={handleLogout} className='logout'>
           Log Out
         </button>
         </div>
     </div>
-    )
-  }
+  )
+}
 
-
-export default Userbox
+export default Lockerbox
