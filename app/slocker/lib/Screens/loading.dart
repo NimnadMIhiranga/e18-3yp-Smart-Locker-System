@@ -60,12 +60,12 @@ class _ItemViewState extends State<Loading> {
           bottom: const TabBar(
             tabs: [
               Tab(
-                icon: Icon(Icons.history),
-                text: "History",
-              ),
-              Tab(
                 icon: Icon(Icons.list),
                 text: "Reservations",
+              ),
+              Tab(
+                icon: Icon(Icons.history),
+                text: "History",
               ),
               Tab(
                 icon: Icon(Icons.settings),
@@ -78,9 +78,9 @@ class _ItemViewState extends State<Loading> {
         ),
         body: TabBarView(
           children: [
-            tab3(),
             tab1(context),
             tab2(),
+            tab3(),
           ],
         ),
       ),
@@ -89,29 +89,29 @@ class _ItemViewState extends State<Loading> {
 }
 
 Widget tab1(BuildContext context) {
-  final TextEditingController _controller = TextEditingController();
-  Future openDialog(String id, String Date, BuildContext context) => showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text("Edit Reservation Date"),
-          content: TextField(
-            controller: _controller,
-            autofocus: true,
-            decoration: InputDecoration(hintText: Date),
-          ),
-          actions: [
-            TextButton(
-                onPressed: () async {
-                  //_controller.text = location;
-                  //  await updateBranch(id, _controller.text);
-                  //  _controller.clear();
-                  // ignore: use_build_context_synchronously
-                  Navigator.of(context).pop();
-                },
-                child: Text("Change"))
-          ],
-        ),
-      );
+  //final TextEditingController _controller = TextEditingController();
+  // Future openDialog(String id, String Date, BuildContext context) => showDialog(
+  //       context: context,
+  //       builder: (context) => AlertDialog(
+  //         title: Text("Edit Reservation Date"),
+  //         content: TextField(
+  //           controller: _controller,
+  //           autofocus: true,
+  //           decoration: InputDecoration(hintText: Date),
+  //         ),
+  //         actions: [
+  //           TextButton(
+  //               onPressed: () async {
+  //                 //_controller.text = location;
+  //                 //  await updateReservation(id, _controller.text);
+  //                 //  _controller.clear();
+  //                 // ignore: use_build_context_synchronously
+  //                 Navigator.of(context).pop();
+  //               },
+  //               child: Text("Change"))
+  //         ],
+  //       ),
+  //     );
 
   return Scaffold(
     body: Column(
@@ -188,56 +188,71 @@ Widget tab1(BuildContext context) {
                                           fontSize: 18,
                                         ),
                                       ),
-                                      PopupMenuButton<int>(
-                                          itemBuilder: (context) => [
-                                                // popupmenu item 1
-                                                PopupMenuItem(
-                                                  value: 1,
-                                                  // row has two child icon and text.
-                                                  child: Row(
-                                                    children: [
-                                                      Icon(Icons.edit),
-                                                      SizedBox(
-                                                        // sized box with width 10
-                                                        width: 10,
-                                                      ),
-                                                      Text("Edit")
-                                                    ],
-                                                  ),
-                                                ),
-                                                // popupmenu item 2
-                                                PopupMenuItem(
-                                                  value: 2,
-                                                  // row has two child icon and text
-                                                  child: Row(
-                                                    children: [
-                                                      Icon(Icons.cancel),
-                                                      SizedBox(
-                                                        // sized box with width 10
-                                                        width: 10,
-                                                      ),
-                                                      Text("Cancel")
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                          offset: Offset(-20, 15),
-                                          color: mNewColor,
-                                          elevation: 2,
-                                          onSelected: (value) async {
-                                            if (value == 1) {
-                                              openDialog(
-                                                  document.id,
-                                                  document["Location"],
-                                                  context);
-                                            } else if (value == 2) {
-                                              openDialogDelete(
-                                                  document.id,
-                                                  document["Date"],
-                                                  document["Time"],
-                                                  context);
-                                            }
-                                          }),
+                                      IconButton(
+                                        icon: const Icon(Icons.cancel),
+                                        //tooltip: 'Increase volume by 10',
+                                        onPressed: () {
+                                          openDialogDelete(
+                                              document.id,
+                                              document["Date"],
+                                              document["Time"],
+                                              context);
+                                          // setState(() {
+
+                                          // });
+                                        },
+                                      ),
+                                      SizedBox()
+                                      // PopupMenuButton<int>(
+                                      //     itemBuilder: (context) => [
+                                      //           // popupmenu item 1
+                                      //           PopupMenuItem(
+                                      //             value: 1,
+                                      //             // row has two child icon and text.
+                                      //             child: Row(
+                                      //               children: [
+                                      //                 Icon(Icons.edit),
+                                      //                 SizedBox(
+                                      //                   // sized box with width 10
+                                      //                   width: 10,
+                                      //                 ),
+                                      //                 Text("Edit")
+                                      //               ],
+                                      //             ),
+                                      //           ),
+                                      //           // popupmenu item 2
+                                      //           PopupMenuItem(
+                                      //             value: 2,
+                                      //             // row has two child icon and text
+                                      //             child: Row(
+                                      //               children: [
+                                      //                 Icon(Icons.cancel),
+                                      //                 SizedBox(
+                                      //                   // sized box with width 10
+                                      //                   width: 10,
+                                      //                 ),
+                                      //                 Text("Cancel")
+                                      //               ],
+                                      //             ),
+                                      //           ),
+                                      //         ],
+                                      //     offset: Offset(-20, 15),
+                                      //     color: mNewColor,
+                                      //     elevation: 2,
+                                      //     onSelected: (value) async {
+                                      //       if (value == 1) {
+                                      //         openDialog(
+                                      //             document.id,
+                                      //             document["Location"],
+                                      //             context);
+                                      //       } else if (value == 2) {
+                                      //         openDialogDelete(
+                                      //             document.id,
+                                      //             document["Date"],
+                                      //             document["Time"],
+                                      //             context);
+                                      //       }
+                                      //     }),
                                     ],
                                   ))),
                         ),
@@ -297,7 +312,7 @@ Future openDialogDelete(
       ),
     );
 
-Widget tab2() {
+Widget tab3() {
   return Container(
     child: Center(
       child: Text("Settings"),
@@ -305,7 +320,7 @@ Widget tab2() {
   );
 }
 
-Widget tab3() {
+Widget tab2() {
   return Scaffold(
     body: Column(
       //mainAxisAlignment: MainAxisAlignment.center,
