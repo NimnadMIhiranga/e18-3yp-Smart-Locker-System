@@ -16,6 +16,7 @@ class Loading extends StatefulWidget {
 class _ItemViewState extends State<Loading> {
   @override
   Widget build(BuildContext context) {
+    //final TextEditingController _controller = TextEditingController();
     AuthClass auth = AuthClass();
 
     return DefaultTabController(
@@ -88,6 +89,30 @@ class _ItemViewState extends State<Loading> {
 }
 
 Widget tab1(BuildContext context) {
+  final TextEditingController _controller = TextEditingController();
+  Future openDialog(String id, String Date, BuildContext context) => showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("Edit Reservation Date"),
+          content: TextField(
+            controller: _controller,
+            autofocus: true,
+            decoration: InputDecoration(hintText: Date),
+          ),
+          actions: [
+            TextButton(
+                onPressed: () async {
+                  //_controller.text = location;
+                  //  await updateBranch(id, _controller.text);
+                  //  _controller.clear();
+                  // ignore: use_build_context_synchronously
+                  Navigator.of(context).pop();
+                },
+                child: Text("Change"))
+          ],
+        ),
+      );
+
   return Scaffold(
     body: Column(
       //mainAxisAlignment: MainAxisAlignment.center,
@@ -96,6 +121,7 @@ Widget tab1(BuildContext context) {
             stream: FirebaseFirestore.instance
                 .collection('Reservations')
                 .where('UID', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+                .where('Status', isEqualTo: "ongoing")
                 .snapshots(),
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -185,12 +211,12 @@ Widget tab1(BuildContext context) {
                                                   // row has two child icon and text
                                                   child: Row(
                                                     children: [
-                                                      Icon(Icons.delete),
+                                                      Icon(Icons.cancel),
                                                       SizedBox(
                                                         // sized box with width 10
                                                         width: 10,
                                                       ),
-                                                      Text("Delete")
+                                                      Text("Cancel")
                                                     ],
                                                   ),
                                                 ),
@@ -199,12 +225,18 @@ Widget tab1(BuildContext context) {
                                           color: mNewColor,
                                           elevation: 2,
                                           onSelected: (value) async {
-                                            // if (value == 1) {
-                                            //  openDialog(document.id,
-                                            //       document["Location"]);
-                                            // } else if (value == 2) {
-                                            //   openDialogDelete(document.id);
-                                            // }
+                                            if (value == 1) {
+                                              openDialog(
+                                                  document.id,
+                                                  document["Location"],
+                                                  context);
+                                            } else if (value == 2) {
+                                              openDialogDelete(
+                                                  document.id,
+                                                  document["Date"],
+                                                  document["Time"],
+                                                  context);
+                                            }
                                           }),
                                     ],
                                   ))),
@@ -234,6 +266,37 @@ Widget tab1(BuildContext context) {
   );
 }
 
+Future openDialogDelete(
+        String id, String date, String time, BuildContext context) =>
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+            "Want to cancel reservation on " + date + " at " + time + " ?"),
+        actions: [
+          TextButton(
+              onPressed: () async {
+                // delete function here
+                removeReservation(id);
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                "Yes",
+                style: TextStyle(color: Colors.red),
+              )),
+          TextButton(
+            onPressed: () async {
+              Navigator.of(context).pop();
+            },
+            child: Text(
+              "No",
+              style: TextStyle(color: Colors.green),
+            ),
+          )
+        ],
+      ),
+    );
+
 Widget tab2() {
   return Container(
     child: Center(
@@ -243,9 +306,137 @@ Widget tab2() {
 }
 
 Widget tab3() {
-  return Container(
-    child: Center(
-      child: Text("History"),
+  return Scaffold(
+    body: Column(
+      //mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        StreamBuilder(
+            stream: FirebaseFirestore.instance
+                .collection('Reservations')
+                .where('UID', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+                .where('Status', isEqualTo: "canceled")
+                .snapshots(),
+            builder:
+                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (!snapshot.hasData) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+
+              return ListView(
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                children: snapshot.data!.docs.map((document) {
+                  return GestureDetector(
+                      onTap: () {
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //       builder: (context) => screen(
+                        //           document['Name'], document.id)),
+                        // );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            top: 20.0, left: 25.0, right: 25),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(14.5),
+                            boxShadow: const [
+                              BoxShadow(
+                                  offset: Offset(5, 10),
+                                  color: Colors.grey,
+                                  spreadRadius: 2,
+                                  blurRadius: 5),
+                            ],
+                          ),
+                          child: Padding(
+                              padding:
+                                  EdgeInsets.only(top: 0, left: 0, right: 0),
+                              child: Container(
+                                  height:
+                                      MediaQuery.of(context).size.height / 12,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(14.5),
+                                    color: mSecondColor,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SizedBox(),
+                                      Text(
+                                        " ${document['Date']}",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                      Text(
+                                        " ${document['Time']}",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                      Text(
+                                        " ${document['Status']}",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                      SizedBox(),
+                                    ],
+                                  ))),
+                        ),
+                      ));
+                }).toList(),
+              );
+            }),
+
+        // Text(
+        //   '$_counter',
+        //   style: Theme.of(context).textTheme.headline4,
+        // ),
+      ],
     ),
   );
+}
+
+Future<bool> removeReservation(String id) async {
+  // try {
+  //   if (FirebaseAuth.instance.currentUser != null) {
+  //     //String uid = FirebaseAuth.instance.currentUser!.uid;
+  //     FirebaseFirestore.instance.collection('Reservations').doc(id).delete();
+  //     return true;
+  //   } else {
+  //     throw ("This is my first general exception");
+  //   }
+  // } catch (e) {
+  //   rethrow;
+  // }
+  try {
+    // String uid = FirebaseAuth.instance.currentUser!.uid;
+
+    DocumentReference<Map<String, dynamic>> documentReference =
+        FirebaseFirestore.instance.collection('Reservations').doc(id);
+    FirebaseFirestore.instance.runTransaction((transaction) async {
+      DocumentSnapshot<Map<String, dynamic>> snapshot =
+          await transaction.get(documentReference);
+
+      try {
+        //double newAmount = value;
+        transaction.update(documentReference, {'Status': "canceled"});
+        return true;
+      } catch (e) {
+        rethrow;
+      }
+    });
+    return true;
+  } catch (e) {
+    return false;
+  }
 }
