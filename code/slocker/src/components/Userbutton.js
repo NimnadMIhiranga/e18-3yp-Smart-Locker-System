@@ -24,7 +24,7 @@ export const Userbutton= () => {
             <img src={history} alt="lock" className="image4"/>
             </div>
         <div className = 'bottombuttons'>
-            <Link to="Booklocker" ><button className='button3'>Book a locker</button></Link>
+            <Link to="LockerDashboard" ><button className='button3'>Locker Room</button></Link>
             <Link to="Histroy" ><button className='button4'>Go to history</button></Link>
         </div>
     </div>

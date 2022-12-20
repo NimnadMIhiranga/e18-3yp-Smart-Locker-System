@@ -1,0 +1,141 @@
+
+*{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    scroll-behavior: smooth;
+}
+
+.userbox{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 6rem;
+}
+
+.userbox .leftside{
+    margin-right: 2rem;
+    color: #fff;
+    font-family: var(--font-family);
+    font-weight: 500;
+    font-size: 25px;
+    line-height: 25px;
+    text-transform: capitalize;
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.gradient__bg{
+    background:-moz-radial-gradient(circle at 3% 25%, rgba(0, 40, 83, 1) 0%, rgba(4, 12, 24, 1) 25%);
+  
+    /* safari 5.1+,chrome 10+ */
+    background:-webkit-radial-gradient(circle at 3% 25%, rgba(0, 40, 83, 1) 0%, rgba(4, 12, 24, 1) 25%);
+  
+    /* opera 11.10+ */
+    background:-o-radial-gradient(circle at 3% 25%, rgba(0, 40, 83, 1) 0%, rgba(4, 12, 24, 1) 25%);
+  
+    /* ie 10+ */
+    background:-ms-radial-gradient(circle at 3% 25%, rgba(0, 40, 83, 1) 0%, rgba(4, 12, 24, 1) 25%);
+  
+    /* global 92%+ browsers support */
+    background:radial-gradient(circle at 3% 25%, rgba(0, 40, 83, 1) 0%, rgba(4, 12, 24, 1) 25%);
+  }
+
+  .userbox .rightside .navlink{
+    font-size: 18px;
+    color: white;
+    font-weight: 500;
+    margin: 0 1rem;
+    font-family: var(--font-family);
+    margin: 0 1rem;
+    cursor: pointer;
+    line-height: 25px;
+}
+
+.image1, .image3{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 6.5rem;
+} 
+
+.image3{
+    width: 35%;
+}
+
+.image2{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 10rem;
+}
+
+.image4{
+    display: flex;
+    width: 35%;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 7rem;
+
+}
+
+.topbuttons,.bottombuttons{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0rem 5rem;
+}
+
+.button1,.button2,
+.button3,.button4{
+    margin-right: 2rem;
+    cursor: pointer;
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    padding: 1rem 10rem;
+    color: black;
+    background: var(--gradient-text);
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 25px;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+}
+
+
+.button3{
+    margin-right: 2rem;
+    cursor: pointer;
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    padding: 1rem 10.8rem;
+    color: black;
+    background: var(--gradient-text);
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 25px;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+}
+
+
+.section__padding{
+    padding: 4rem 6rem;
+}
+
+
+
+
+
+
+
+
+
+
+

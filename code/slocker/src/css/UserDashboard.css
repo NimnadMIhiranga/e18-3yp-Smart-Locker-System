@@ -43,8 +43,8 @@
     background:radial-gradient(circle at 3% 25%, rgba(0, 40, 83, 1) 0%, rgba(4, 12, 24, 1) 25%);
   }
 
-  .userbox .rightside .navlink{
-    font-size: 18px;
+  .userbox .rightside .logout{
+    font-size: 25px;
     color: white;
     font-weight: 500;
     margin: 0 1rem;
@@ -52,6 +52,8 @@
     margin: 0 1rem;
     cursor: pointer;
     line-height: 25px;
+    background-color: transparent;
+    border: none;
 }
 
 .image1, .image3{
