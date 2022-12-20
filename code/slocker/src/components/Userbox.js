@@ -22,7 +22,7 @@ export const Userbox = ({ user }) =>  {
     return (
         <div className='userbox'>
         <div className='leftside'>
-        <h1>Hello  {user}</h1>
+        <h1>{user}</h1>
 
         </div>
         <div className='rightside'>

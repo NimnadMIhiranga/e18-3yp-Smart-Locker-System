@@ -22,7 +22,7 @@ export const Lockerbox =({ user }) => {
   return (
     <div className='userbox'>
         <div className='leftside'>
-        <h1>Hello {user}</h1>
+        <h1>{user}</h1>
         </div>
         <div className='rightside'>
         <Link to="AddLocation" ><button className='button5'>+ Add a new location</button></Link>

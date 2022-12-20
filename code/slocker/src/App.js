@@ -6,6 +6,8 @@ import { UserDashboard } from "./components/UserDashboard";
 import { LockerDashboard } from "./components/LockerDashboard";
 import { AddLocation } from "./components/AddLocation";
 import {auth, db} from "./config/config"
+import { LocationContextProvider } from './global/LocationContext'
+
 
 export class App extends Component {
 
@@ -34,6 +36,7 @@ export class App extends Component {
 
   render() {
     return (
+      <LocationContextProvider>
       <BrowserRouter>
         <Switch>
           <Route exact path="/" component={home} />
@@ -43,6 +46,7 @@ export class App extends Component {
           <Route path="/AddLocation" component={() =><AddLocation userID={this.state.userID}/>} />
         </Switch>
       </BrowserRouter>
+      </LocationContextProvider>
     );
   }
 }

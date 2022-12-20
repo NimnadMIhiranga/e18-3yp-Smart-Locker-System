@@ -38,7 +38,6 @@ export const Header = () => {
       </div>
       <div className="container">
         <h1 className="signintext">Sign In</h1>
-        <br />
         <form autoComplete="off" className="form-group" onSubmit={signin}>
           <label htmlFor="email" className="formtext">
             Email
@@ -61,7 +60,6 @@ export const Header = () => {
             required
             ref={passwordRef}
           />
-          <br />
           <br />
           <button type="submit" className="submitbutton">
             Sign in
