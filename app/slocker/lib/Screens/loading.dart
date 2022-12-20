@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:slocker/Screens/locationView.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -189,6 +190,22 @@ Widget tab1(BuildContext context) {
                                         ),
                                       ),
                                       IconButton(
+                                        icon: const Icon(Icons.key),
+                                        onPressed: () async {
+                                          final ref =
+                                              FirebaseDatabase.instance.ref();
+                                          await ref.update({"nodemcu1": 1});
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(Icons.lock),
+                                        onPressed: () async {
+                                          final ref =
+                                              FirebaseDatabase.instance.ref();
+                                          await ref.update({"nodemcu1": 0});
+                                        },
+                                      ),
+                                      IconButton(
                                         icon: const Icon(Icons.cancel),
                                         //tooltip: 'Increase volume by 10',
                                         onPressed: () {
@@ -202,6 +219,7 @@ Widget tab1(BuildContext context) {
                                           // });
                                         },
                                       ),
+
                                       SizedBox()
                                       // PopupMenuButton<int>(
                                       //     itemBuilder: (context) => [
