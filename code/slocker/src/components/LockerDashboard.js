@@ -5,7 +5,7 @@ import { Lockershow} from './Lockershow';
 import { auth } from '../config/config'
 import { useHistory } from 'react-router-dom'
 
-export const LockerDashboard = ({user}) =>{
+export const LockerDashboard = ({user, userID}) =>{
 
     const history = useHistory();
     
@@ -20,7 +20,7 @@ export const LockerDashboard = ({user}) =>{
         return (
         <div className ="lockerboard">
             <div className = "gradient__bg">
-            <Lockerbox user={user}/>
+            <Lockerbox user={user} userID = {userID}/>
             <Lockershow/>
             </div>
         </div>
