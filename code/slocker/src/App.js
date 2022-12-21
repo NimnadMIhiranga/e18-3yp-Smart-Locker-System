@@ -22,7 +22,7 @@ export class App extends Component {
         db.collection('User Data').doc(user.uid).get().then(snapshot => {
           this.setState({
             user: snapshot.data().Name,
-            userID : snapshot.data().uid
+            userID : snapshot.data().Admin
         })
         })
       }else {
@@ -42,7 +42,7 @@ export class App extends Component {
           <Route exact path="/" component={home} />
           <Route path="/signup" component={Signup} />
           <Route path="/UserDashboard" component={() => <UserDashboard user={this.state.user}/>} />
-          <Route path="/LockerDashboard" component={() =><LockerDashboard user={this.state.user}/>} />
+          <Route path="/LockerDashboard" component={() =><LockerDashboard user={this.state.user} userID = {this.state.userID}/>} />
           <Route path="/AddLocation" component={() =><AddLocation userID={this.state.userID}/>} />
         </Switch>
       </BrowserRouter>
