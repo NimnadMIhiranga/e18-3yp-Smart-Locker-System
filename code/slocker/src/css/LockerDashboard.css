@@ -130,3 +130,43 @@ h1 {
     align-items: center;
     padding: 1rem 5rem;
 }
+
+.locker-modelbox{
+    background-color: white;
+    margin-top: 50px;
+    margin-left: 25%;
+    padding-left: 50px;
+    padding-bottom: 50px;
+    padding-top: 20px;
+    width: 50%;
+}
+
+.addlocker-formtext{
+    font-family: var(--font-family);
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 28px;
+}
+
+.addlocker-form-control{
+    border-radius: 8px;
+    width: 75%;
+    padding: 10px;
+}
+
+.lockeraddbutton{
+    padding: 10px;
+    background-color: rgb(255, 0, 0, 0.4);
+    border: none;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.locker-cancelbutton{
+    padding: 10px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    background-color: grey;
+    margin-top: 10px;
+}
