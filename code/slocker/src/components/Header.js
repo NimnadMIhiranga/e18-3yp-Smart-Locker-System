@@ -2,12 +2,18 @@ import React, { useRef, useState } from "react";
 import "../css/home.css";
 import { Link, useHistory } from "react-router-dom";
 import { auth } from "../config/config";
+import Model from 'react-modal'
+
 
 export const Header = () => {
   const emailRef = useRef();
+  const resetemailRef = useRef();
   const passwordRef = useRef();
   const [error, setError] = useState("");
   const history = useHistory();
+  const [message, setMessage] = useState("");
+  const [visible, setvisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   async function signin(e) {
     e.preventDefault();
@@ -23,6 +29,22 @@ export const Header = () => {
       setError("Failed to log in");
     }
   }
+
+  async function changePassword(e) {
+    e.preventDefault();
+
+    try {
+      setMessage("")
+      setError("")
+      setLoading(true)
+      await auth.resetPassword(resetemailRef.current.value)
+      setMessage("Check your inbox for further instructions")
+    } catch {
+      setError("Failed to reset password");
+    }
+    setLoading(false)
+  }
+
 
   return (
     <div className="locker__header section__padding" id="home">
@@ -49,7 +71,6 @@ export const Header = () => {
             required
             ref={emailRef}
           />
-
           <label htmlFor="passowrd" className="formtext">
             Password
           </label>
@@ -65,12 +86,30 @@ export const Header = () => {
             Sign in
           </button>
         </form>
+        <br/>
+        <button onClick={()=>setvisible(true)} className='forgot-password'>Forgot Password? </button>
+         <Model isOpen={visible} onRequestClose={()=>setvisible(false)} className='modelbox'>
+          <h1>Change your password</h1><br/>
+          <form autoComplete="off" onSubmit={changePassword}>
+          <label htmlFor="passowrd" className="changepassword">
+            Enter your email
+          </label>
+          <br />
+          <input
+            type="email"
+            className="form-password"
+            required
+            ref={resetemailRef}
+          />
+          <button type="submit" className="changebutton">Change</button>
+          </form><br/>
+          <button onClick={()=>setvisible(false)} className="cancelbutton">Cancel</button>
+         </Model>
         {error && <span className="error-msg">{error}</span>}
-        <br />
+        <br /><br/>
         <span className="signuphere">
-          If you dont have an account? please signup
+          If you dont have an account? please signup{" "}
           <Link to="Signup" className="signuplink">
-            {" "}
             Here
           </Link>
         </span>
