@@ -34,9 +34,11 @@ export const Signup = (props) => {
   };
 
   return (
-    <div className="locker__header section__padding" id="home">
+    <div className="locker__header section__padding" id="signup">
       <div className="locker__header-content">
-        <h1 className="gradient__text">Welcome To SLocker</h1>
+        <h1 className="gradient__text" data-testid="signup-1">
+          Welcome To SLocker
+        </h1>
         <p>
           SLocker is a smart locker sysytem which can be put your bags safely
           when you leave them. You just need to create a SLocker account using
