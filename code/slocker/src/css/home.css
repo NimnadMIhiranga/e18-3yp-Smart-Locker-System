@@ -152,7 +152,6 @@ a {
     font-size: 20px;
     line-height: 28px;
     color: var(--color-text);
-
     margin-top: 1.5rem;
 }
 
@@ -200,7 +199,6 @@ a {
     font-size: 20px;
     line-height: 28px;
     color: var(--color-text);
-
     margin-top: 1.5rem;
 }
 
@@ -210,11 +208,59 @@ a {
     font-size: 20px;
     line-height: 28px;
     color: rgb(235, 255, 57);
-
     margin-top: 1.5rem;
 }
 
+.forgot-password{
+        font-size: 22px;
+        color: yellow;
+        font-weight: 500;
+        font-family: var(--font-family);
+        cursor: pointer;
+        line-height: 25px;
+        background-color:transparent;
+        border: none;
+    }
 
+.changebutton{
+    padding: 10px;
+    margin-left: 10PX;
+    background-color: rgb(255, 0, 0, 0.4);
+    border: none;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.cancelbutton{
+    padding: 15px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    background-color: grey;
+}
+
+.modelbox{
+    background-color: white;
+    margin-top: 50px;
+    margin-left: 25%;
+    padding-left: 50px;
+    padding-bottom: 50px;
+    padding-top: 20px;
+    width: 50%;
+}
+
+.changepassword{
+    font-family: var(--font-family);
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 28px;
+}
+
+.form-password{
+    border-radius: 8px;
+    width: 75%;
+    padding: 10px;
+}
 
 
 
