@@ -78,7 +78,7 @@ h1 {
 .card {
     width: 600px;
     height: auto;
-    margin-left: 400px;
+    margin-left: 27%;
     margin-top: 50px;
     display: flex;
     flex-direction: column;
@@ -88,8 +88,6 @@ h1 {
     font-weight: 600;
     text-align: center;
     position: relative;
-    
-    
 }
 
 .name {
@@ -105,19 +103,6 @@ h1 {
     margin-bottom: 5px;
 }
 
-
-.gobutton {
-    background-color: #f57224;
-    color: #fff;
-    border: hidden;
-    cursor: pointer;
-    width: 100%;
-    padding: 10px 14px;
-    margin-top: 5px;
-    margin-bottom: 2px;
-    outline: none;
-}
-
 .show{
     display: flex;
     justify-content: space-between;
@@ -130,3 +115,137 @@ h1 {
     align-items: center;
     padding: 1rem 5rem;
 }
+
+.locker-modelbox{
+    background-color: white;
+    margin-top: 50px;
+    margin-left: 25%;
+    padding-left: 50px;
+    padding-bottom: 50px;
+    padding-top: 20px;
+    width: 50%;
+}
+
+.addlocker-formtext{
+    font-family: var(--font-family);
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 28px;
+}
+
+.addlocker-form-control{
+    border-radius: 8px;
+    width: 75%;
+    padding: 10px;
+}
+
+.lockeraddbutton{
+    padding: 10px;
+    background-color: rgb(255, 0, 0, 0.4);
+    border: none;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.locker-cancelbutton{
+    padding: 10px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    background-color: grey;
+    margin-top: 10px;
+}
+
+.gobutton {
+    background-color: #f57224;
+    color: #fff;
+    border: hidden;
+    cursor: pointer;
+    width: 25%;
+    padding: 10px 14px;
+    margin-top: 5px;
+    margin-bottom: 2px;
+    outline: none;
+}
+
+.locker-go{
+    background-color:gray;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    margin-left: 30px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+.locker-edit{
+    background-color: rgb(0, 255, 0, 0.4);
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    margin-left: 50px;
+}
+
+.locker-delete{
+    background-color: rgb(255, 0, 0, 0.4);
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    margin-left: 50px;   
+}
+
+.model1box{
+    background-color: white;
+    margin-top: 50px;
+    margin-left: 25%;
+    padding-left: 50px;
+    padding-bottom: 50px;
+    padding-top: 20px;
+    width: 50%;
+}
+
+.para{
+    font-family: var(--font-family);
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 28px;
+}
+
+.deletebutton{
+    padding: 10px;
+    background-color: rgb(255, 0, 0, 0.4);
+    border: none;
+    border-radius: 5px;
+    font-size: 22px;
+}
+
+.cancel-button{
+    padding: 10px;
+    font-size: 22px;
+    border: none;
+    border-radius: 5px;
+    background-color: grey;
+    margin-top: 10px;
+    margin-left: 15px;
+}
+
+.edit-cancel-button{
+    padding: 10px;
+    font-size: 22px;
+    border: none;
+    border-radius: 5px;
+    background-color: grey;
+    margin-top: 10px;
+}
+
+.edit-button{
+    padding: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    background-color: rgb(255, 0, 0, 0.4);
+    border: none;
+    border-radius: 5px;
+    font-size: 22px;
+    margin-left: 15px;
+}
+
