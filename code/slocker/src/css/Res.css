@@ -1,0 +1,27 @@
+*{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    scroll-behavior: smooth;
+}
+
+.reservation-userbox{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 6rem;
+}
+
+.reservation-leftside{
+    margin-right: 2rem;
+    color: #fff;
+    font-family: var(--font-family);
+    font-weight: 500;
+    font-size: 25px;
+    line-height: 25px;
+    text-transform: capitalize;
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
