@@ -4,6 +4,7 @@ import '../css/LockerDashboard.css'
 import Model1 from 'react-modal'
 import Model2 from 'react-modal'
 import { db } from "../config/config";
+import { Link } from 'react-router-dom'
 
 
 export const Lockershow= ({ user, userID }) => {
@@ -42,8 +43,8 @@ export const Lockershow= ({ user, userID }) => {
 
   return (
     <div>
-    {locations.length !== 0 && <h1 className="show">Already Added Locations</h1>}
-    {locations.length === 0 && <div className='error-msg'>slow internet...no locations to display</div>}
+    {locations.length !== 0 && <h1 className="show">Locations</h1>}
+    {locations.length === 0 && <div className='error-msg-location'>slow internet...no locations to display</div>}
     {locations.map(location => (
         <div className='card' key={location.LocationID}>
           <div className='name'>
@@ -52,9 +53,9 @@ export const Lockershow= ({ user, userID }) => {
           <div className='count'>
                Number of lockers -  {location.LocationCount}
           </div>
-          <div>
-            
-          <button className='locker-go'>Go to lockers</button>
+          {userID && <div>
+
+            <Link to="ResDashboard"><button className='locker-go'>Go to lockers</button></Link>
 
           <button className='locker-edit'onClick={()=>setvisible1(true)}>Edit count</button>
           <Model2 isOpen={visible1} onRequestClose={()=>setvisible1(false)}className='model1box'>
@@ -82,7 +83,10 @@ export const Lockershow= ({ user, userID }) => {
           <button onClick={()=>setvisible(false)} className="cancel-button">Cancel</button>
           </Model1>
 
-          </div>
+          </div>}
+          {!userID && <div>
+            <Link to="ResDashboard"><button className='locker-go-nonuser'>Go to lockers</button></Link>
+            </div>}
         </div>
     ))}
     </div>

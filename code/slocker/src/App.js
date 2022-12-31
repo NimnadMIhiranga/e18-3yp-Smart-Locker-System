@@ -4,6 +4,7 @@ import { home } from "./components/home";
 import { Signup } from "./components/Signup";
 import { UserDashboard } from "./components/UserDashboard";
 import { LockerDashboard } from "./components/LockerDashboard";
+import { ResDashboard } from "./components/ResDashboard";
 import { AddLocation } from "./components/AddLocation";
 import {auth, db} from "./config/config"
 import { LocationContextProvider } from './global/LocationContext'
@@ -44,6 +45,7 @@ export class App extends Component {
           <Route path="/UserDashboard" component={() => <UserDashboard user={this.state.user}/>} />
           <Route path="/LockerDashboard" component={() =><LockerDashboard user={this.state.user} userID = {this.state.userID}/>} />
           <Route path="/AddLocation" component={() =><AddLocation userID={this.state.userID}/>} />
+          <Route path="/ResDashboard" component={() =><ResDashboard user={this.state.user} userID = {this.state.userID}/>} />
         </Switch>
       </BrowserRouter>
       </LocationContextProvider>

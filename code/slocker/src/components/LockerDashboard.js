@@ -21,7 +21,7 @@ export const LockerDashboard = ({user, userID}) =>{
         <div className ="lockerboard">
             <div className = "gradient__bg">
             <Lockerbox user={user} userID = {userID}/>
-            <Lockershow/>
+            <Lockershow user={user} userID = {userID}/>
             </div>
         </div>
         )
