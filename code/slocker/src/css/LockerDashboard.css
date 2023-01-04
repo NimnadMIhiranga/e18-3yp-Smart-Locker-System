@@ -76,9 +76,9 @@ h1 {
 }
 
 .card {
-    width: 600px;
+    width: 800px;
     height: auto;
-    margin-left: 27%;
+    margin-left: 24%;
     margin-top: 50px;
     display: flex;
     flex-direction: column;
@@ -88,13 +88,14 @@ h1 {
     font-weight: 600;
     text-align: center;
     position: relative;
+    
 }
 
 .name {
     display: block;
     width: 100%;
     color: black;
-    margin-top: 5px;
+    margin-top: 25px;
 }
 
 .count {
@@ -168,7 +169,7 @@ h1 {
     border: none;
     padding: 10px;
     border-radius: 8px;
-    margin-left: 30px;
+    margin-left: 50px;
     margin-top: 30px;
     margin-bottom: 20px;
 }
@@ -180,6 +181,15 @@ h1 {
     border-radius: 8px;
     margin-left: 50px;
 }
+
+.locker-add{
+    background-color: rgba(233, 218, 15);
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    margin-left: 30px;
+}
+
 
 .locker-delete{
     background-color: rgb(255, 0, 0, 0.4);
@@ -255,6 +265,14 @@ h1 {
 }
 
 .show{
-    margin-left: 38%;
+    margin-left: 41%;
     font-size: 60px;
+}
+
+.count-remainder{
+    font-family: var(--font-family);
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 28px;
+    color: red;
 }

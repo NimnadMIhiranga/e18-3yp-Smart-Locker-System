@@ -5,7 +5,7 @@ import { Resshow} from './Resshow';
 import { auth } from '../config/config'
 import { useHistory } from 'react-router-dom'
 
-export const ResDashboard = ({user, userID}) =>{
+export const ResDashboard = ({user, userID, locationID}) =>{
 
     const history = useHistory();
 
@@ -20,7 +20,7 @@ export const ResDashboard = ({user, userID}) =>{
     return(
         <div className ="Resboard">
             <div className = "gradient__bg">
-                <Resbox user={user} userID = {userID}/>
+                <Resbox user={user} userID = {userID} locationID={locationID}/>
             </div>
         </div> 
     )
