@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import Model3 from "react-modal";
 import Model4 from "react-modal";
 
+
 export const Lockershow = ({ user, userID }) => {
   const { locations } = useContext(LocationContext);
   const [visible, setvisible] = useState(false);
@@ -62,6 +63,8 @@ export const Lockershow = ({ user, userID }) => {
       setError("Failed to Add Locker");
     }
   }
+
+  
 
   return (
     <div>
@@ -122,6 +125,7 @@ export const Lockershow = ({ user, userID }) => {
                     type="submit"
                     className="lockeraddbutton"
                     onClick={() => addLock(location.LocationID)}
+                    
                   >
                     Add Locker
                   </button>
@@ -129,8 +133,7 @@ export const Lockershow = ({ user, userID }) => {
                 </form>
                 <button
                   onClick={() => setvisible2(false)}
-                  className="locker-cancelbutton"
-                >
+                  className="locker-cancelbutton">
                   Cancel
                 </button>
               </Model3>
@@ -165,7 +168,7 @@ export const Lockershow = ({ user, userID }) => {
                     className="edit-button"
                     onClick={(event) => {
                       editlocation(location.LocationID);
-                      window.location.reload(false);
+                      //window.location.reload(false);
                     }}
                   >
                     Edit
@@ -198,7 +201,7 @@ export const Lockershow = ({ user, userID }) => {
                   className="deletebutton"
                   onClick={(event) => {
                     deletelocation(location.LocationID);
-                    window.location.reload(false);
+                    //window.location.reload(false);
                   }}
                 >
                   Delete

@@ -91,9 +91,7 @@ export const Signup = (props) => {
             />
             <br />
 
-            <button type="submit" className="submitbutton">
-              Sign up
-            </button>
+            
           </form>
           {error && <span className="error-msg">{error}</span>}
           <br />
