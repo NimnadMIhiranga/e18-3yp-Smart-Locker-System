@@ -7,6 +7,9 @@ import { db } from "../config/config";
 import { Link } from "react-router-dom";
 import Model3 from "react-modal";
 import Model4 from "react-modal";
+import { set, ref, onValue, remove, update } from "firebase/database";
+import { realdb } from "../config/configreal";
+
 
 export const Lockershow = ({ user, userID }) => {
   const { locations } = useContext(LocationContext);
@@ -14,10 +17,20 @@ export const Lockershow = ({ user, userID }) => {
   const [visible1, setvisible1] = useState(false);
   const [visible2, setvisible2] = useState(false);
   const countref = useRef();
-  const lockIDRef = useRef();
-  const stateRef = useRef();
+  //const lockIDRef = useRef();
+  //const stateRef = useRef();
+  const [lockID, setlockID] = useState("");
+  const [State, setState] = useState("");
   //const countref = useRef();
   const [error, setError] = useState("");
+
+  const lockidChange = (e) => {
+    setlockID(e.target.value);
+  };
+
+  const stateChange = (e) => {
+    setState(e.target.value);
+  };
 
   async function deletelocation(id) {
     try {
@@ -45,6 +58,7 @@ export const Lockershow = ({ user, userID }) => {
     }
   }
 
+  /*
   async function addLock(id) {
     try {
       db.collection("Locations")
@@ -62,6 +76,21 @@ export const Lockershow = ({ user, userID }) => {
       setError("Failed to Add Locker");
     }
   }
+  */
+
+  const addLock = (locationID) =>{
+
+      set(ref(realdb, 'Lockers/' + `/${locationID}` + `/${lockID}`),{
+        lockID,
+        State,
+      });
+      setlockID("");
+      setState("");
+      setvisible(false);
+     
+  }
+
+  
 
   return (
     <div>
@@ -102,7 +131,8 @@ export const Lockershow = ({ user, userID }) => {
                     type="number"
                     className="addlocker-form-control"
                     required
-                    ref={lockIDRef}
+                    value={lockID}
+                    onChange={lockidChange}
                   />
                   <br />
                   <br />
@@ -114,7 +144,8 @@ export const Lockershow = ({ user, userID }) => {
                     type="text"
                     className="addlocker-form-control"
                     required
-                    ref={stateRef}
+                    value={State}
+                    onChange={stateChange}
                   />
                   <br />
                   <br />
@@ -129,8 +160,7 @@ export const Lockershow = ({ user, userID }) => {
                 </form>
                 <button
                   onClick={() => setvisible2(false)}
-                  className="locker-cancelbutton"
-                >
+                  className="locker-cancelbutton">
                   Cancel
                 </button>
               </Model3>
@@ -165,7 +195,7 @@ export const Lockershow = ({ user, userID }) => {
                     className="edit-button"
                     onClick={(event) => {
                       editlocation(location.LocationID);
-                      window.location.reload(false);
+                      //window.location.reload(false);
                     }}
                   >
                     Edit
@@ -198,7 +228,7 @@ export const Lockershow = ({ user, userID }) => {
                   className="deletebutton"
                   onClick={(event) => {
                     deletelocation(location.LocationID);
-                    window.location.reload(false);
+                    //window.location.reload(false);
                   }}
                 >
                   Delete
