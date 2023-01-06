@@ -80,7 +80,7 @@ export const Lockershow = ({ user, userID }) => {
 
   const addLock = (locationID) =>{
 
-      set(ref(realdb, `/${locationID}` + `/${lockID}`),{
+      set(ref(realdb, 'Lockers/' + `/${locationID}` + `/${lockID}`),{
         lockID,
         State,
       });
