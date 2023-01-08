@@ -25,3 +25,66 @@
     justify-content: flex-start;
     align-items: center;
 }
+
+.card-lock{
+    width: 550px;
+    height: auto;
+    margin-left: 32%;
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    font-size:22px;
+    font-weight: 600;
+    text-align: center;
+    position: relative;
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+
+}
+
+.lockhead{
+    margin-left: 40%;
+}
+
+.lockID{
+    display: block;
+    width: 100%;
+    color: black;
+}
+
+.state{
+    width: 100%;
+    margin-top: 5px;
+    margin-bottom: 15px;
+
+}
+
+.locker-book{
+    background-color: rgba(233, 218, 15);
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    margin-left: 10px;
+}
+
+
+.lock-edit{
+    background-color: rgb(0, 255, 0, 0.4);
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    margin-left: 30px;
+
+}
+
+.lock-delete{
+    background-color: rgb(255, 0, 0, 0.4);
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    margin-left: 30px;  
+    margin-right: 5px;
+}
