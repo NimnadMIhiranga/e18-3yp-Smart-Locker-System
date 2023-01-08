@@ -15,8 +15,8 @@ I2CKeyPad keypad(KEYPAD_ADDRESS);
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 // define the menu options
-const int numOptions = 3;
-String options[numOptions] = {"Option 1", "Option 2", "Option 3"};
+const int numOptions = 2;
+String options[numOptions] = {"Opt. 1", "Opt. 2"};
 
 // variable to store the current menu selection
 int selection = 0;
@@ -56,42 +56,47 @@ void loop() {
 
   // display the menu options
   lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("SET -A SELECT -D");
+
+
+  lcd.setCursor(0, 1);
   for (int i = 0; i < numOptions; i++) {
     if (i == selection) {
       // highlight the selected option
-      lcd.setCursor(0, i);
-      lcd.print("> ");
-      lcd.print(options[i]);
+      // lcd.setCursor(i*7, 1);
+      // lcd.print("> ");
+      lcd.print(">1.PIN  2.FINGER");
     }
     else {
-      lcd.setCursor(0, i);
-      lcd.print("  ");
-      lcd.print(options[i]);
+      // lcd.setCursor(i*7+7*(1-i), 1);
+      // lcd.print("  ");
+      //lcd.print(options[i]);
+      lcd.print(" 1.PIN >2.FINGER");
     }
   }
 
   // handle the selected option
+  
   if (key == 'D') {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("BACK-C|");
     switch (selection) {
       case 0:
-      lcd.clear();
-      lcd.setCursor(0, 0);
-       lcd.print("  0");
+      lcd.print("ENTER PIN");
+      lcd.setCursor(0, 1);
+       lcd.print("1"); // PIN  reading function here
         // do something for option 1
         break;
       case 1:
-      lcd.clear();
-      lcd.setCursor(0, 0);
-       lcd.print("  1");
+      lcd.print("PUT THUMB");
+      lcd.setCursor(0, 1);
+       lcd.print("2"); // fingerprint function here
         // do something for option 2
         break;
-      case 2:
-      lcd.clear();
-      lcd.setCursor(0, 0);
-       lcd.print(" 2");
-        // do something for option 3
-        break;
     }
+
     key = v[keypad.getKey()];
     while(key != 'C'){
       key = v[keypad.getKey()];
@@ -99,5 +104,5 @@ void loop() {
   }
 
   // add a delay to prevent key debouncing
-  delay(100);
+  delay(200);
 }
