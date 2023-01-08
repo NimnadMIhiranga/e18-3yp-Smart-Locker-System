@@ -5,7 +5,7 @@ import { Lockershow } from "./Lockershow";
 import { auth } from "../config/config";
 import { useHistory } from "react-router-dom";
 
-export const LockerDashboard = ({ user, userID }) => {
+export const LockerDashboard = ({ user, userID, locationID }) => {
   const history = useHistory();
 
   useEffect(() => {

@@ -9,6 +9,16 @@ export class LocationContextProvider extends Component {
         locations: []
     }
 
+    /*onValue(ref(realdb, 'Lockers/' + `/${ID}`), (snapshot)=>{
+            setLockers([]);
+            const data = snapshot.val();
+            if (data !== null) {
+                Object.values(data).map((locker) => {
+                    setLockers((oldArray) => [...oldArray, locker]);
+                });
+            }
+        }); */
+
     componentDidMount() {
 
         const prevLocations = this.state.locations;

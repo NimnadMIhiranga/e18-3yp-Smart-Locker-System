@@ -6,7 +6,7 @@ import { db } from "../config/config";
 import Model from 'react-modal'
 import { Link } from 'react-router-dom'
 
-export const Resbox =({ user, userID, locationID }) => {
+export const Resbox =({ user, userID}) => {
 
     const [error, setError] = useState("")
     const history = useHistory()
