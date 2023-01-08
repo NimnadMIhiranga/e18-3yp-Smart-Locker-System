@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_interpolation_to_compose_strings
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
@@ -65,10 +66,11 @@ class _newReserveState extends State<newReserve> {
                     itemBuilder: ((context, snapshot, animation, index) {
                       return InkWell(
                         onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Loading()));
+                          showInputDialog(snapshot, locations);
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) => Loading()));
                         },
                         child: ListTile(
                           title: Text("Locker Number: " +
@@ -80,27 +82,43 @@ class _newReserveState extends State<newReserve> {
         ));
   }
 
-  // Future<Widget> _getData() async {
-  //   DatabaseReference ref =
-  //       FirebaseDatabase.instance.reference().child('your-node');
-  //   DataSnapshot snapshot =
-  //       (await ref.orderByChild('your-field').equalTo('your-value').once()) as DataSnapshot;
-  //   List<Widget> list = [];
-  //   snapshot.value.forEach((key, value) {
-  //     list.add(
-  //       InkWell(
-  //         onTap: () {
-  //           // handle the tap event
-  //         },
-  //         child: Text(value['your-field']),
-  //       ),
-  //     );
-  //   });
-  //   return ListView.builder(
-  //     itemCount: list.length,
-  //     itemBuilder: (context, index) {
-  //       return list[index];
-  //     },
-  //   );
-  // }
+  final textController = TextEditingController();
+
+  void showInputDialog(DataSnapshot snapshot, DatabaseReference locations) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return SimpleDialog(
+          title: Text("Enter a value"),
+          children: [
+            TextField(
+              controller: textController,
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop(textController.text);
+              },
+              child: Text(
+                "Reserve",
+                style: TextStyle(color: Colors.green),
+              ),
+            )
+          ],
+        );
+      },
+    ).then((value) {
+      if (value != null) {
+        locations
+            .child(snapshot.child('lockID').value.toString())
+            .update({'State': 'unavailable'});
+        locations
+            .child(snapshot.child('lockID').value.toString())
+            .update({'Pin': value});
+        locations
+            .child(snapshot.child('lockID').value.toString())
+            .update({'UID': FirebaseAuth.instance.currentUser!.uid});
+        // Do something with the value entered by the user
+      }
+    });
+  }
 }
