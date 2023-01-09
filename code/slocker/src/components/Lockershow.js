@@ -11,6 +11,7 @@ import { set, ref, onValue, remove, update } from "firebase/database";
 import { realdb } from "../config/configreal";
 
 
+
 export const Lockershow = ({ user, userID }) => {
   const { locations } = useContext(LocationContext);
   const [visible, setvisible] = useState(false);
@@ -27,6 +28,8 @@ export const Lockershow = ({ user, userID }) => {
   const lockidChange = (e) => {
     setlockID(e.target.value);
   };
+
+  
 
   const stateChange = (e) => {
     setState(e.target.value);
@@ -75,8 +78,8 @@ export const Lockershow = ({ user, userID }) => {
       setvisible(false);
       setError("Failed to Add Locker");
     }
-  }
-  */
+  }*/
+  
 
   const addLock = (locationID) =>{
 
@@ -84,11 +87,12 @@ export const Lockershow = ({ user, userID }) => {
         lockID,
         State,
       });
-      setlockID("");
-      setState("");
-      setvisible(false);
+        setvisible(false);
+        setlockID("");
+        setState("");
      
   }
+
 
   
 
@@ -106,7 +110,7 @@ export const Lockershow = ({ user, userID }) => {
           <div className="count">
             Number of lockers - {location.LocationCount}
           </div>
-          {userID && (
+           {userID && (
             <div>
               <button className="locker-add" onClick={() => setvisible2(true)}>
                 Add lockers
@@ -165,7 +169,10 @@ export const Lockershow = ({ user, userID }) => {
                 </button>
               </Model3>
 
-              <Link to="ResDashboard">
+              <Link to={{pathname:"ResDashboard",state:{
+                  ID: location.LocationID, 
+                  Name: location.LocationName
+              }}}>
                 <button className="locker-go">Show lockers</button>
               </Link>
 
