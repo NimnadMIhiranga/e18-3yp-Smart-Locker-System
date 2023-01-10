@@ -107,23 +107,27 @@ void loop() {
       lastKey = key;
     lcd.setCursor(0, 1);
     Serial.print(key+'\n');
-    if (key == 45) {
+    if (key == 35) {
       Serial.print("Hash Occured\n");
       input = "";
-      //lcd.print("                ");
-    } else if (key == 52) {
+       //lcd.print(input);
+      lcd.print("                ");
+    } else if (key == 42) {
       input = input.substring(0, input.length()-1);
       Serial.print("Star Occured\n");
-      //lcd.print(input);
-      //lcd.print("                ");
-      //lcd.setCursor(input.length(), 1);
+      lcd.print(input);
+      lcd.print("                ");
+      lcd.setCursor(input.length(), 1);
+       //lcd.print(input);
     } else {
       Serial.print("Number Occured\n");
-      if(key !='N' && key !='A' && key !='B' && key !='D')
+      if(key !='N' && key !='A' && key !='B' && key !='D' &&  key !='*' &&  key !='#')
       input += key;
-      //lcd.print(input);
+      // if(key == '*') input = input.substring(0, input.length()-1);
+      // if(key == '#') input = "";
+      lcd.print(input);
     }
-    lcd.print(input);
+   
   }
   }
 
