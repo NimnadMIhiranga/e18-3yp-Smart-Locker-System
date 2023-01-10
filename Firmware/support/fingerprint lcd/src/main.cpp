@@ -23,14 +23,10 @@ uint32_t value = 0;
 
 // variable to store the current menu selection
 int selection = 0;
-void getPin();
+
 String input;
 
 char lastKey = 'Y';
-
-
-
-
 
 
 void setup() {
@@ -118,16 +114,23 @@ void loop() {
       lcd.print(input);
       lcd.print("                ");
       lcd.setCursor(input.length(), 1);
-       //lcd.print(input);
-    } else {
+      
+   
+     
+     }
+     else {
       Serial.print("Number Occured\n");
-      if(key !='N' && key !='A' && key !='B' && key !='D' &&  key !='*' &&  key !='#')
+      if(key !='N' && key !='A' && key !='B' && key !='D')
       input += key;
-      // if(key == '*') input = input.substring(0, input.length()-1);
-      // if(key == '#') input = "";
+      
       lcd.print(input);
     }
+   if(input == "1234"){
+    //lcd.clear();
+    lcd.print("Correct PIN");
+    
    
+   }
   }
   }
 
