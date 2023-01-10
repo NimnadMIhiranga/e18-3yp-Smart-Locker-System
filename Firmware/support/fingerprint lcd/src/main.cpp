@@ -17,26 +17,39 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 // define the menu options
 const int numOptions = 2;
 String options[numOptions] = {"Opt. 1", "Opt. 2"};
+char v[19] = "123A456B789C*0#DNF"; 
+uint32_t lastKeyPressed = 0;
+uint32_t value = 0;
 
 // variable to store the current menu selection
 int selection = 0;
+void getPin();
+String input;
+
+char lastKey = 'Y';
+
+
+
+
+
 
 void setup() {
   // initialize the LCD
   lcd.init();
   lcd.backlight(); // Enable or Turn On the backlight 
- Wire.begin();
- Wire.setClock(400000);
+  Wire.begin();
+  Wire.setClock(400000);
+  Serial.begin(9600);
   // clear the LCD
   lcd.clear();
 }
 
 void loop() {
   // read input from the keypad
-  char v[19] = "123A456B789C*0#DNF"; 
+  
   uint8_t idx = keypad.getKey();
   char key = v[idx];
-
+   input = "";
 
   // navigate through the menu options
   if (key == 'A') {
@@ -57,21 +70,15 @@ void loop() {
   // display the menu options
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print("SET -A SELECT -D");
+  lcd.print("SET-A   SELECT-D");
 
 
   lcd.setCursor(0, 1);
   for (int i = 0; i < numOptions; i++) {
     if (i == selection) {
-      // highlight the selected option
-      // lcd.setCursor(i*7, 1);
-      // lcd.print("> ");
       lcd.print(">1.PIN  2.FINGER");
     }
     else {
-      // lcd.setCursor(i*7+7*(1-i), 1);
-      // lcd.print("  ");
-      //lcd.print(options[i]);
       lcd.print(" 1.PIN >2.FINGER");
     }
   }
@@ -86,14 +93,56 @@ void loop() {
       case 0:
       lcd.print("ENTER PIN");
       lcd.setCursor(0, 1);
-       lcd.print("1"); // PIN  reading function here
-        // do something for option 1
+      key = v[keypad.getKey()];
+    while(key != 'C'){
+
+        uint32_t now = millis();
+
+  if (now - lastKeyPressed >= 100)
+  {
+    lastKeyPressed = now;
+
+    
+    if (key &&  lastKey != key) {
+      lastKey = key;
+    lcd.setCursor(0, 1);
+    Serial.print(key+'\n');
+    if (key == 45) {
+      Serial.print("Hash Occured\n");
+      input = "";
+      //lcd.print("                ");
+    } else if (key == 52) {
+      input = input.substring(0, input.length()-1);
+      Serial.print("Star Occured\n");
+      //lcd.print(input);
+      //lcd.print("                ");
+      //lcd.setCursor(input.length(), 1);
+    } else {
+      Serial.print("Number Occured\n");
+      if(key !='N' && key !='A' && key !='B' && key !='D')
+      input += key;
+      //lcd.print(input);
+    }
+    lcd.print(input);
+  }
+  }
+
+
+
+
+
+      key = v[keypad.getKey()];
+    }
+      
         break;
       case 1:
       lcd.print("PUT THUMB");
       lcd.setCursor(0, 1);
-       lcd.print("2"); // fingerprint function here
-        // do something for option 2
+       lcd.print("2");
+        key = v[keypad.getKey()];
+    while(key != 'C'){
+      key = v[keypad.getKey()];
+    } 
         break;
     }
 
