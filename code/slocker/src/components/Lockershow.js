@@ -20,26 +20,17 @@ export const Lockershow = ({ user, userID }) => {
   const countref = useRef();
   //const lockIDRef = useRef();
   //const stateRef = useRef();
-  const [lockID, setlockID] = useState("");
-  const [State, setState] = useState("");
   //const countref = useRef();
   const [error, setError] = useState("");
 
-  const lockidChange = (e) => {
-    setlockID(e.target.value);
-  };
-
   
-
-  const stateChange = (e) => {
-    setState(e.target.value);
-  };
 
   async function deletelocation(id) {
     try {
       db.collection("Locations")
         .doc(id)
         .delete();
+      remove(ref(realdb, 'Lockers/' + `/${id}`));
       setvisible(false);
     } catch {
       setError("Failed to delete");
@@ -47,10 +38,10 @@ export const Lockershow = ({ user, userID }) => {
     }
   }
 
-  async function editlocation(id) {
+  async function editlocation(location) {
     try {
       db.collection("Locations")
-        .doc(id)
+        .doc(location.LocationID)
         .update({
           Count: countref.current.value,
         });
@@ -81,21 +72,6 @@ export const Lockershow = ({ user, userID }) => {
   }*/
   
 
-  const addLock = (locationID) =>{
-
-      set(ref(realdb, 'Lockers/' + `/${locationID}` + `/${lockID}`),{
-        lockID,
-        State,
-      });
-        setvisible(false);
-        setlockID("");
-        setState("");
-     
-  }
-
-
-  
-
   return (
     <div>
       {locations.length !== 0 && <h1 className="show">Locations</h1>}
@@ -112,62 +88,7 @@ export const Lockershow = ({ user, userID }) => {
           </div>
            {userID && (
             <div>
-              <button className="locker-add" onClick={() => setvisible2(true)}>
-                Add lockers
-              </button>
-              <Model3
-                isOpen={visible2}
-                onRequestClose={() => setvisible2(false)}
-                className="model1box"
-              >
-                <h1>Add Locker</h1>
-                <br />
-                <p className="count-remainder">
-                  You can only add {location.LocationCount} number of lockers to
-                  this location.
-                </p>
-                <form autoComplete="off">
-                  <label htmlFor="Location-name" className="addlocker-formtext">
-                    Enter Locker ID
-                  </label>
-                  <br />
-                  <input
-                    type="number"
-                    className="addlocker-form-control"
-                    required
-                    value={lockID}
-                    onChange={lockidChange}
-                  />
-                  <br />
-                  <br />
-                  <label htmlFor="locker-count" className="addlocker-formtext">
-                    Enter State of Locker
-                  </label>
-                  <br />
-                  <input
-                    type="text"
-                    className="addlocker-form-control"
-                    required
-                    value={State}
-                    onChange={stateChange}
-                  />
-                  <br />
-                  <br />
-                  <button
-                    type="submit"
-                    className="lockeraddbutton"
-                    onClick={() => addLock(location.LocationID)}
-                  >
-                    Add Locker
-                  </button>
-                  {error && <span className="error-msg">{error}</span>}
-                </form>
-                <button
-                  onClick={() => setvisible2(false)}
-                  className="locker-cancelbutton">
-                  Cancel
-                </button>
-              </Model3>
+             
 
               <Link to={{pathname:"ResDashboard",state:{
                   ID: location.LocationID, 
@@ -201,7 +122,7 @@ export const Lockershow = ({ user, userID }) => {
                     type="submit"
                     className="edit-button"
                     onClick={(event) => {
-                      editlocation(location.LocationID);
+                      editlocation(location);
                       //window.location.reload(false);
                     }}
                   >
