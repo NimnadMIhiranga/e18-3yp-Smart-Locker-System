@@ -8,10 +8,7 @@ import Model1 from "react-modal";
 import Model2 from "react-modal";
 import Model3 from "react-modal";
 import Model from "react-modal";
-import DateTimePicker from 'react-datetime-picker'
-import TimePicker from 'react-time-picker';
-import DatePicker from "react-datepicker"
-import "react-datepicker/dist/react-datepicker.css";
+
 
 
 
@@ -31,6 +28,16 @@ export const ResDashboard = ({user, userID}) =>{
     const [bookingDate, setDate] = useState(new Date());
     const [bookingTime, setTime] = useState(new Date());
     const [lockPin, setPin] = useState("");
+
+    
+    const date = new Date();
+
+    const showTime = date.getHours() 
+        + ':' + date.getMinutes() 
+        + ":" + date.getSeconds();
+      
+    const current = new Date();
+    const today = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
 
 
     useEffect(() => {
@@ -107,7 +114,7 @@ export const ResDashboard = ({user, userID}) =>{
             setvisible2(false);
         }catch{
             setError("Failed to delete");
-            setvisible3(false);
+            setvisible2(false);
         }
     }
 
@@ -118,13 +125,14 @@ export const ResDashboard = ({user, userID}) =>{
                 lockID,
                 State: "unavilable",
                 lockPin,
-                bookingDate,
+                today,
+                showTime,
             }
             );
-            setvisible2(false);
+            setvisible1(false);
         }catch{
             setError("Failed to delete");
-            setvisible3(false);
+            setvisible1(false);
         }
     }
 
@@ -199,10 +207,6 @@ export const ResDashboard = ({user, userID}) =>{
                                 </label><br />
                                 <input type="number" className="addlocker-form-control" required
                                     value={lockPin} onChange={pinChange} /><br /><br />
-                                    <label htmlFor="text" className="changepassword">
-                                    Enter the date
-                                </label><br />
-                                    <DatePicker selected={bookingDate} onChange={bookingDate => setDate(bookingDate)} />
                                     <br/><br/><button type="submit" className="edit-button" onClick={() => bookLock(state.ID)}>Book locker</button>
                                     <button onClick={() => setvisible1(false)} className="edit-cancel-button">Cancel</button>
                                 </form>
