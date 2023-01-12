@@ -9,13 +9,15 @@ import { AddLocation } from "./components/AddLocation";
 import {auth, db} from "./config/config"
 import { LocationContextProvider } from './global/LocationContext'
 import { Setting } from "./components/Setting";
+import { Bookings } from "./components/Bookings";
 
 
 export class App extends Component {
 
   state={
     user: null,
-    userID: null
+    userID: null,
+    uID: null
   }
 
   componentDidMount(){
@@ -24,13 +26,15 @@ export class App extends Component {
         db.collection('User Data').doc(user.uid).get().then(snapshot => {
           this.setState({
             user: snapshot.data().Name,
-            userID : snapshot.data().Admin
+            userID : snapshot.data().Admin,
+            uID : snapshot.data().uid
         })
         })
       }else {
         this.setState({
             user: null,
-            userID : null
+            userID : null,
+            uID : null
         })
     }
     })
@@ -46,7 +50,8 @@ export class App extends Component {
           <Route path="/UserDashboard" component={() => <UserDashboard user={this.state.user}/>} />
           <Route path="/LockerDashboard" component={() =><LockerDashboard user={this.state.user} userID = {this.state.userID}/>} />
           <Route path="/AddLocation" component={() =><AddLocation userID={this.state.userID}/>} />
-          <Route path="/ResDashboard" component={() =><ResDashboard user={this.state.user} userID = {this.state.userID}/>} />
+          <Route path="/ResDashboard" component={() =><ResDashboard user={this.state.user} userID = {this.state.userID} uID = {this.state.uID}/>} />
+          <Route path="/Bookings" component={() =><Bookings user={this.state.user} userID = {this.state.userID} uID = {this.state.uID}/>} />
           <Route path="/Setting" component={() =><Setting user={this.state.user} userID = {this.state.userID}/>} />
         </Switch>
       </BrowserRouter>

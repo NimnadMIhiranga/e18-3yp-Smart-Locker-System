@@ -172,8 +172,11 @@ export const Lockershow = ({ user, userID }) => {
           )}
           {!userID && (
             <div>
-              <Link to="ResDashboard">
-                <button className="locker-go-nonuser">Go to lockers</button>
+              <Link to={{pathname:"ResDashboard",state:{
+                  ID: location.LocationID, 
+                  Name: location.LocationName
+              }}}>
+                <button className="locker-go">Show lockers</button>
               </Link>
             </div>
           )}
