@@ -8,11 +8,12 @@ import Model1 from "react-modal";
 import Model2 from "react-modal";
 import Model3 from "react-modal";
 import Model from "react-modal";
+import { db } from "../config/config";
 
 
 
 
-export const ResDashboard = ({user, userID}) =>{
+export const ResDashboard = ({user, userID, uID}) =>{
 
     const history = useHistory();
     const {state} = useLocation();
@@ -119,7 +120,7 @@ export const ResDashboard = ({user, userID}) =>{
     }
 
 
-    const bookLock = (locaID) =>{
+    const bookLock = (locaID, uID, locaName) =>{
         try{
             update(ref(realdb, 'Lockers/' + `/${locaID}` + `/${lockID}`),{
                 lockID,
@@ -127,16 +128,76 @@ export const ResDashboard = ({user, userID}) =>{
                 lockPin,
                 today,
                 showTime,
+                uID,
             }
             );
+
+            db.collection("User Data")
+                .doc(uID)
+                .collection("Bookings")
+                .add({
+                    lockID : lockID,
+                    Date : today,
+                    Booking_time : showTime, 
+                    location : locaName,
+                    status : "Available",
+                })
             setvisible1(false);
         }catch{
-            setError("Failed to delete");
+            setError("Failed to book this locker");
             setvisible1(false);
         }
     }
 
     //<Resbox user={user} userID = {userID} locationID ={state.ID}/>
+/*
+    {userID && locker.State === "unavilable" && (
+        <div>
+        <button className="lock-edit" onClick={() => setvisible2(true)}>
+        Edit State
+    </button>
+    <Model2 isOpen={visible2} onRequestClose={() => setvisible2(false)} className="model1box">
+        <h1>Edit Locker Details</h1><br/>
+        <form autoComplete="off">
+        <label htmlFor="text" className="changepassword">
+            Enter Locker ID
+        </label><br />
+        <input type="text" className="addlocker-form-control" required
+            value={lockID} onChange={lockidChange} /><br /><br />
+        <label htmlFor="number" className="changepassword">
+            Enter current state
+        </label><br />
+        <input type="text" className="addlocker-form-control" required
+            value={State} onChange={stateChange} />
+        <button type="submit" className="edit-button" onClick={() => editLock(state.ID)}>Edit</button>
+        </form><br />
+        <button onClick={() => setvisible2(false)} className="edit-cancel-button">Cancel</button>
+    </Model2>
+    </div>
+    )}
+
+
+    <button className="lock-edit" onClick={() => setvisible2(true)}>
+                                Edit State
+                            </button>
+                            <Model2 isOpen={visible2} onRequestClose={() => setvisible2(false)} className="model1box">
+                                <h1>Edit Locker Details</h1><br/>
+                                <form autoComplete="off">
+                                <label htmlFor="text" className="changepassword">
+                                    Enter Locker ID
+                                </label><br />
+                                <input type="text" className="addlocker-form-control" required
+                                    value={lockID} onChange={lockidChange} /><br /><br />
+                                <label htmlFor="number" className="changepassword">
+                                    Enter current state
+                                </label><br />
+                                <input type="text" className="addlocker-form-control" required
+                                    value={State} onChange={stateChange} />
+                                <button type="submit" className="edit-button" onClick={() => editLock(state.ID)}>Edit</button>
+                                </form><br />
+                                <button onClick={() => setvisible2(false)} className="edit-cancel-button">Cancel</button>
+                            </Model2>
+*/
 
     return(
         <div className ="Resboard">
@@ -179,6 +240,16 @@ export const ResDashboard = ({user, userID}) =>{
               LogOut
             </button>
             </div>}
+
+            {!userID && <div className='rightside'>
+            <Link to="LockerDashboard" ><button variant="link" className='logout'>
+              GoBack
+            </button></Link>
+            <button variant="link" onClick={handleLogout} className='logout'>
+              LogOut
+            </button>
+            </div>}
+
             </div>
                 {lockers.length!==0 && <h1 className='lockhead'>Lockers at {state.Name}</h1> }
                 {state.ID && lockers.map((locker) => (
@@ -207,30 +278,11 @@ export const ResDashboard = ({user, userID}) =>{
                                 </label><br />
                                 <input type="number" className="addlocker-form-control" required
                                     value={lockPin} onChange={pinChange} /><br /><br />
-                                    <br/><br/><button type="submit" className="edit-button" onClick={() => bookLock(state.ID)}>Book locker</button>
+                                    <br/><br/><button type="submit" className="edit-button" onClick={() => bookLock(state.ID, uID, state.Name)}>Book locker</button>
                                     <button onClick={() => setvisible1(false)} className="edit-cancel-button">Cancel</button>
                                 </form>
                             </Model1>
-                            <button className="lock-edit" onClick={() => setvisible2(true)}>
-                                Edit State
-                            </button>
-                            <Model2 isOpen={visible2} onRequestClose={() => setvisible2(false)} className="model1box">
-                                <h1>Edit Locker Details</h1><br/>
-                                <form autoComplete="off">
-                                <label htmlFor="text" className="changepassword">
-                                    Enter Locker ID
-                                </label><br />
-                                <input type="text" className="addlocker-form-control" required
-                                    value={lockID} onChange={lockidChange} /><br /><br />
-                                <label htmlFor="number" className="changepassword">
-                                    Enter current state
-                                </label><br />
-                                <input type="text" className="addlocker-form-control" required
-                                    value={State} onChange={stateChange} />
-                                <button type="submit" className="edit-button" onClick={() => editLock(state.ID)}>Edit</button>
-                                </form><br />
-                                <button onClick={() => setvisible2(false)} className="edit-cancel-button">Cancel</button>
-                            </Model2>
+                            
                             <button className="lock-delete" onClick={() => setvisible3(true)}>
                                 Delete Locker
                             </button>
@@ -253,6 +305,30 @@ export const ResDashboard = ({user, userID}) =>{
                                 </button>
                             </Model3>
                             </div>
+                        )}
+                        {!userID && locker.State === "available" && (
+                             <div>
+                             <button className="locker-book" onClick={() => setvisible1(true)}>
+                                 Book Lockers
+                             </button>
+                             <Model1 isOpen={visible1} onRequestClose={() => setvisible1(false)} className="model1box">
+                                 <h1>Book Locker</h1><br/>
+                                 <form autoComplete="off">
+                                 <label htmlFor="text" className="changepassword">
+                                     Enter Locker ID
+                                 </label><br />
+                                 <input type="number" className="addlocker-form-control" required
+                                     value={lockID} onChange={lockidChange} /><br /><br />
+                                 <label htmlFor="text" className="changepassword">
+                                     Enter your unlock pin
+                                 </label><br />
+                                 <input type="number" className="addlocker-form-control" required
+                                     value={lockPin} onChange={pinChange} /><br /><br />
+                                     <br/><br/><button type="submit" className="edit-button" onClick={() => bookLock(state.ID, uID, state.Name)}>Book locker</button>
+                                     <button onClick={() => setvisible1(false)} className="edit-cancel-button">Cancel</button>
+                                 </form>
+                             </Model1>
+                             </div>
                         )}
                     </div> 
                 ))}
