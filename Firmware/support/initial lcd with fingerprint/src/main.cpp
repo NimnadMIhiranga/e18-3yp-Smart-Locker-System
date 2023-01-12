@@ -159,7 +159,9 @@ void unlockNClaer(){
 
 uint8_t getFingerprintEnroll() {
  
-    
+    key = v[keypad.getKey()];
+  
+    while(key != 'C'){
   int p = -1;
   lcd.clear();
   lcd.print("Waiting for finger "); lcd.print(10);
@@ -173,6 +175,8 @@ uint8_t getFingerprintEnroll() {
     case FINGERPRINT_NOFINGER:
     lcd.clear();
       lcd.print("NO FINGER");
+      key = v[keypad.getKey()];
+      if(key == 'C') return 2;
       break;
     case FINGERPRINT_PACKETRECIEVEERR:
     lcd.clear();
@@ -241,6 +245,9 @@ lcd.clear();
     case FINGERPRINT_NOFINGER:
     lcd.clear();
       lcd.print("NO FINGER");
+       key = v[keypad.getKey()];
+      if(key == 'C') return 2;
+      
       break;
     case FINGERPRINT_PACKETRECIEVEERR:
     lcd.clear();
@@ -336,9 +343,9 @@ lcd.clear();
     return p;
   }
 
-  //key = v[keypad.getKey()];
+  key = v[keypad.getKey()];
  
-//}
+}
 return true;
  
 }
