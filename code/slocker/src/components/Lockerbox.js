@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import "../css/LockerDashboard.css";
 import { auth } from "../config/config";
 import { db } from "../config/config";
@@ -101,6 +101,9 @@ export const Lockerbox = ({ user, userID }) => {
               Cancel
             </button>
           </Model>
+          <Link to="UserDashboard" ><button variant="link" className='logout'>
+              GoBack
+            </button></Link>
           <button variant="link" onClick={handleLogout} className="logout">
             Log Out
           </button>{" "}
@@ -108,6 +111,9 @@ export const Lockerbox = ({ user, userID }) => {
       )}
       {!userID && (
         <div className="rightside">
+          <Link to="UserDashboard" ><button variant="link" className='logout'>
+              GoBack
+            </button></Link>
           <button variant="link" onClick={handleLogout} className="logout">
             Log Out
           </button>{" "}

@@ -25,7 +25,7 @@ export const Userbutton= () => {
             </div>
         <div className = 'bottombuttons'>
             <Link to="LockerDashboard" ><button className='button3'>Locker Room</button></Link>
-            <Link to="Histroy" ><button className='button4'>Go to history</button></Link>
+            <Link to="Bookings" ><button className='button4'>My Bookings</button></Link>
         </div>
     </div>
     </div>

@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@blueprintjs/core": "^4.13.0",
     "@mui/icons-material": "^5.11.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -11,11 +12,14 @@
     "firebase": "^9.15.0",
     "get-google-fonts": "^1.2.2",
     "react": "^18.2.0",
+    "react-datepicker": "^4.8.0",
+    "react-datetime-picker": "^4.1.1",
     "react-dom": "^18.2.0",
     "react-icons-kit": "^2.0.0",
     "react-modal": "^3.16.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^5.0.1",
+    "react-time-picker": "^5.1.0",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -41,5 +45,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "install-peers": "^1.0.4"
   }
 }
