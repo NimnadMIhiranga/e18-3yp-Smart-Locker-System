@@ -140,7 +140,7 @@ export const ResDashboard = ({user, userID, uID}) =>{
                     Date : today,
                     Booking_time : showTime, 
                     location : locaName,
-                    status : "Available",
+                    state : "Available",
                 })
             setvisible1(false);
         }catch{
