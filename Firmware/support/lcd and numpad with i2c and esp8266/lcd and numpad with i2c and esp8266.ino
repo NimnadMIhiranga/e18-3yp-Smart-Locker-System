@@ -31,7 +31,7 @@ void setup()
 {
   Serial.begin(115200);
  
- Wire.begin();
+  Wire.begin();
   lcd.init();   // initializing the LCD
   lcd.backlight(); // Enable or Turn On the backlight 
   lcd.print(" Hello Makers "); // Start Printing
@@ -59,8 +59,8 @@ void loop()
     lastKeyPressed = now;
 
     
-    char c = handleKeyPadValue(value);
-    if (value > 999999999999) value = 000000;  // some sample max.
+    handleKeyPadValue(value);
+    if (value > 9999999999) value = 0;  // some sample max.
     lcd.clear();
     lcd.print(value);
   }
@@ -105,10 +105,10 @@ char handleKeyPadValue(uint32_t &value)
         // e.g. store value in EEPROM
         break;
       case 'F':
-        Serial.println("FAIL");
+        //Serial.println("FAIL");
         break;
       case 'N':
-        Serial.println("NOKEY");
+        //Serial.println("NOKEY");
         break;
       default:
         break;
