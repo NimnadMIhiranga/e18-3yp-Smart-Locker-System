@@ -18,6 +18,7 @@ char v[19] = "123A456B789C*0#DNF";
 uint32_t lastKeyPressed = 0;
 uint32_t value = 0;
 char key;
+int val =0;
 
 
 // variable to store the current menu selection
@@ -128,6 +129,7 @@ void unlockOp(){
    if(input == "1234"){
     //lcd.clear();
     //lcd.print("Correct PIN");
+    val =0;
    if(getFingerprintEnroll()==1){
   lcd.clear();
   lcd.print("FINGER STORED");
@@ -325,6 +327,8 @@ lcd.clear();
   if (p == FINGERPRINT_OK) {
     lcd.clear();
     lcd.print("Stored!");
+    val =1;
+    return 1;
   } else if (p == FINGERPRINT_PACKETRECIEVEERR) {
     lcd.clear();
     lcd.print("Communication error");
@@ -346,6 +350,6 @@ lcd.clear();
   key = v[keypad.getKey()];
  
 }
-return true;
+return val;
  
 }
