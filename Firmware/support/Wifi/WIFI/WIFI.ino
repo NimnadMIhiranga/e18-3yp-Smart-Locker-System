@@ -1,4 +1,6 @@
 #include <ESP8266WiFi.h>
+#include "Wire.h"
+#include <LiquidCrystal_I2C.h>
 // #include <FirebaseArduino.h>
 
 // #define FIREBASE_HOST "slocker-6a0e7-default-rtdb.firebaseio.com"
@@ -8,8 +10,10 @@
 const char *ssid1 = "ACES_Coders";
 const char *password1 = "Coders@2022";
 
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
 #define led D4
-int wificonnect(const char*  ssid1,const char* password1)
+int wificonnect(const char *ssid1, const char *password1)
 {
     //   Serial.println("Searching WiFi.....");
     int connected = 0;
@@ -25,16 +29,20 @@ int wificonnect(const char*  ssid1,const char* password1)
     }
     return connected;
 }
-
+int c;
 void setup()
 {
     Serial.begin(9600);
-    int c = wificonnect(ssid1, password1);
+    lcd.init();      // initializing the LCD
+    lcd.backlight(); // Enable or Turn On the backlight
+    c = wificonnect(ssid1, password1);
     pinMode(LED_BUILTIN, OUTPUT);
     if (c == 1)
     {
         digitalWrite(LED_BUILTIN, HIGH);
         Serial.println("Successfully Connected ");
+        // lcd.print("Wifi Error!"); // Start Printing
+        c = wificonnect(ssid1, password1);
     }
     else
     {
@@ -44,4 +52,12 @@ void setup()
 }
 void loop()
 {
+    while (c == 0)
+    {
+        digitalWrite(LED_BUILTIN, HIGH);
+        Serial.println("Successfully not Connected ");
+        lcd.clear();
+        lcd.print("Wifi Error!"); // Start Printing
+        c = wificonnect(ssid1, password1);
+    }
 }
