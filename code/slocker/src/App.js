@@ -50,7 +50,7 @@ export class App extends Component {
           <Route path="/UserDashboard" component={() => <UserDashboard user={this.state.user}/>} />
           <Route path="/LockerDashboard" component={() =><LockerDashboard user={this.state.user} userID = {this.state.userID}/>} />
           <Route path="/AddLocation" component={() =><AddLocation userID={this.state.userID}/>} />
-          <Route path="/ResDashboard" component={() =><ResDashboard user={this.state.user} userID = {this.state.userID} uID = {this.state.uID}/>} />
+          <Route path="/ResDashboard" component={() =><ResDashboard user={this.state.user} userID = {this.state.userID} UID = {this.state.uID}/>} />
           <Route path="/Bookings" component={() =><Bookings user={this.state.user} userID = {this.state.userID} uID = {this.state.uID}/>} />
           <Route path="/Setting" component={() =><Setting user={this.state.user} userID = {this.state.userID}/>} />
         </Switch>
