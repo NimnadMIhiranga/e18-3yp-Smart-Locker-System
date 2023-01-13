@@ -2,15 +2,17 @@ import React, { useState } from "react";
 import { useHistory, Link } from "react-router-dom";
 import "../css/LockerDashboard.css";
 import { auth } from "../config/config";
-import { db } from "../config/config";
 import Model from "react-modal";
+import Model1 from "react-modal";
+import { realdb } from "../config/configreal";
+import { set, ref, remove} from "firebase/database";
 
 export const Lockerbox = ({ user, userID }) => {
   const [error, setError] = useState("");
   const history = useHistory();
   const [name, setName] = useState("");
-  const [count, setCount] = useState("");
   const [visible, setvisible] = useState(false);
+  const [visible1, setvisible1] = useState(false);
 
   async function handleLogout() {
     setError("");
@@ -23,27 +25,32 @@ export const Lockerbox = ({ user, userID }) => {
     }
   }
 
-  async function addlocation(e) {
-    e.preventDefault();
-    try {
-      db.collection("Locations")
-        .add({
-          Name: name,
-          Count: count,
-          uid: userID,
-        })
-        .then(() => {
-          setName("");
-          setCount("");
-          setError("");
-          setvisible(false);
-        })
-        .catch((err) => setError(err.message));
-    } catch {
-      setvisible(false);
-      setError("Failed to Add Location");
+  const nameChange = (e) => {
+    setName(e.target.value);
+  };
+
+
+  
+
+  const addlocation =() =>{
+    set(ref(realdb, 'Lockers/' + `/${name}`),{
+      Name : name,
+    });
+    setvisible(false);
+    setName("");
+  }
+
+
+  const deletelocation =() =>{
+    try{
+      remove(ref(realdb, 'Lockers/' + `/${name}`));
+      setvisible1(false);
+    }catch{
+      setError("Failed to delete");
+      setvisible1(false);
     }
   }
+
 
   return (
     <div className="userbox">
@@ -53,7 +60,7 @@ export const Lockerbox = ({ user, userID }) => {
       {userID && (
         <div className="rightside">
           <button className="button5" onClick={() => setvisible(true)}>
-            + Add a new location
+            + Add location
           </button>
           <Model
             isOpen={visible}
@@ -62,7 +69,7 @@ export const Lockerbox = ({ user, userID }) => {
           >
             <h1>Add a new location</h1>
             <br />
-            <form autoComplete="off" onSubmit={addlocation}>
+            <form autoComplete="off">
               <label htmlFor="Location-name" className="addlocker-formtext">
                 Location Name
               </label>
@@ -71,25 +78,11 @@ export const Lockerbox = ({ user, userID }) => {
                 type="text"
                 className="addlocker-form-control"
                 required
-                onChange={(e) => setName(e.target.value)}
-                value={name}
+                value={name} onChange={nameChange}
               />
               <br />
               <br />
-              <label htmlFor="locker-count" className="addlocker-formtext">
-                Number of lockers
-              </label>
-              <br />
-              <input
-                type="number"
-                className="addlocker-form-control"
-                required
-                onChange={(e) => setCount(e.target.value)}
-                value={count}
-              />
-              <br />
-              <br />
-              <button type="submit" className="lockeraddbutton">
+              <button type="submit" className="lockeraddbutton" onClick={() => addlocation()}>
                 Add Location
               </button>
               {error && <span className="error-msg">{error}</span>}
@@ -101,6 +94,41 @@ export const Lockerbox = ({ user, userID }) => {
               Cancel
             </button>
           </Model>
+          <button className="button5" onClick={() => setvisible1(true)}>
+            Deelete Location
+          </button>
+          <Model1  isOpen={visible1}
+            onRequestClose={() => setvisible1(false)}
+            className="locker-modelbox"
+          >
+            <h1>Delete location</h1>
+            <br />
+            <form autoComplete="off">
+              <label htmlFor="Location-name" className="addlocker-formtext">
+                Location Name
+              </label>
+              <br />
+              <input
+                type="text"
+                className="addlocker-form-control"
+                required
+                value={name} onChange={nameChange}
+              />
+              <br />
+              <br />
+              <button type="submit" className="lockeraddbutton" onClick={() => deletelocation()}>
+                Delete Location
+              </button>
+              {error && <span className="error-msg">{error}</span>}
+              </form>
+              <button
+              onClick={() => setvisible1(false)}
+              className="locker-cancelbutton"
+            >
+              Cancel
+            </button>
+          </Model1>
+          
           <Link to="UserDashboard" ><button variant="link" className='logout'>
               GoBack
             </button></Link>
@@ -124,3 +152,27 @@ export const Lockerbox = ({ user, userID }) => {
 };
 
 export default Lockerbox;
+
+
+
+/*async function addlocation(e) {
+    e.preventDefault();
+    try {
+      db.collection("Locations")
+        .add({
+          Name: name,
+          Count: count,
+          uid: userID,
+        })
+        .then(() => {
+          setName("");
+          setCount("");
+          setError("");
+          setvisible(false);
+        })
+        .catch((err) => setError(err.message));
+    } catch {
+      setvisible(false);
+      setError("Failed to Add Location");
+    }
+  }*/
