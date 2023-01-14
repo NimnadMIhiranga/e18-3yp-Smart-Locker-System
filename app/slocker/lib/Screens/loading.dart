@@ -1,4 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:slocker/Screens/locationView.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -113,178 +114,39 @@ Widget tab1(BuildContext context) {
   //         ],
   //       ),
   //     );
+  DatabaseReference locations = FirebaseDatabase.instance.ref("Bookings");
 
   return Scaffold(
     body: Column(
-      //mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        StreamBuilder(
-            stream: FirebaseFirestore.instance
-                .collection('Reservations')
-                .where('UID', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-                .where('Status', isEqualTo: "ongoing")
-                .snapshots(),
-            builder:
-                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (!snapshot.hasData) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-
-              return ListView(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                children: snapshot.data!.docs.map((document) {
-                  return GestureDetector(
-                      onTap: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //       builder: (context) => screen(
-                        //           document['Name'], document.id)),
-                        // );
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            top: 20.0, left: 25.0, right: 25),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(14.5),
-                            boxShadow: const [
-                              BoxShadow(
-                                  offset: Offset(5, 10),
-                                  color: Colors.grey,
-                                  spreadRadius: 2,
-                                  blurRadius: 5),
-                            ],
-                          ),
-                          child: Padding(
-                              padding:
-                                  EdgeInsets.only(top: 0, left: 0, right: 0),
-                              child: Container(
-                                  height:
-                                      MediaQuery.of(context).size.height / 12,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(14.5),
-                                    color: mSecondColor,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      SizedBox(),
-                                      Text(
-                                        " ${document['Date']}",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                      Text(
-                                        " ${document['Time']}",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                      IconButton(
-                                        icon: const Icon(Icons.key),
-                                        onPressed: () async {
-                                          final ref =
-                                              FirebaseDatabase.instance.ref();
-                                          await ref.update({"nodemcu1": 1});
-                                        },
-                                      ),
-                                      IconButton(
-                                        icon: const Icon(Icons.lock),
-                                        onPressed: () async {
-                                          final ref =
-                                              FirebaseDatabase.instance.ref();
-                                          await ref.update({"nodemcu1": 0});
-                                        },
-                                      ),
-                                      IconButton(
-                                        icon: const Icon(Icons.cancel),
-                                        //tooltip: 'Increase volume by 10',
-                                        onPressed: () {
-                                          openDialogDelete(
-                                              document.id,
-                                              document["Date"],
-                                              document["Time"],
-                                              context);
-                                          // setState(() {
-
-                                          // });
-                                        },
-                                      ),
-
-                                      SizedBox()
-                                      // PopupMenuButton<int>(
-                                      //     itemBuilder: (context) => [
-                                      //           // popupmenu item 1
-                                      //           PopupMenuItem(
-                                      //             value: 1,
-                                      //             // row has two child icon and text.
-                                      //             child: Row(
-                                      //               children: [
-                                      //                 Icon(Icons.edit),
-                                      //                 SizedBox(
-                                      //                   // sized box with width 10
-                                      //                   width: 10,
-                                      //                 ),
-                                      //                 Text("Edit")
-                                      //               ],
-                                      //             ),
-                                      //           ),
-                                      //           // popupmenu item 2
-                                      //           PopupMenuItem(
-                                      //             value: 2,
-                                      //             // row has two child icon and text
-                                      //             child: Row(
-                                      //               children: [
-                                      //                 Icon(Icons.cancel),
-                                      //                 SizedBox(
-                                      //                   // sized box with width 10
-                                      //                   width: 10,
-                                      //                 ),
-                                      //                 Text("Cancel")
-                                      //               ],
-                                      //             ),
-                                      //           ),
-                                      //         ],
-                                      //     offset: Offset(-20, 15),
-                                      //     color: mNewColor,
-                                      //     elevation: 2,
-                                      //     onSelected: (value) async {
-                                      //       if (value == 1) {
-                                      //         openDialog(
-                                      //             document.id,
-                                      //             document["Location"],
-                                      //             context);
-                                      //       } else if (value == 2) {
-                                      //         openDialogDelete(
-                                      //             document.id,
-                                      //             document["Date"],
-                                      //             document["Time"],
-                                      //             context);
-                                      //       }
-                                      //     }),
-                                    ],
-                                  ))),
-                        ),
-                      ));
-                }).toList(),
-              );
-            }),
-
-        // Text(
-        //   '$_counter',
-        //   style: Theme.of(context).textTheme.headline4,
-        // ),
+      children: [
+        Expanded(
+            child: FirebaseAnimatedList(
+                query: locations
+                    .child(FirebaseAuth.instance.currentUser!.uid)
+                    //.orderByChild('UID')
+                    //.equalTo(FirebaseAuth.instance.currentUser!.uid)
+                    .orderByChild('State')
+                    .equalTo('1'),
+                itemBuilder: ((context, snapshot, animation, index) {
+                  return InkWell(
+                    onTap: () {
+                      //showInputDialog(snapshot, locations);
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => Loading()));
+                    },
+                    child: ListTile(
+                      title: Text("Reservation: " +
+                          snapshot.child('BookingDate').value.toString()),
+                    ),
+                  );
+                })))
       ],
-    ),
+    )
+
+    //
+    ,
     floatingActionButton: FloatingActionButton(
       onPressed: () {
         Navigator.push(
@@ -339,104 +201,132 @@ Widget tab3() {
 }
 
 Widget tab2() {
+  DatabaseReference locations = FirebaseDatabase.instance.ref("Bookings");
   return Scaffold(
-    body: Column(
-      //mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        StreamBuilder(
-            stream: FirebaseFirestore.instance
-                .collection('Reservations')
-                .where('UID', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-                .where('Status', isEqualTo: "canceled")
-                .snapshots(),
-            builder:
-                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (!snapshot.hasData) {
-                return Center(
-                  child: CircularProgressIndicator(),
+      body:
+          // body: Column(
+          //   //mainAxisAlignment: MainAxisAlignment.center,
+          //   children: <Widget>[
+          //     StreamBuilder(
+          //         stream: FirebaseFirestore.instance
+          //             .collection('Reservations')
+          //             .where('UID', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+          //             .where('Status', isEqualTo: "canceled")
+          //             .snapshots(),
+          //         builder:
+          //             (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          //           if (!snapshot.hasData) {
+          //             return Center(
+          //               child: CircularProgressIndicator(),
+          //             );
+          //           }
+
+          //           return ListView(
+          //             scrollDirection: Axis.vertical,
+          //             shrinkWrap: true,
+          //             children: snapshot.data!.docs.map((document) {
+          //               return GestureDetector(
+          //                   onTap: () {
+          //                     // Navigator.push(
+          //                     //   context,
+          //                     //   MaterialPageRoute(
+          //                     //       builder: (context) => screen(
+          //                     //           document['Name'], document.id)),
+          //                     // );
+          //                   },
+          //                   child: Padding(
+          //                     padding: const EdgeInsets.only(
+          //                         top: 20.0, left: 25.0, right: 25),
+          //                     child: Container(
+          //                       decoration: BoxDecoration(
+          //                         color: Colors.white,
+          //                         borderRadius: BorderRadius.circular(14.5),
+          //                         boxShadow: const [
+          //                           BoxShadow(
+          //                               offset: Offset(5, 10),
+          //                               color: Colors.grey,
+          //                               spreadRadius: 2,
+          //                               blurRadius: 5),
+          //                         ],
+          //                       ),
+          //                       child: Padding(
+          //                           padding:
+          //                               EdgeInsets.only(top: 0, left: 0, right: 0),
+          //                           child: Container(
+          //                               height:
+          //                                   MediaQuery.of(context).size.height / 12,
+          //                               decoration: BoxDecoration(
+          //                                 borderRadius: BorderRadius.circular(14.5),
+          //                                 color: mSecondColor,
+          //                               ),
+          //                               child: Row(
+          //                                 mainAxisAlignment:
+          //                                     MainAxisAlignment.spaceBetween,
+          //                                 children: [
+          //                                   SizedBox(),
+          //                                   Text(
+          //                                     " ${document['Date']}",
+          //                                     style: TextStyle(
+          //                                       color: Colors.white,
+          //                                       fontSize: 18,
+          //                                     ),
+          //                                   ),
+          //                                   Text(
+          //                                     " ${document['Time']}",
+          //                                     style: TextStyle(
+          //                                       color: Colors.white,
+          //                                       fontSize: 18,
+          //                                     ),
+          //                                   ),
+          //                                   Text(
+          //                                     " ${document['Status']}",
+          //                                     style: TextStyle(
+          //                                       color: Colors.white,
+          //                                       fontSize: 18,
+          //                                     ),
+          //                                   ),
+          //                                   SizedBox(),
+          //                                 ],
+          //                               ))),
+          //                     ),
+          //                   ));
+          //             }).toList(),
+          //           );
+          //         }),
+
+          //     // Text(
+          //     //   '$_counter',
+          //     //   style: Theme.of(context).textTheme.headline4,
+          //     // ),
+          //   ],
+          // ),
+          Column(
+    children: [
+      Expanded(
+          child: FirebaseAnimatedList(
+              query: locations
+                  .child(FirebaseAuth.instance.currentUser!.uid)
+                  //.orderByChild('UID')
+                  //.equalTo(FirebaseAuth.instance.currentUser!.uid)
+                  .orderByChild('State')
+                  .equalTo('2'),
+              itemBuilder: ((context, snapshot, animation, index) {
+                return InkWell(
+                  onTap: () {
+                    //showInputDialog(snapshot, locations);
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) => Loading()));
+                  },
+                  child: ListTile(
+                    title: Text("Reservation: " +
+                        snapshot.child('BookingDate').value.toString()),
+                  ),
                 );
-              }
-
-              return ListView(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                children: snapshot.data!.docs.map((document) {
-                  return GestureDetector(
-                      onTap: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //       builder: (context) => screen(
-                        //           document['Name'], document.id)),
-                        // );
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            top: 20.0, left: 25.0, right: 25),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(14.5),
-                            boxShadow: const [
-                              BoxShadow(
-                                  offset: Offset(5, 10),
-                                  color: Colors.grey,
-                                  spreadRadius: 2,
-                                  blurRadius: 5),
-                            ],
-                          ),
-                          child: Padding(
-                              padding:
-                                  EdgeInsets.only(top: 0, left: 0, right: 0),
-                              child: Container(
-                                  height:
-                                      MediaQuery.of(context).size.height / 12,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(14.5),
-                                    color: mSecondColor,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      SizedBox(),
-                                      Text(
-                                        " ${document['Date']}",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                      Text(
-                                        " ${document['Time']}",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                      Text(
-                                        " ${document['Status']}",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                      SizedBox(),
-                                    ],
-                                  ))),
-                        ),
-                      ));
-                }).toList(),
-              );
-            }),
-
-        // Text(
-        //   '$_counter',
-        //   style: Theme.of(context).textTheme.headline4,
-        // ),
-      ],
-    ),
-  );
+              })))
+    ],
+  ));
 }
 
 Future<bool> removeReservation(String id) async {
