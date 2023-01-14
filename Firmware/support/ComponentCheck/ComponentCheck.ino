@@ -4,19 +4,7 @@
 #include <Adafruit_Fingerprint.h>
 #include <LiquidCrystal_I2C.h>
 
-#if (defined(__AVR__) || defined(ESP8266)) && !defined(__AVR_ATmega2560__)
-// For UNO and others without hardware serial, we must use software serial...
-// pin #2 is IN from sensor (GREEN wire)
-// pin #3 is OUT from arduino  (WHITE wire)
-// Set up the serial port to use softwareserial..
 SoftwareSerial mySerial(D5, D6);
-
-#else
-// On Leonardo/M0/etc, others with hardware serial, use hardware serial!
-// #0 is green wire, #1 is white
-#define mySerial Serial1
-#endif
-
 Adafruit_Fingerprint finger = Adafruit_Fingerprint(&mySerial);
 
 const uint8_t KEYPAD_ADDRESS = 0x20;
@@ -76,12 +64,12 @@ int componentcheck()
     //  0   -   No Error
     //  1   -   Wifi Error
     //  2   -   Keypad Error
-    //  3   -   Sensor Error
-    //  4   -
+    //  4   -   Fingerprint Error
 
     int error = 0;
     error += wificonnect(ssid, password);
-    error += keypadcheck();
+    error += keypadCheck();
+    error += fingerprintCheck();
 
     return error;
 }
