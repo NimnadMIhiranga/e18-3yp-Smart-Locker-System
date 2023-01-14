@@ -18,6 +18,7 @@ char v[19] = "123A456B789C*0#DNF";
 uint32_t lastKeyPressed = 0;
 uint32_t value = 0;
 char key;
+int val =0;
 
 
 // variable to store the current menu selection
@@ -128,6 +129,7 @@ void unlockOp(){
    if(input == "1234"){
     //lcd.clear();
     //lcd.print("Correct PIN");
+    val =0;
    if(getFingerprintEnroll()==1){
   lcd.clear();
   lcd.print("FINGER STORED");
@@ -159,7 +161,9 @@ void unlockNClaer(){
 
 uint8_t getFingerprintEnroll() {
  
-    
+    key = v[keypad.getKey()];
+  
+    while(key != 'C'){
   int p = -1;
   lcd.clear();
   lcd.print("Waiting for finger "); lcd.print(10);
@@ -173,6 +177,8 @@ uint8_t getFingerprintEnroll() {
     case FINGERPRINT_NOFINGER:
     lcd.clear();
       lcd.print("NO FINGER");
+      key = v[keypad.getKey()];
+      if(key == 'C') return 2;
       break;
     case FINGERPRINT_PACKETRECIEVEERR:
     lcd.clear();
@@ -241,6 +247,9 @@ lcd.clear();
     case FINGERPRINT_NOFINGER:
     lcd.clear();
       lcd.print("NO FINGER");
+       key = v[keypad.getKey()];
+      if(key == 'C') return 2;
+      
       break;
     case FINGERPRINT_PACKETRECIEVEERR:
     lcd.clear();
@@ -318,6 +327,8 @@ lcd.clear();
   if (p == FINGERPRINT_OK) {
     lcd.clear();
     lcd.print("Stored!");
+    val =1;
+    return 1;
   } else if (p == FINGERPRINT_PACKETRECIEVEERR) {
     lcd.clear();
     lcd.print("Communication error");
@@ -336,9 +347,9 @@ lcd.clear();
     return p;
   }
 
-  //key = v[keypad.getKey()];
+  key = v[keypad.getKey()];
  
-//}
-return true;
+}
+return val;
  
 }
