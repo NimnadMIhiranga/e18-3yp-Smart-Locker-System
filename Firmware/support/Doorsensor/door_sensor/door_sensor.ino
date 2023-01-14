@@ -20,6 +20,10 @@
 #define USER_EMAIL "mcu1@gmail.com"
 #define USER_PASSWORD "12345678"
 
+String locationName= "nishmi";
+String lockerID= "1";
+String path;
+
 // Define Firebase Data object
 FirebaseData fbdo;
 
@@ -85,19 +89,22 @@ void setup(){
   pinMode(doorSensor, INPUT_PULLUP);
   Serial.begin(9600); 
   firebaseSetup();
+  path = "Lockers/"+locationName+"/"+lockerID+"/LockState";
   
   
 }
 
 void loop(){
 
-  if (Firebase.ready() && (millis() - sendDataPrevMillis > 15000 || sendDataPrevMillis == 0)){
+  if (Firebase.ready() && (millis() - sendDataPrevMillis > 1500 || sendDataPrevMillis == 0)){
       sendDataPrevMillis = millis();
-      if(doorState()==1){
-        Serial.printf("Set string... %s\n", Firebase.RTDB.setString(&fbdo, F("doorsensor/state"), F("open")) ? "ok" : fbdo.errorReason().c_str());
+      if(doorState()==1){ //when door is open
+        Serial.print("Door open----");
+        Serial.printf("Set string... %s\n", Firebase.RTDB.setString(&fbdo, (path), F("1")) ? "ok" : fbdo.errorReason().c_str());
       }
-      else if(doorState()==0){
-        Serial.printf("Set string... %s\n", Firebase.RTDB.setString(&fbdo, F("doorsensor/state"), F("close")) ? "ok" : fbdo.errorReason().c_str());        
+      else if(doorState()==0){ //when door is closed
+        Serial.print("Door close----");
+        Serial.printf("Set string... %s\n", Firebase.RTDB.setString(&fbdo, (path), F("0")) ? "ok" : fbdo.errorReason().c_str());        
       }
   }
 
