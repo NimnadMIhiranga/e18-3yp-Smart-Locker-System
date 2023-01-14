@@ -30,7 +30,11 @@ class _newReserveState extends State<newReserve> {
   Widget build(BuildContext context) {
     String a = "Lockers/" + locationKey;
     DatabaseReference locations = FirebaseDatabase.instance.ref(a);
-    locations.orderByChild("State").equalTo("Available");
+    DatabaseReference bookings = FirebaseDatabase.instance
+        .ref("Bookings/" + FirebaseAuth.instance.currentUser!.uid)
+        .push();
+
+    locations.orderByChild("State").equalTo("1");
     // ignore: unused_local_variable
 
     // Query query =
@@ -62,11 +66,11 @@ class _newReserveState extends State<newReserve> {
           children: [
             Expanded(
                 child: FirebaseAnimatedList(
-                    query: locations.orderByChild('State').equalTo('available'),
+                    query: locations.orderByChild('State').equalTo('1'),
                     itemBuilder: ((context, snapshot, animation, index) {
                       return InkWell(
                         onTap: () {
-                          showInputDialog(snapshot, locations);
+                          showInputDialog(snapshot, locations, bookings);
                           // Navigator.push(
                           //     context,
                           //     MaterialPageRoute(
@@ -74,7 +78,7 @@ class _newReserveState extends State<newReserve> {
                         },
                         child: ListTile(
                           title: Text("Locker Number: " +
-                              snapshot.child('lockID').value.toString()),
+                              snapshot.child('LockID').value.toString()),
                         ),
                       );
                     })))
@@ -84,7 +88,8 @@ class _newReserveState extends State<newReserve> {
 
   final textController = TextEditingController();
 
-  void showInputDialog(DataSnapshot snapshot, DatabaseReference locations) {
+  void showInputDialog(
+      DataSnapshot snapshot, DatabaseReference locations, bookings) {
     showDialog(
       context: context,
       builder: (context) {
@@ -108,15 +113,19 @@ class _newReserveState extends State<newReserve> {
       },
     ).then((value) {
       if (value != null) {
-        locations
-            .child(snapshot.child('lockID').value.toString())
-            .update({'State': 'unavailable'});
-        locations
-            .child(snapshot.child('lockID').value.toString())
-            .update({'Pin': value});
-        locations
-            .child(snapshot.child('lockID').value.toString())
-            .update({'UID': FirebaseAuth.instance.currentUser!.uid});
+        locations.child(snapshot.child('LockID').value.toString()).update({
+          'State': '0',
+          'Pin': value,
+          'UID': FirebaseAuth.instance.currentUser!.uid
+        });
+        bookings.set({
+          //'UID': FirebaseAuth.instance.currentUser!.uid,
+          'BookingDate': "13/1/2023",
+          'BookingTime': "17:12:59",
+          'LocationName': "Akbar",
+          'LockID': "1",
+          'State': "1"
+        });
         // Do something with the value entered by the user
       }
     });
