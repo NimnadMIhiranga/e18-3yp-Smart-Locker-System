@@ -36,13 +36,16 @@ FirebaseAuth auth;
 FirebaseConfig config;
 
 // for the door sensor
-const int doorSensor = 5;
+const int doorSensor = 2;
 int currentDoorState;
 
 // for the firebase
 #define DATABASE_URL "slocker-6a0e7-default-rtdb.firebaseio.com/"
 #define API_KEY "AIzaSyAZ-1C80ncmZcB7ZreY3lienFpzc8jf3Ys"
 unsigned long sendDataPrevMillis = 0;
+String locationName = "nishmi";
+String lockerID = "1";
+String lockStatePath;
 
 /*Define the user Email and password that alreadey registerd or added in your project */
 #define USER_EMAIL "mcu1@gmail.com"
@@ -187,20 +190,21 @@ int fingerprintCheck()
 
 int doorState()
 { // function to check door sensor staee
-
+  lcd.clear();
   currentDoorState = digitalRead(doorSensor);
 
   if (currentDoorState == HIGH)
   {
+    lcd.print("open");
     return 1;
   }
-
+  lcd.print("close");
   return 0;
 }
 
 void firebaseSetup()
 { // to setup the firebase
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  WiFi.begin(ssid, password);
 
   /* Assign the api key (required) */
   config.api_key = API_KEY;
