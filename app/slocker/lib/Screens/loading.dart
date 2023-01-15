@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
@@ -115,10 +117,111 @@ Widget tab1(BuildContext context) {
   //       ),
   //     );
   DatabaseReference locations = FirebaseDatabase.instance.ref("Bookings");
+  DatabaseReference lockers = FirebaseDatabase.instance.ref("Lockers");
 
   return Scaffold(
     body: Column(
       children: [
+        SizedBox(
+          height: 10,
+        ),
+        Text(
+          "Reservations",
+          style: TextStyle(
+            fontSize: 16,
+            color: Colors.blue,
+            fontWeight: FontWeight.bold,
+            //decoration: TextDecoration.underline,
+          ),
+        ),
+        Expanded(
+            child: FirebaseAnimatedList(
+                query: locations
+                    .child(FirebaseAuth.instance.currentUser!.uid)
+                    //.orderByChild('UID')
+                    //.equalTo(FirebaseAuth.instance.currentUser!.uid)
+                    .orderByChild('State')
+                    .equalTo('3'),
+                itemBuilder: ((context, snapshot, animation, index) {
+                  return Padding(
+                    padding:
+                        const EdgeInsets.only(top: 20.0, left: 25.0, right: 25),
+                    child: Container(
+                        decoration: BoxDecoration(
+                          color: Color(0xFF6892c9),
+                          borderRadius: BorderRadius.circular(14.5),
+                          boxShadow: const [
+                            BoxShadow(
+                                offset: Offset(5, 10),
+                                color: Colors.grey,
+                                spreadRadius: 2,
+                                blurRadius: 5),
+                          ],
+                        ),
+                        child: InkWell(
+                            // onTap: () {
+
+                            // },
+                            child: PopupMenuButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8)),
+                          offset: Offset(1, 30),
+                          onSelected: (value) => _onPopupMenuSelected(
+                              value,
+                              snapshot.key!,
+                              snapshot.child('LocationName').value.toString(),
+                              snapshot.child('LockID').value.toString()),
+                          itemBuilder: (context) => [
+                            PopupMenuItem(value: 'Menu 1', child: Text('Lock')),
+                            PopupMenuItem(
+                                value: 'Menu 2', child: Text('Unlock')),
+                            // PopupMenuItem(
+                            //     value: 'Menu 3', child: Text('Menu 3')),
+                          ],
+
+                          //padding: EdgeInsets.all(8),
+                          child: ListTile(
+                            title: Center(
+                              child: Text(
+                                "Time: " +
+                                    snapshot
+                                        .child('BookingTime')
+                                        .value
+                                        .toString() +
+                                    "  Place: " +
+                                    snapshot
+                                        .child('LocationName')
+                                        .value
+                                        .toString() +
+                                    "  Locker: " +
+                                    snapshot.child('LockID').value.toString(),
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  //decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+
+                            //child:
+                            )),
+                  );
+                }))),
+        SizedBox(
+          height: 10,
+        ),
+        Text(
+          "Upcomming Reservations",
+          style: TextStyle(
+            fontSize: 16,
+            color: Colors.blue,
+            fontWeight: FontWeight.bold,
+            //decoration: TextDecoration.underline,
+          ),
+        ),
         Expanded(
             child: FirebaseAnimatedList(
                 query: locations
@@ -144,34 +247,51 @@ Widget tab1(BuildContext context) {
                           ],
                         ),
                         child: InkWell(
-                            // onTap: () {
+                          // onTap: () {
 
-                            // },
-                            child: PopupMenuButton(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8)),
-                          offset: Offset(1, 30),
-                          onSelected: (value) =>
-                              _onPopupMenuSelected(value, snapshot.key!),
-                          itemBuilder: (context) => [
-                            PopupMenuItem(value: 'Menu 1', child: Text('Lock')),
-                            PopupMenuItem(
-                                value: 'Menu 2', child: Text('Unlock')),
-                            // PopupMenuItem(
-                            //     value: 'Menu 3', child: Text('Menu 3')),
-                          ],
+                          // },
 
                           //padding: EdgeInsets.all(8),
                           child: ListTile(
-                            title: Text("Reservation: " +
-                                snapshot.child('BookingDate').value.toString()),
+                            title: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text(
+                                  "Time: " +
+                                      snapshot
+                                          .child('BookingTime')
+                                          .value
+                                          .toString() +
+                                      "  Place: " +
+                                      snapshot
+                                          .child('LocationName')
+                                          .value
+                                          .toString() +
+                                      "  Locker: " +
+                                      snapshot.child('LockID').value.toString(),
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    //decoration: TextDecoration.underline,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                IconButton(
+                                    icon: Icon(Icons.cancel),
+                                    onPressed: () {
+                                      openDialogDelete(snapshot, context,
+                                          lockers, locations);
+                                      print("Button pressed");
+                                    })
+                              ],
+                            ),
                           ),
-                        )
-
-                            //child:
-                            )),
+                        )),
                   );
-                })))
+                }))),
       ],
     )
 
@@ -191,29 +311,73 @@ Widget tab1(BuildContext context) {
   );
 }
 
-void _onPopupMenuSelected(String value, String key) {
+void _onPopupMenuSelected(
+    String value, String key, String locatinName, String lockID) {
+  DatabaseReference bookings = FirebaseDatabase.instance
+      .ref("Bookings/" + FirebaseAuth.instance.currentUser!.uid + "/" + key);
+  DatabaseReference lockers =
+      FirebaseDatabase.instance.ref("Lockers/" + locatinName + "/" + lockID);
   //print(value);
+  stderr.writeln("debugshamma: " + lockers.toString());
+
   if (value == 'Menu 1') {
+    // bookings.set({
+    //   //'UID': FirebaseAuth.instance.currentUser!.uid,
+
+    //   'State': "1"
+    // });
+    lockers.update({
+      //'UID': FirebaseAuth.instance.currentUser!.uid,
+
+      'LockState': "1"
+    });
     //call function 1
   } else if (value == 'Menu 2') {
+    lockers.update({
+      //'UID': FirebaseAuth.instance.currentUser!.uid,
+
+      'LockState': "0"
+    });
     //call function 2
-  } else if (value == 'Menu 3') {
-    //call function 3
   }
+  // else if (value == 'Menu 3') {
+  //   //call function 3
+  // }
 }
 
-Future openDialogDelete(
-        String id, String date, String time, BuildContext context) =>
+Future openDialogDelete(DataSnapshot snapshot, BuildContext context,
+        DatabaseReference lockers, DatabaseReference bookings) =>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(
-            "Want to cancel reservation on " + date + " at " + time + " ?"),
+        title: Text("Want to cancel reservation at " +
+            snapshot.child('BookingTime').value.toString().substring(0, 5) +
+            " ?"),
         actions: [
           TextButton(
               onPressed: () async {
                 // delete function here
-                removeReservation(id);
+                //removeReservation(id);
+                lockers
+                    .child(snapshot.child('LocationName').value.toString() +
+                        "/" +
+                        snapshot.child('LockID').value.toString())
+                    .update({
+                  'BookingDate': "",
+                  'BookingID': "",
+                  'BookingTime': "",
+                  'In': '1',
+                  //'LockID': snapshot.key,
+                  'State': '1',
+                  'LockPin': "",
+                  'LockState': '1',
+                  'UID': ""
+                });
+                bookings
+                    .child(FirebaseAuth.instance.currentUser!.uid +
+                        "/" +
+                        snapshot.key.toString())
+                    .update({'State': "2"});
                 Navigator.of(context).pop();
               },
               child: Text(
@@ -352,35 +516,54 @@ Widget tab2() {
                   .orderByChild('State')
                   .equalTo('2'),
               itemBuilder: ((context, snapshot, animation, index) {
-                return Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.red, width: 2),
-                      color: Colors.yellow,
-                    ),
-                    child: InkWell(
-                      onTap: () {
-                        showMenu(
-                          context: context,
-                          position: RelativeRect.fromLTRB(200, 200, 200, 200),
-                          items: [
-                            PopupMenuItem(child: Text('Menu 1')),
-                            PopupMenuItem(child: Text('Menu 2')),
-                            PopupMenuItem(child: Text('Menu 3')),
-                          ],
-                        );
-                      },
-                      // onTap: () {
-                      //   //showInputDialog(snapshot, locations);
-                      //   // Navigator.push(
-                      //   //     context,
-                      //   //     MaterialPageRoute(
-                      //   //         builder: (context) => Loading()));
-                      // },
-                      child: ListTile(
-                        title: Text("Reservation: " +
-                            snapshot.child('BookingDate').value.toString()),
+                return Padding(
+                  padding:
+                      const EdgeInsets.only(top: 20.0, left: 25.0, right: 25),
+                  child: Container(
+                      decoration: BoxDecoration(
+                        color: Color(0xFF6892c9),
+                        borderRadius: BorderRadius.circular(14.5),
+                        boxShadow: const [
+                          BoxShadow(
+                              offset: Offset(5, 10),
+                              color: Colors.grey,
+                              spreadRadius: 2,
+                              blurRadius: 5),
+                        ],
                       ),
-                    ));
+                      child: InkWell(
+                        onTap: () {
+                          // showMenu(
+                          //   context: context,
+                          //   position: RelativeRect.fromLTRB(200, 200, 200, 200),
+                          //   items: [
+                          //     PopupMenuItem(child: Text('Menu 1')),
+                          //     PopupMenuItem(child: Text('Menu 2')),
+                          //     PopupMenuItem(child: Text('Menu 3')),
+                          //   ],
+                          // );
+                        },
+                        // onTap: () {
+                        //   //showInputDialog(snapshot, locations);
+                        //   // Navigator.push(
+                        //   //     context,
+                        //   //     MaterialPageRoute(
+                        //   //         builder: (context) => Loading()));
+                        // },
+                        child: ListTile(
+                          title: Text(
+                            "Reservation: " +
+                                snapshot.child('BookingDate').value.toString(),
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              //decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ),
+                      )),
+                );
               })))
     ],
   ));

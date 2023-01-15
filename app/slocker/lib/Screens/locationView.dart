@@ -33,46 +33,92 @@ class _LocationViewState extends State<LocationView> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Select Location".tr),
-          backgroundColor: mPrimaryColor,
+            title: Text("Select Location".tr),
+            backgroundColor: mPrimaryColor,
+            actions: <Widget>[
+              // IconButton(
+              //   icon: Icon(Icons.notifications),
+              //   onPressed: () {},
+              // ),
+              Padding(
+                padding: EdgeInsets.only(right: 20.0),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Loading()),
+                    );
+                  },
+                  child: Icon(
+                    Icons.home,
+                    size: 26.0,
+                  ),
+                ),
+              ),
+            ]
 
-          // this button is for developing purpose only
-          // actions: <Widget>[
-          //   IconButton(
-          //     icon: Icon(Icons.language),
-          //     onPressed: () {
-          //       builddialog(context);
-          //     },
-          //   ),
-          //   IconButton(
-          //     icon: Icon(Icons.home),
-          //     onPressed: () {
-          //       Navigator.of(context).push(
-          //           MaterialPageRoute(builder: (context) => SelectionScreen()));
-          //     },
-          //   ),
-          // ]
-        ),
+            // this button is for developing purpose only
+            // actions: <Widget>[
+            //   IconButton(
+            //     icon: Icon(Icons.language),
+            //     onPressed: () {
+            //       builddialog(context);
+            //     },
+            //   ),
+            //   IconButton(
+            //     icon: Icon(Icons.home),
+            //     onPressed: () {
+            //       Navigator.of(context).push(
+            //           MaterialPageRoute(builder: (context) => SelectionScreen()));
+            //     },
+            //   ),
+            // ]
+            ),
         body: Column(
           children: [
             Expanded(
                 child: FirebaseAnimatedList(
                     query: locations,
                     itemBuilder: ((context, snapshot, animation, index) {
-                      return InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      newReserve(snapshot.key!)));
-                          // .child('Name')
-                          // .value
-                          // .toString())));
-                        },
-                        child: ListTile(
-                          title: Text(snapshot.key!),
-                          //title: Text(snapshot.child('Name').value.toString()),
+                      return Padding(
+                        padding: const EdgeInsets.only(
+                            top: 20.0, left: 25.0, right: 25),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Color(0xFF6892c9),
+                            borderRadius: BorderRadius.circular(14.5),
+                            boxShadow: const [
+                              BoxShadow(
+                                  offset: Offset(5, 10),
+                                  color: Colors.grey,
+                                  spreadRadius: 2,
+                                  blurRadius: 5),
+                            ],
+                          ),
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          newReserve(snapshot.key!)));
+                              // .child('Name')
+                              // .value
+                              // .toString())));
+                            },
+                            child: ListTile(
+                              title: Text(
+                                snapshot.key!,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  //decoration: TextDecoration.underline,
+                                ),
+                              ),
+                              //title: Text(snapshot.child('Name').value.toString()),
+                            ),
+                          ),
                         ),
                       );
                     })))
