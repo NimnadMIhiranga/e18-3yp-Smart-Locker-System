@@ -30,8 +30,9 @@ class _newReserveState extends State<newReserve> {
 
   @override
   Widget build(BuildContext context) {
-    String a = "Lockers/" + locationKey;
-    DatabaseReference locations = FirebaseDatabase.instance.ref(a);
+    //String a = "Lockers/" + locationKey;
+    DatabaseReference locations =
+        FirebaseDatabase.instance.ref("Lockers/" + locationKey);
 
     locations.orderByChild("State").equalTo("1");
     // ignore: unused_local_variable
@@ -201,6 +202,49 @@ class _newReserveState extends State<newReserve> {
           'LockID': snapshot.key,
           'State': "1"
         });
+        final ref = FirebaseDatabase.instance.ref("Bookings/" +
+            FirebaseAuth.instance.currentUser!.uid +
+            "/" +
+            sdate.toString().substring(0, 10) +
+            " " +
+            '$hours:$minutes:$seconds');
+        final ref2 = FirebaseDatabase.instance.ref("Lockers/" + locationKey);
+        Future.delayed(Duration(minutes: 1)).then((_) async {
+          if (ref.child('State') != 2) {
+            ref2.child(snapshot.child('LockID').value.toString())
+              ..update({
+                'BookingDate': "",
+                'BookingID': "",
+                'BookingTime': "",
+                'In': '1',
+                //'LockID': snapshot.key,
+                'State': '1',
+                'LockPin': "",
+                'LockState': '1',
+                'UID': ""
+              });
+            ref.update({
+              "State": "2",
+            });
+          }
+        });
+
+        // Future.delayed(Duration(minutes: 1)).then((_) async {
+        //   if (ref.child('State') != 2) {
+        //     ref.update({
+        //       "State": "3",
+        //     });
+        //   }
+        // });
+
+        // Future.delayed(Duration(minutes: 1), () {
+        //   if (bookings.child('State') != 2) {
+        //     bookings.update({
+        //       "State": "3",
+        //     });
+        //   }
+        // });
+
         setState(() {});
         // Do something with the value entered by the user
       }

@@ -27,7 +27,7 @@ class _ItemViewState extends State<Loading> {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Welcome'),
+          title: Text('S - Locker'),
           automaticallyImplyLeading: false,
           actions: <Widget>[
             // IconButton(
@@ -172,9 +172,30 @@ Widget tab1(BuildContext context) {
                               snapshot.child('LocationName').value.toString(),
                               snapshot.child('LockID').value.toString()),
                           itemBuilder: (context) => [
-                            PopupMenuItem(value: 'Menu 1', child: Text('Lock')),
                             PopupMenuItem(
-                                value: 'Menu 2', child: Text('Unlock')),
+                              child: Row(
+                                children: <Widget>[
+                                  Icon(Icons.lock),
+                                  SizedBox(width: 8.0),
+                                  Text('Lock'),
+                                ],
+                              ),
+                              value: 'Menu 1',
+                            ),
+                            PopupMenuItem(
+                              child: Row(
+                                children: <Widget>[
+                                  Icon(Icons.key),
+                                  SizedBox(width: 8.0),
+                                  Text('Unlock'),
+                                ],
+                              ),
+                              value: 'Menu 2',
+                            ),
+
+                            // PopupMenuItem(value: 'Menu 1', child: Text('Lock')),
+                            // PopupMenuItem(
+                            //     value: 'Menu 2', child: Text('Unlock')),
                             // PopupMenuItem(
                             //     value: 'Menu 3', child: Text('Menu 3')),
                           ],
