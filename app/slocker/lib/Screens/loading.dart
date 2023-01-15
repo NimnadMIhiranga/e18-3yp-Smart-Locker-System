@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
+import 'package:slocker/Screens/change_pass.dart';
 import 'package:slocker/Screens/locationView.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -44,22 +45,22 @@ class _ItemViewState extends State<Loading> {
                 ),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(right: 20.0),
-              child: GestureDetector(
-                onTap: () async {
-                  await auth.logout();
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (builder) => SignInScreen()),
-                      (route) => false);
-                },
-                child: Icon(
-                  Icons.logout,
-                  size: 26.0,
-                ),
-              ),
-            ),
+            // Padding(
+            //   padding: EdgeInsets.only(right: 20.0),
+            //   child: GestureDetector(
+            //     onTap: () async {
+            //       await auth.logout();
+            //       Navigator.pushAndRemoveUntil(
+            //           context,
+            //           MaterialPageRoute(builder: (builder) => SignInScreen()),
+            //           (route) => false);
+            //     },
+            //     child: Icon(
+            //       Icons.logout,
+            //       size: 26.0,
+            //     ),
+            //   ),
+            // ),
           ],
           bottom: const TabBar(
             tabs: [
@@ -84,7 +85,7 @@ class _ItemViewState extends State<Loading> {
           children: [
             tab1(context),
             tab2(),
-            tab3(),
+            tab3(context, auth),
           ],
         ),
       ),
@@ -423,49 +424,39 @@ Future openDialogDelete(DataSnapshot snapshot, BuildContext context,
       ),
     );
 
-Widget tab3() {
+Widget tab3(context, auth) {
   return Container(
     child: Center(
       child: ListView(
         children: <Widget>[
+          // ListTile(
+          //   title: Text('Profile'),
+          //   leading: Icon(Icons.person),
+          //   onTap: () {
+          //     // Navigator.push(
+          //     //   context,
+          //     //   MaterialPageRoute(builder: (context) => ProfileScreen()),
+          //     // );
+          //   },
+          // ),
+          // ListTile(
+          //   title: Text('Account'),
+          //   leading: Icon(Icons.account_box),
+          //   onTap: () {
+          //     // Navigator.push(
+          //     //   context,
+          //     //   MaterialPageRoute(builder: (context) => AccountScreen()),
+          //     // );
+          //   },
+          // ),
           ListTile(
-            title: Text('Profile'),
-            leading: Icon(Icons.person),
-            onTap: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => ProfileScreen()),
-              // );
-            },
-          ),
-          ListTile(
-            title: Text('Account'),
-            leading: Icon(Icons.account_box),
-            onTap: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => AccountScreen()),
-              // );
-            },
-          ),
-          ListTile(
-            title: Text('Security'),
+            title: Text('Change Password'),
             leading: Icon(Icons.security),
             onTap: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => SecurityScreen()),
-              // );
-            },
-          ),
-          ListTile(
-            title: Text('Display'),
-            leading: Icon(Icons.display_settings),
-            onTap: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => DisplayScreen()),
-              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => changePass()),
+              );
             },
           ),
           ListTile(
@@ -474,8 +465,19 @@ Widget tab3() {
             onTap: () {
               // Navigator.push(
               //   context,
-              //   MaterialPageRoute(builder: (context) => LanguageScreen()),
+              //   MaterialPageRoute(builder: (context) => DisplayScreen()),
               // );
+            },
+          ),
+          ListTile(
+            title: Text('Logout'),
+            leading: Icon(Icons.logout),
+            onTap: () async {
+              await auth.logout();
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (builder) => SignInScreen()),
+                  (route) => false);
             },
           ),
         ],
