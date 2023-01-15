@@ -19,6 +19,8 @@ class newReserve extends StatefulWidget {
 }
 
 class _newReserveState extends State<newReserve> {
+  // TimeOfDay time =
+  //     TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute);
   String locationKey;
   _newReserveState(this.locationKey);
 
@@ -28,11 +30,20 @@ class _newReserveState extends State<newReserve> {
 
   @override
   Widget build(BuildContext context) {
+    DateTime sdate =
+        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+
+    final hours = DateTime.now().hour.toString().padLeft(2, '0');
+    final minutes = DateTime.now().minute.toString().padLeft(2, '0');
+    final seconds = DateTime.now().second.toString().padLeft(2, '0');
     String a = "Lockers/" + locationKey;
     DatabaseReference locations = FirebaseDatabase.instance.ref(a);
-    DatabaseReference bookings = FirebaseDatabase.instance
-        .ref("Bookings/" + FirebaseAuth.instance.currentUser!.uid)
-        .push();
+    DatabaseReference bookings = FirebaseDatabase.instance.ref("Bookings/" +
+        FirebaseAuth.instance.currentUser!.uid +
+        "/" +
+        '$hours:$minutes:$seconds' +
+        " " +
+        sdate.toString().substring(0, 10));
 
     locations.orderByChild("State").equalTo("1");
     // ignore: unused_local_variable
@@ -126,6 +137,7 @@ class _newReserveState extends State<newReserve> {
           'LockID': "1",
           'State': "1"
         });
+        setState(() {});
         // Do something with the value entered by the user
       }
     });
