@@ -13,8 +13,8 @@
 #define API_KEY "AIzaSyAZ-1C80ncmZcB7ZreY3lienFpzc8jf3Ys"
 
 /* 1. Define the WiFi credentials */
-#define WIFI_SSID "Eng-Student"
-#define WIFI_PASSWORD "3nG5tuDt"
+#define WIFI_SSID "Redmi Note 9 Pro"
+#define WIFI_PASSWORD "12345687"
 
 /* 4. Define the user Email and password that alreadey registerd or added in your project */
 #define USER_EMAIL "mcu1@gmail.com"
@@ -22,7 +22,7 @@
 
 String locationName= "nishmi";
 String lockerID= "1";
-String path;
+String lockStatePath;
 
 // Define Firebase Data object
 FirebaseData fbdo;
@@ -31,7 +31,7 @@ FirebaseAuth auth;
 FirebaseConfig config;
 
 
-const int doorSensor = 5;
+const int doorSensor = 2;
 int currentDoorState;
 
 
@@ -89,7 +89,7 @@ void setup(){
   pinMode(doorSensor, INPUT_PULLUP);
   Serial.begin(9600); 
   firebaseSetup();
-  path = "Lockers/"+locationName+"/"+lockerID+"/LockState";
+  lockStatePath = "Lockers/" + locationName + "/" + lockerID + "/LockState"; // to make the lock state path of the locker
   
   
 }
@@ -100,11 +100,11 @@ void loop(){
       sendDataPrevMillis = millis();
       if(doorState()==1){ //when door is open
         Serial.print("Door open----");
-        Serial.printf("Set string... %s\n", Firebase.RTDB.setString(&fbdo, (path), F("1")) ? "ok" : fbdo.errorReason().c_str());
+        Serial.printf("Set string... %s\n", Firebase.RTDB.setString(&fbdo, (lockStatePath), F("1")) ? "ok" : fbdo.errorReason().c_str());
       }
       else if(doorState()==0){ //when door is closed
         Serial.print("Door close----");
-        Serial.printf("Set string... %s\n", Firebase.RTDB.setString(&fbdo, (path), F("0")) ? "ok" : fbdo.errorReason().c_str());        
+        Serial.printf("Set string... %s\n", Firebase.RTDB.setString(&fbdo, (lockStatePath), F("0")) ? "ok" : fbdo.errorReason().c_str());        
       }
   }
 
