@@ -35,7 +35,7 @@ export const ResDashboard = ({user, userID, UID}) =>{
 
     const month = BookID.getMonth() + 1;
 
-    const BookingDate1 = BookID.getDate()+':'+month+':'+BookID.getFullYear();
+    const BookingDate1 = BookID.getFullYear()+'-'+month+'-'+BookID.getDate();
       
     const BookingDate = `${BookID.getDate()}/${BookID.getMonth()+1}/${BookID.getFullYear()}`;
 
