@@ -32,10 +32,14 @@ export const ResDashboard = ({user, userID, UID}) =>{
     const BookingTime = BookID.getHours() 
         + ':' + BookID.getMinutes() 
         + ":" + BookID.getSeconds();
+
+    const month = BookID.getMonth() + 1;
+
+    const BookingDate1 = BookID.getDate()+':'+month+':'+BookID.getFullYear();
       
     const BookingDate = `${BookID.getDate()}/${BookID.getMonth()+1}/${BookID.getFullYear()}`;
 
-    const BookingID = BookID +1;
+    const BookingID = BookingTime + ' ' +BookingDate1;
 
     useEffect(() => {
         auth.onAuthStateChanged(user => {
