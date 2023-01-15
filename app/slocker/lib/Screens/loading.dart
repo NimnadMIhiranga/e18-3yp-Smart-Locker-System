@@ -27,7 +27,7 @@ class _ItemViewState extends State<Loading> {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Hi, Shamod !'),
+          title: Text('Welcome'),
           automaticallyImplyLeading: false,
           actions: <Widget>[
             // IconButton(
@@ -187,7 +187,8 @@ Widget tab1(BuildContext context) {
                                     snapshot
                                         .child('BookingTime')
                                         .value
-                                        .toString() +
+                                        .toString()
+                                        .substring(0, 5) +
                                     "  Place: " +
                                     snapshot
                                         .child('LocationName')
@@ -254,14 +255,18 @@ Widget tab1(BuildContext context) {
                           //padding: EdgeInsets.all(8),
                           child: ListTile(
                             title: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
+                                SizedBox(
+                                  height: 5,
+                                ),
                                 Text(
                                   "Time: " +
                                       snapshot
                                           .child('BookingTime')
                                           .value
-                                          .toString() +
+                                          .toString()
+                                          .substring(0, 5) +
                                       "  Place: " +
                                       snapshot
                                           .child('LocationName')
@@ -400,7 +405,60 @@ Future openDialogDelete(DataSnapshot snapshot, BuildContext context,
 Widget tab3() {
   return Container(
     child: Center(
-      child: Text("Settings"),
+      child: ListView(
+        children: <Widget>[
+          ListTile(
+            title: Text('Profile'),
+            leading: Icon(Icons.person),
+            onTap: () {
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => ProfileScreen()),
+              // );
+            },
+          ),
+          ListTile(
+            title: Text('Account'),
+            leading: Icon(Icons.account_box),
+            onTap: () {
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => AccountScreen()),
+              // );
+            },
+          ),
+          ListTile(
+            title: Text('Security'),
+            leading: Icon(Icons.security),
+            onTap: () {
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => SecurityScreen()),
+              // );
+            },
+          ),
+          ListTile(
+            title: Text('Display'),
+            leading: Icon(Icons.display_settings),
+            onTap: () {
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => DisplayScreen()),
+              // );
+            },
+          ),
+          ListTile(
+            title: Text('Language'),
+            leading: Icon(Icons.language),
+            onTap: () {
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => LanguageScreen()),
+              // );
+            },
+          ),
+        ],
+      ),
     ),
   );
 }
@@ -552,8 +610,21 @@ Widget tab2() {
                         // },
                         child: ListTile(
                           title: Text(
-                            "Reservation: " +
-                                snapshot.child('BookingDate').value.toString(),
+                            "Date: " +
+                                snapshot.child('BookingDate').value.toString() +
+                                "   Time: " +
+                                snapshot
+                                    .child('BookingTime')
+                                    .value
+                                    .toString()
+                                    .substring(0, 5) +
+                                "   Location: " +
+                                snapshot
+                                    .child('LocationName')
+                                    .value
+                                    .toString() +
+                                "   Locker: " +
+                                snapshot.child('LockID').value.toString(),
                             style: TextStyle(
                               fontSize: 15,
                               color: Colors.black,

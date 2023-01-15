@@ -145,9 +145,9 @@ class _newReserveState extends State<newReserve> {
     DatabaseReference bookings = FirebaseDatabase.instance.ref("Bookings/" +
         FirebaseAuth.instance.currentUser!.uid +
         "/" +
-        '$hours:$minutes:$seconds' +
+        sdate.toString().substring(0, 10) +
         " " +
-        sdate.toString().substring(0, 10));
+        '$hours:$minutes:$seconds');
 
     String BID =
         sdate.toString().substring(0, 10) + " " + '$hours:$minutes:$seconds';
@@ -157,8 +157,15 @@ class _newReserveState extends State<newReserve> {
         return SimpleDialog(
           title: Text("Enter a value"),
           children: [
-            TextField(
+            TextFormField(
+              keyboardType: TextInputType.number,
               controller: textController,
+              validator: (value) {
+                if (value == null) {
+                  return 'Please enter a number';
+                }
+                return null;
+              },
             ),
             TextButton(
               onPressed: () async {
