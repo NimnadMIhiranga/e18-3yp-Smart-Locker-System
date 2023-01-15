@@ -81,7 +81,8 @@ class _newReserveState extends State<newReserve> {
                     itemBuilder: ((context, snapshot, animation, index) {
                       return InkWell(
                         onTap: () {
-                          showInputDialog(snapshot, locations, bookings);
+                          showInputDialog(snapshot, locations, bookings,
+                              sdate.toString(), hours, minutes, seconds);
                           // Navigator.push(
                           //     context,
                           //     MaterialPageRoute(
@@ -99,8 +100,8 @@ class _newReserveState extends State<newReserve> {
 
   final textController = TextEditingController();
 
-  void showInputDialog(
-      DataSnapshot snapshot, DatabaseReference locations, bookings) {
+  void showInputDialog(DataSnapshot snapshot, DatabaseReference locations,
+      bookings, String sdate, hours, minutes, seconds) {
     showDialog(
       context: context,
       builder: (context) {
@@ -131,10 +132,10 @@ class _newReserveState extends State<newReserve> {
         });
         bookings.set({
           //'UID': FirebaseAuth.instance.currentUser!.uid,
-          'BookingDate': "13/1/2023",
-          'BookingTime': "17:12:59",
-          'LocationName': "Akbar",
-          'LockID': "1",
+          'BookingDate': sdate.toString().substring(0, 10),
+          'BookingTime': hours + ":" + minutes + ":" + seconds,
+          'LocationName': locationKey,
+          'LockID': snapshot.key,
           'State': "1"
         });
         setState(() {});

@@ -128,18 +128,48 @@ Widget tab1(BuildContext context) {
                     .orderByChild('State')
                     .equalTo('1'),
                 itemBuilder: ((context, snapshot, animation, index) {
-                  return InkWell(
-                    onTap: () {
-                      //showInputDialog(snapshot, locations);
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) => Loading()));
-                    },
-                    child: ListTile(
-                      title: Text("Reservation: " +
-                          snapshot.child('BookingDate').value.toString()),
-                    ),
+                  return Padding(
+                    padding:
+                        const EdgeInsets.only(top: 20.0, left: 25.0, right: 25),
+                    child: Container(
+                        decoration: BoxDecoration(
+                          color: Color(0xFF6892c9),
+                          borderRadius: BorderRadius.circular(14.5),
+                          boxShadow: const [
+                            BoxShadow(
+                                offset: Offset(5, 10),
+                                color: Colors.grey,
+                                spreadRadius: 2,
+                                blurRadius: 5),
+                          ],
+                        ),
+                        child: InkWell(
+                            // onTap: () {
+
+                            // },
+                            child: PopupMenuButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8)),
+                          offset: Offset(1, 30),
+                          onSelected: (value) =>
+                              _onPopupMenuSelected(value, snapshot.key!),
+                          itemBuilder: (context) => [
+                            PopupMenuItem(value: 'Menu 1', child: Text('Lock')),
+                            PopupMenuItem(
+                                value: 'Menu 2', child: Text('Unlock')),
+                            // PopupMenuItem(
+                            //     value: 'Menu 3', child: Text('Menu 3')),
+                          ],
+
+                          //padding: EdgeInsets.all(8),
+                          child: ListTile(
+                            title: Text("Reservation: " +
+                                snapshot.child('BookingDate').value.toString()),
+                          ),
+                        )
+
+                            //child:
+                            )),
                   );
                 })))
       ],
@@ -159,6 +189,17 @@ Widget tab1(BuildContext context) {
       child: const Icon(Icons.add),
     ),
   );
+}
+
+void _onPopupMenuSelected(String value, String key) {
+  //print(value);
+  if (value == 'Menu 1') {
+    //call function 1
+  } else if (value == 'Menu 2') {
+    //call function 2
+  } else if (value == 'Menu 3') {
+    //call function 3
+  }
 }
 
 Future openDialogDelete(
@@ -311,19 +352,35 @@ Widget tab2() {
                   .orderByChild('State')
                   .equalTo('2'),
               itemBuilder: ((context, snapshot, animation, index) {
-                return InkWell(
-                  onTap: () {
-                    //showInputDialog(snapshot, locations);
-                    // Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //         builder: (context) => Loading()));
-                  },
-                  child: ListTile(
-                    title: Text("Reservation: " +
-                        snapshot.child('BookingDate').value.toString()),
-                  ),
-                );
+                return Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.red, width: 2),
+                      color: Colors.yellow,
+                    ),
+                    child: InkWell(
+                      onTap: () {
+                        showMenu(
+                          context: context,
+                          position: RelativeRect.fromLTRB(200, 200, 200, 200),
+                          items: [
+                            PopupMenuItem(child: Text('Menu 1')),
+                            PopupMenuItem(child: Text('Menu 2')),
+                            PopupMenuItem(child: Text('Menu 3')),
+                          ],
+                        );
+                      },
+                      // onTap: () {
+                      //   //showInputDialog(snapshot, locations);
+                      //   // Navigator.push(
+                      //   //     context,
+                      //   //     MaterialPageRoute(
+                      //   //         builder: (context) => Loading()));
+                      // },
+                      child: ListTile(
+                        title: Text("Reservation: " +
+                            snapshot.child('BookingDate').value.toString()),
+                      ),
+                    ));
               })))
     ],
   ));
