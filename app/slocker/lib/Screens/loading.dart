@@ -10,6 +10,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:slocker/Screens/signin_screen.dart';
 import 'package:slocker/net/auth.dart';
 import '../constants.dart';
+// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+// import 'package:timezone/timezone.dart' as tz;
+// import 'package:timezone/data/latest.dart' as tzData;
 
 class Loading extends StatefulWidget {
   Loading({Key? key}) : super(key: key);
@@ -139,8 +142,8 @@ Widget tab1(BuildContext context) {
             child: FirebaseAnimatedList(
                 query: locations
                     .child(FirebaseAuth.instance.currentUser!.uid)
-                    //.orderByChild('UID')
-                    //.equalTo(FirebaseAuth.instance.currentUser!.uid)
+                    // .orderByChild('LocationName')
+                    // .equalTo('Library')
                     .orderByChild('State')
                     .equalTo('3'),
                 itemBuilder: ((context, snapshot, animation, index) {
