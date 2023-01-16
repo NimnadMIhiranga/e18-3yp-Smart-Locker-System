@@ -104,18 +104,54 @@ void setup()
 void loop()
 {
 
-  if (Firebase.ready() && (millis() - sendDataPrevMillis > 1500 || sendDataPrevMillis == 0))
+  int e = componentcheck();
+  if (e)
   {
-    sendDataPrevMillis = millis();
-    if (doorState() == 1)
-    { // when door is open
-      Serial.print("Door open----");
-      Serial.printf("Set string... %s\n", Firebase.RTDB.setString(&fbdo, (lockStatePath), F("1")) ? "ok" : fbdo.errorReason().c_str());
+    while (e > 0)
+    {
+      if (e == 1)
+      {
+        digitalWrite(ER, HIGH);
+        lcd.clear();
+        lcd.print("WIFI ERROR");
+      }
+      else if (e == 2)
+      {
+        digitalWrite(ER, HIGH);
+        lcd.clear();
+        lcd.print("KEYPAD ERROR");
+      }
+      else if (e == 4)
+      {
+        digitalWrite(ER, HIGH);
+        lcd.clear();
+        lcd.print("F. ERROR");
+      }
+      else
+      {
+        digitalWrite(ER, HIGH);
+        lcd.clear();
+        lcd.print("Multiple ERRORS");
+      }
+      delay(2000);
+      e = componentcheck();
     }
-    else if (doorState() == 0)
-    { // when door is closed
-      Serial.print("Door close----");
-      Serial.printf("Set string... %s\n", Firebase.RTDB.setString(&fbdo, (lockStatePath), F("0")) ? "ok" : fbdo.errorReason().c_str());
+  }
+  else
+  {
+    if (Firebase.ready() && (millis() - sendDataPrevMillis > 1500 || sendDataPrevMillis == 0))
+    {
+      sendDataPrevMillis = millis();
+      if (doorState() == 1)
+      { // when door is open
+        Serial.print("Door open----");
+        Serial.printf("Set string... %s\n", Firebase.RTDB.setString(&fbdo, (lockStatePath), F("1")) ? "ok" : fbdo.errorReason().c_str());
+      }
+      else if (doorState() == 0)
+      { // when door is closed
+        Serial.print("Door close----");
+        Serial.printf("Set string... %s\n", Firebase.RTDB.setString(&fbdo, (lockStatePath), F("0")) ? "ok" : fbdo.errorReason().c_str());
+      }
     }
   }
 }
