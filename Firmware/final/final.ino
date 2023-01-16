@@ -1,7 +1,10 @@
 /*
 PIns
+D3 - Door lock
 D1 , D2 - Keypad & LCD
 D4 - Door Sensor
+
+
 
 
 */
@@ -65,11 +68,14 @@ FirebaseConfig config;
 const int doorSensor = 2;
 int currentDoorState;
 
+// door lock
+int door = 0;
+
 // for the firebase
 #define DATABASE_URL "slocker-6a0e7-default-rtdb.firebaseio.com/"
 #define API_KEY "AIzaSyAZ-1C80ncmZcB7ZreY3lienFpzc8jf3Ys"
 unsigned long sendDataPrevMillis = 0;
-String locationName = "nishmi";
+String locationName = "Library";
 String lockerID = "1";
 String lockStatePath;
 
@@ -83,22 +89,38 @@ const char *password = "3nG5tuDt";
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
   // setting up pin modes
   pinMode(ER, OUTPUT);
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(doorSensor, INPUT_PULLUP);
+  pinMode(door, OUTPUT);
 
+  digitalWrite(door, HIGH);
   digitalWrite(ER, LOW);
   lcd.init();      // initializing the LCD
   lcd.backlight(); // Enable or Turn On the backlight
   lcd.print("Setting up...");
-  int e = componentcheck();                                                  // to store the component check value
+  // int e = componentcheck();
+  int e = 0;                                                                 // to store the component check value
   firebaseSetup();                                                           // setting up the firebase
   lockStatePath = "Lockers/" + locationName + "/" + lockerID + "/LockState"; // to make the lock state path of the locker
   pinStatePath = "Lockers/" + locationName + "/" + lockerID + "/LockPin";    // to make the book state path of the locker
   bookStatePath = "Lockers/" + locationName + "/" + lockerID + "/State";     // to make the book state path of the locker
-  state = Firebase.RTDB.getString(&fbdo, (bookStatePath));
+  state = Firebase.RTDB.getString(&fbdo, bookStatePath) ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+  // Firebase.getString(&fbdo, (pinStatePath);
+  pin = Firebase.RTDB.getString(&fbdo, pinStatePath) ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+  if (state == "connection lost" || pin == "connection lost" || pin.length() != 4 || state.length() != 4)
+  {
+    firebaseSetup();
+    state = Firebase.RTDB.getString(&fbdo, bookStatePath) ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+    // Firebase.getString(&fbdo, (pinStatePath);
+    pin = Firebase.RTDB.getString(&fbdo, pinStatePath) ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+  }
+  Serial.println("Pin:" + pin);
+  Serial.println("State:" + state);
+
+  // Serial.println(state);
   // lcd.clear();
   // lcd.print(state);
   Wire.begin();
@@ -139,76 +161,96 @@ void setup()
 void loop()
 {
 
-  int e = componentcheck();
-  if (e)
-  {
-    while (e > 0)
+  // int e = componentcheck();
+  // if (e)
+  // {
+  //   while (e > 0)
+  //   {
+  //     if (e == 1)
+  //     {
+  //       digitalWrite(ER, HIGH);
+  //       lcd.clear();
+  //       lcd.print("WIFI ERROR");
+  //     }
+  //     else if (e == 2)
+  //     {
+  //       digitalWrite(ER, HIGH);
+  //       lcd.clear();
+  //       lcd.print("KEYPAD ERROR");
+  //     }
+  //     else if (e == 4)
+  //     {
+  //       digitalWrite(ER, HIGH);
+  //       lcd.clear();
+  //       lcd.print("F. ERROR");
+  //     }
+  //     else
+  //     {
+  //       digitalWrite(ER, HIGH);
+  //       lcd.clear();
+  //       lcd.print("Multiple ERRORS");
+  //     }
+  //     delay(2000);
+  //     e = componentcheck();
+  //   }
+  // }
+  // else
+  // {
+  while (state == "0" || state == "3")
+  { // if there is a reservation avaible to the locker or the locker is already in use
+    // Serial.println("Pin:" + pin);
+    state = Firebase.RTDB.getString(&fbdo, bookStatePath) ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+    // Firebase.getString(&fbdo, (pinStatePath);
+    // pin = Firebase.RTDB.getString(&fbdo, pinStatePath) ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+    if (state == "connection lost" || pin == "connection lost" || pin.length() != 4 || state.length() != 4)
     {
-      if (e == 1)
-      {
-        digitalWrite(ER, HIGH);
-        lcd.clear();
-        lcd.print("WIFI ERROR");
-      }
-      else if (e == 2)
-      {
-        digitalWrite(ER, HIGH);
-        lcd.clear();
-        lcd.print("KEYPAD ERROR");
-      }
-      else if (e == 4)
-      {
-        digitalWrite(ER, HIGH);
-        lcd.clear();
-        lcd.print("F. ERROR");
-      }
-      else
-      {
-        digitalWrite(ER, HIGH);
-        lcd.clear();
-        lcd.print("Multiple ERRORS");
-      }
-      delay(2000);
-      e = componentcheck();
+      firebaseSetup();
+      state = Firebase.RTDB.getString(&fbdo, bookStatePath) ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+      // Firebase.getString(&fbdo, (pinStatePath);
+      // pin = Firebase.RTDB.getString(&fbdo, pinStatePath) ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
     }
-  }
-  else
-  {
-    while (state == "0" || state == "3")
-    { // if there is a reservation avaible to the locker or the locker is already in use
-      pin = Firebase.RTDB.getString(&fbdo, (pinStatePath));
-      if (state == "0")
-      { // first time user is using the app
-        unlockOp();
-      }
-      else if (state == "3")
-      { // locker is in use
-      }
-    }
-    if (state == "1")
-    {
+    if (state == "0")
+    { // first time user is using the app
+      unlockOp();
+      Serial.println("door unlocking.......");
       lcd.clear();
       lcd.setCursor(0, 0);
-      lcd.print("USE S-LOCKER APP");
+      lcd.print("PUT THINGS");
       lcd.setCursor(0, 1);
-      lcd.print("FOR RESERVATIONS");
-    }
+      lcd.print("& CLOSE DOOR");
+      doorUnlock(door);
+      while (Firebase.RTDB.setString(&fbdo, (bookStatePath), F("3")) != 1)
+        ;
+        }
+    else if (state == "3")
+    { // locker is in use
 
-    if (Firebase.ready() && (millis() - sendDataPrevMillis > 1500 || sendDataPrevMillis == 0))
-    {
-      sendDataPrevMillis = millis();
-      if (doorState() == 1)
-      { // when door is open
-        Serial.print("Door open----");
-        Serial.printf("Set string... %s\n", Firebase.RTDB.setString(&fbdo, (lockStatePath), F("1")) ? "ok" : fbdo.errorReason().c_str());
-      }
-      else if (doorState() == 0)
-      { // when door is closed
-        Serial.print("Door close----");
-        Serial.printf("Set string... %s\n", Firebase.RTDB.setString(&fbdo, (lockStatePath), F("0")) ? "ok" : fbdo.errorReason().c_str());
+      if (Firebase.ready() && (millis() - sendDataPrevMillis > 1500 || sendDataPrevMillis == 0))
+      {
+        sendDataPrevMillis = millis();
+        if (doorState() == 1)
+        { // when door is open
+          // Serial.print("Door open----");
+          Serial.printf("Set string... %s\n", Firebase.RTDB.setString(&fbdo, (lockStatePath), F("1")) ? "ok" : fbdo.errorReason().c_str());
+        }
+        else if (doorState() == 0)
+        { // when door is closed
+          // Serial.print("Door close----");
+          Serial.printf("Set string... %s\n", Firebase.RTDB.setString(&fbdo, (lockStatePath), F("0")) ? "ok" : fbdo.errorReason().c_str());
+        }
       }
     }
   }
+  if (state == "1")
+  {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("USE S-LOCKER APP");
+    lcd.setCursor(0, 1);
+    lcd.print("FOR RESERVATIONS");
+  }
+
+  // }
 }
 
 int componentcheck()
@@ -297,7 +339,12 @@ int doorState()
 void firebaseSetup()
 { // to setup the firebase
   WiFi.begin(ssid, password);
-
+  Serial.print("Connecting to Wi-Fi");
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    Serial.print(".");
+    delay(300);
+  }
   /* Assign the api key (required) */
   config.api_key = API_KEY;
 
@@ -841,6 +888,38 @@ void enrollFingerprint()
 
 void unlockOp()
 {
+  // int e = componentcheck();
+  // if (e)
+  // {
+  //   if (e == 1)
+  //   {
+  //     digitalWrite(ER, HIGH);
+  //     lcd.clear();
+  //     lcd.print("WIFI ERROR");
+  //   }
+  //   else if (e == 2)
+  //   {
+  //     digitalWrite(ER, HIGH);
+  //     lcd.clear();
+  //     lcd.print("KEYPAD ERROR");
+  //   }
+  //   else if (e == 4)
+  //   {
+  //     digitalWrite(ER, HIGH);
+  //     lcd.clear();
+  //     lcd.print("F. ERROR");
+  //   }
+  //   else
+  //   {
+  //     digitalWrite(ER, HIGH);
+  //     lcd.clear();
+  //     lcd.print("Multiple ERRORS");
+  //   }
+  //   delay(2000);
+  //   e = componentcheck();
+  // }
+  // while (1)
+  // {
   lcd.clear();
   lcd.print("ENTER PIN");
   lcd.setCursor(0, 1);
@@ -849,6 +928,7 @@ void unlockOp()
   while (key != 'C')
   {
 
+    // Serial.println(pin);
     uint32_t now = millis();
 
     if (now - lastKeyPressed >= 100)
@@ -859,10 +939,10 @@ void unlockOp()
       {
         lastKey = key;
         lcd.setCursor(0, 1);
-        Serial.print(key + '\n');
+        // Serial.print(key + '\n');
         if (key == 35)
         {
-          Serial.print("Hash Occured\n");
+          // Serial.print("Hash Occured\n");
           input = "";
           // lcd.print(input);
           lcd.print("                ");
@@ -870,14 +950,14 @@ void unlockOp()
         else if (key == 42)
         {
           input = input.substring(0, input.length() - 1);
-          Serial.print("Star Occured\n");
+          // Serial.print("Star Occured\n");
           lcd.print(input);
           lcd.print("                ");
           lcd.setCursor(input.length(), 1);
         }
         else
         {
-          Serial.print("Number Occured\n");
+          // Serial.print("Number Occured\n");
           if (key != 'N' && key != 'A' && key != 'B' && key != 'D')
             input += key;
 
@@ -885,13 +965,17 @@ void unlockOp()
         }
         if (input == pin)
         {
-          // lcd.clear();
-          // lcd.print("Correct PIN");
+          Serial.print(input);
+          Serial.print(pin);
+          lcd.clear();
+          lcd.print("Correct PIN");
+          delay(3000);
           val = 0;
           if (getFingerprintEnroll() == 1)
           {
             lcd.clear();
             lcd.print("FINGER STORED");
+            return;
           }
         }
       }
@@ -899,4 +983,16 @@ void unlockOp()
 
     key = v[keyPad.getKey()];
   }
+  // e = componentcheck();
+  // }
+}
+
+void doorUnlock(int pin)
+{
+  digitalWrite(pin, LOW);
+}
+
+void doorLock(int pin)
+{
+  digitalWrite(pin, HIGH);
 }
