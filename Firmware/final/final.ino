@@ -60,16 +60,17 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 // Define Firebase Data object
 FirebaseData fbdo;
-
 FirebaseAuth auth;
 FirebaseConfig config;
 
 // for the door sensor
 const int doorSensor = 2;
 int currentDoorState;
+int prevDoorState = 0;
 
 // door lock
 int door = 0;
+int unlockLocked = 0;
 
 // for the firebase
 #define DATABASE_URL "slocker-6a0e7-default-rtdb.firebaseio.com/"
@@ -95,6 +96,13 @@ void setup()
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(doorSensor, INPUT_PULLUP);
   pinMode(door, OUTPUT);
+
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    Serial.print(".");
+    delay(300);
+  }
 
   digitalWrite(door, HIGH);
   digitalWrite(ER, LOW);
@@ -221,7 +229,21 @@ void loop()
       doorUnlock(door);
       while (Firebase.RTDB.setString(&fbdo, (bookStatePath), F("3")) != 1)
         ;
-        }
+      delay(8000);
+      while (!unlockLocked)
+      {
+        // doorUnlock(door);
+        Serial.println("unlock = 0");
+        while (doorState() == 1)
+          ;
+        delay(1000);
+        Serial.println("unlock = 1");
+        doorLock(door);
+        while (Firebase.RTDB.setString(&fbdo, (lockStatePath), F("0")) != 1)
+          ;
+        unlockLocked = 1;
+      }
+    }
     else if (state == "3")
     { // locker is in use
 
@@ -324,24 +346,29 @@ int fingerprintCheck()
 
 int doorState()
 { // function to check door sensor staee
-  lcd.clear();
+  // lcd.clear();
+  delay(100);
   currentDoorState = digitalRead(doorSensor);
 
   if (currentDoorState == HIGH)
   {
-    lcd.print("open");
+    // lcd.print("open");
+    Serial.print("Door Open");
     return 1;
   }
-  lcd.print("close");
+  // lcd.print("close");
+  Serial.print("Door Close");
+
   return 0;
 }
 
 void firebaseSetup()
 { // to setup the firebase
-  WiFi.begin(ssid, password);
-  Serial.print("Connecting to Wi-Fi");
+
+  // Serial.print("Connecting to Wi-Fi");
   while (WiFi.status() != WL_CONNECTED)
   {
+    WiFi.begin(ssid, password);
     Serial.print(".");
     delay(300);
   }
