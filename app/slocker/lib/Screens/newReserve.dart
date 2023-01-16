@@ -7,6 +7,8 @@ import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:slocker/Screens/loading.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' hide Query;
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../constants.dart';
 
@@ -156,21 +158,42 @@ class _newReserveState extends State<newReserve> {
       context: context,
       builder: (context) {
         return SimpleDialog(
-          title: Text("Enter a value"),
+          title: Text("Enter the PIN"),
           children: [
             TextFormField(
+              decoration: InputDecoration(
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                // labelText: 'Label',
+                // hintText: 'Hint',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  borderSide: BorderSide(color: Colors.blue),
+                ),
+              ),
+              inputFormatters: <TextInputFormatter>[
+                // for below version 2 use this
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+// for version 2 and greater youcan also use this
+                FilteringTextInputFormatter.digitsOnly
+              ],
               keyboardType: TextInputType.number,
               controller: textController,
-              validator: (value) {
-                if (value == null) {
-                  return 'Please enter a number';
-                }
-                return null;
-              },
+              // validator: (value) {
+              //   if (value == null) {
+              //     return 'Please enter a number';
+              //   }
+              //   return null;
+              // },
             ),
             TextButton(
               onPressed: () async {
                 Navigator.of(context).pop(textController.text);
+                //Navigator.of(context).pop();
+                textController.clear();
               },
               child: Text(
                 "Reserve",
@@ -181,7 +204,7 @@ class _newReserveState extends State<newReserve> {
         );
       },
     ).then((value) {
-      if (value != null) {
+      if (value != null && value.toString().length == 4) {
         locations.child(snapshot.child('LockID').value.toString()).update({
           'BookingDate': sdate.toString().substring(0, 10),
           'BookingID': BID,
@@ -247,6 +270,14 @@ class _newReserveState extends State<newReserve> {
 
         setState(() {});
         // Do something with the value entered by the user
+      } else if (value.toString().length != 4) {
+        Fluttertoast.showToast(
+            msg: 'Please use PIN which have 4 numbers',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: mSecondColor,
+            textColor: Colors.black);
       }
     });
   }
