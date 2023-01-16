@@ -1,4 +1,10 @@
+/*
+PIns
+D1 , D2 - Keypad & LCD
+D4 - Door Sensor
 
+
+*/
 
 // including header files
 #include <ESP8266WiFi.h>
@@ -20,10 +26,22 @@
 // for the finger print sensor
 SoftwareSerial mySerial(D5, D6);
 Adafruit_Fingerprint finger = Adafruit_Fingerprint(&mySerial);
+uint8_t getFingerprintID();
+uint8_t id;
 
 // for the keypad
 const uint8_t KEYPAD_ADDRESS = 0x20;
 I2CKeyPad keyPad(KEYPAD_ADDRESS);
+// define the menu options
+const int numOptions = 2;
+String options[numOptions] = {"Opt. 1", "Opt. 2"};
+char v[19] = "123A456B789C*0#DNF";
+uint32_t lastKeyPressed = 0;
+uint32_t value = 0;
+// variable to store the current menu selection
+int selection = 0;
+String input;
+char lastKey = 'Y';
 
 // for the lcd display
 LiquidCrystal_I2C lcd(0x27, 16, 2);
@@ -52,8 +70,8 @@ String lockStatePath;
 #define USER_PASSWORD "12345678"
 
 // for add the wifi networks that are used in mcu to connect(add the other networks below)
-const char *ssid = "Redmi Note 9 Pro";
-const char *password = "12345687";
+const char *ssid = "Eng-Student";
+const char *password = "3nG5tuDt";
 
 void setup()
 {
@@ -69,6 +87,8 @@ void setup()
   int e = componentcheck();                                                  // to store the component check value
   firebaseSetup();                                                           // setting up the firebase
   lockStatePath = "Lockers/" + locationName + "/" + lockerID + "/LockState"; // to make the lock state path of the locker
+  Wire.begin();
+  Wire.setClock(400000);
 
   while (e > 0)
   {
@@ -99,6 +119,7 @@ void setup()
     delay(2000);
     e = componentcheck();
   }
+  finger.begin(57600);
 }
 
 void loop()
@@ -139,6 +160,7 @@ void loop()
   }
   else
   {
+    openMenu();
     if (Firebase.ready() && (millis() - sendDataPrevMillis > 1500 || sendDataPrevMillis == 0))
     {
       sendDataPrevMillis = millis();
@@ -186,7 +208,8 @@ int wificonnect(const char *ssid1, const char *password1)
     if (WiFi.SSID(i) == ssid1) // if the ssid is equal to the given ssid
     {
       WiFi.begin(ssid1, password1);
-      lcd.print("WIFI Connected");
+      // lcd.print("WIFI Connected");
+      Serial.println("WIFI Connected");
       connected = 0; // change the status of the connect to 1
       break;
     }
@@ -270,4 +293,460 @@ void firebaseSetup()
   Firebase.setDoubleDigits(5);
 
   config.timeout.serverResponse = 10 * 1000;
+}
+
+uint8_t getFingerprintID()
+{
+  uint8_t p = finger.getImage();
+  switch (p)
+  {
+  case FINGERPRINT_OK:
+    Serial.println("Image taken");
+    break;
+  case FINGERPRINT_NOFINGER:
+    Serial.println("No finger detected");
+    return p;
+  case FINGERPRINT_PACKETRECIEVEERR:
+    Serial.println("Communication error");
+    return p;
+  case FINGERPRINT_IMAGEFAIL:
+    Serial.println("Imaging error");
+    return p;
+  default:
+    Serial.println("Unknown error");
+    return p;
+  }
+
+  // OK success!
+
+  p = finger.image2Tz();
+  switch (p)
+  {
+  case FINGERPRINT_OK:
+    Serial.println("Image converted");
+    break;
+  case FINGERPRINT_IMAGEMESS:
+    Serial.println("Image too messy");
+    return p;
+  case FINGERPRINT_PACKETRECIEVEERR:
+    Serial.println("Communication error");
+    return p;
+  case FINGERPRINT_FEATUREFAIL:
+    Serial.println("Could not find fingerprint features");
+    return p;
+  case FINGERPRINT_INVALIDIMAGE:
+    Serial.println("Could not find fingerprint features");
+    return p;
+  default:
+    Serial.println("Unknown error");
+    return p;
+  }
+
+  // OK converted!
+  p = finger.fingerSearch();
+  if (p == FINGERPRINT_OK)
+  {
+    Serial.println("Found a print match!");
+  }
+  else if (p == FINGERPRINT_PACKETRECIEVEERR)
+  {
+    Serial.println("Communication error");
+    return p;
+  }
+  else if (p == FINGERPRINT_NOTFOUND)
+  {
+    Serial.println("Did not find a match");
+    lcd.clear();
+    lcd.setCursor(0, 1);
+    lcd.print("NO MATCH");
+    return p;
+  }
+  else
+  {
+    Serial.println("Unknown error");
+    return p;
+  }
+
+  // found a match!
+  Serial.print("Found ID #");
+  Serial.print(finger.fingerID);
+  Serial.print(" with confidence of ");
+  Serial.println(finger.confidence);
+  lcd.clear();
+  lcd.setCursor(0, 1);
+  lcd.print("FINGER MATCHED");
+  return finger.fingerID;
+}
+
+// returns -1 if failed, otherwise returns ID #
+int getFingerprintIDez()
+{
+  uint8_t p = finger.getImage();
+  if (p != FINGERPRINT_OK)
+    return -1;
+
+  p = finger.image2Tz();
+  if (p != FINGERPRINT_OK)
+    return -1;
+
+  p = finger.fingerFastSearch();
+  if (p != FINGERPRINT_OK)
+    return -1;
+
+  // found a match!
+  Serial.print("Found ID #");
+  Serial.print(finger.fingerID);
+  Serial.print(" with confidence of ");
+  Serial.println(finger.confidence);
+  return finger.fingerID;
+}
+
+void openMenu()
+{
+  // read input from the keypad
+
+  uint8_t idx = keyPad.getKey();
+  char key = v[idx];
+  input = "";
+
+  // navigate through the menu options
+  if (key == 'A')
+  {
+    // move the selection up
+    selection--;
+    if (selection < 0)
+    {
+      selection = numOptions - 1;
+    }
+  }
+  else if (key == 'B')
+  {
+    // move the selection down
+    selection++;
+    if (selection >= numOptions)
+    {
+      selection = 0;
+    }
+  }
+
+  // display the menu options
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("SET-A   SELECT-D");
+
+  lcd.setCursor(0, 1);
+  for (int i = 0; i < numOptions; i++)
+  {
+    if (i == selection)
+    {
+      lcd.print(">1.PIN  2.FINGER");
+    }
+    else
+    {
+      lcd.print(" 1.PIN >2.FINGER");
+    }
+  }
+
+  // handle the selected option
+
+  if (key == 'D')
+  {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("BACK-C|");
+    switch (selection)
+    {
+    case 0:
+      lcd.print("ENTER PIN");
+      lcd.setCursor(0, 1);
+      key = v[keyPad.getKey()];
+      while (key != 'C')
+      {
+
+        uint32_t now = millis();
+
+        if (now - lastKeyPressed >= 100)
+        {
+          lastKeyPressed = now;
+
+          if (key && lastKey != key)
+          {
+            lastKey = key;
+            lcd.setCursor(0, 1);
+            Serial.print(key + '\n');
+            if (key == 35)
+            {
+              Serial.print("Hash Occured\n");
+              input = "";
+              // lcd.print(input);
+              lcd.print("                ");
+            }
+            else if (key == 42)
+            {
+              input = input.substring(0, input.length() - 1);
+              Serial.print("Star Occured\n");
+              lcd.print(input);
+              lcd.print("                ");
+              lcd.setCursor(input.length(), 1);
+            }
+            else
+            {
+              Serial.print("Number Occured\n");
+              if (key != 'N' && key != 'A' && key != 'B' && key != 'D')
+                input += key;
+
+              lcd.print(input);
+            }
+            if (input == "1234")
+            {
+              // lcd.clear();
+              lcd.print("Correct PIN");
+            }
+          }
+        }
+
+        key = v[keyPad.getKey()];
+      }
+
+      break;
+    case 1:
+      lcd.print("PUT THUMB");
+      lcd.setCursor(0, 1);
+      // lcd.print("2");
+      while (key != 'C')
+      {
+        getFingerprintID();
+        key = v[keyPad.getKey()];
+      }
+
+      while (key != 'C')
+      {
+        key = v[keyPad.getKey()];
+      }
+      break;
+    }
+
+    key = v[keyPad.getKey()];
+    while (key != 'C')
+    {
+      key = v[keyPad.getKey()];
+    }
+  }
+
+  // add a delay to prevent key debouncing
+  delay(200);
+}
+
+void enrollFingerPrint() // funtion to enroll the finger print from the user
+{
+  Serial.println("Ready to enroll a fingerprint!");
+  Serial.println("Please type in the ID # (from 1 to 127) you want to save this finger as...");
+  id = readnumber();
+  if (id == 0)
+  { // ID #0 not allowed, try again!
+    return;
+  }
+  Serial.print("Enrolling ID #");
+  Serial.println(id);
+
+  while (!getFingerprintEnroll())
+    ;
+}
+
+uint8_t readnumber(void)
+{
+  uint8_t num = 0;
+
+  while (num == 0)
+  {
+    while (!Serial.available())
+      ;
+    num = Serial.parseInt();
+  }
+  return num;
+}
+
+uint8_t getFingerprintEnroll()
+{
+
+  int p = -1;
+  Serial.print("Waiting for valid finger to enroll as #");
+  Serial.println(id);
+  while (p != FINGERPRINT_OK)
+  {
+    p = finger.getImage();
+    switch (p)
+    {
+    case FINGERPRINT_OK:
+      Serial.println("Image taken");
+      break;
+    case FINGERPRINT_NOFINGER:
+      Serial.println(".");
+      break;
+    case FINGERPRINT_PACKETRECIEVEERR:
+      Serial.println("Communication error");
+      break;
+    case FINGERPRINT_IMAGEFAIL:
+      Serial.println("Imaging error");
+      break;
+    default:
+      Serial.println("Unknown error");
+      break;
+    }
+  }
+
+  // OK success!
+
+  p = finger.image2Tz(1);
+  switch (p)
+  {
+  case FINGERPRINT_OK:
+    Serial.println("Image converted");
+    break;
+  case FINGERPRINT_IMAGEMESS:
+    Serial.println("Image too messy");
+    return p;
+  case FINGERPRINT_PACKETRECIEVEERR:
+    Serial.println("Communication error");
+    return p;
+  case FINGERPRINT_FEATUREFAIL:
+    Serial.println("Could not find fingerprint features");
+    return p;
+  case FINGERPRINT_INVALIDIMAGE:
+    Serial.println("Could not find fingerprint features");
+    return p;
+  default:
+    Serial.println("Unknown error");
+    return p;
+  }
+
+  Serial.println("Remove finger");
+  delay(2000);
+  p = 0;
+  while (p != FINGERPRINT_NOFINGER)
+  {
+    p = finger.getImage();
+  }
+  Serial.print("ID ");
+  Serial.println(id);
+  p = -1;
+  Serial.println("Place same finger again");
+  while (p != FINGERPRINT_OK)
+  {
+    p = finger.getImage();
+    switch (p)
+    {
+    case FINGERPRINT_OK:
+      Serial.println("Image taken");
+      break;
+    case FINGERPRINT_NOFINGER:
+      Serial.print(".");
+      break;
+    case FINGERPRINT_PACKETRECIEVEERR:
+      Serial.println("Communication error");
+      break;
+    case FINGERPRINT_IMAGEFAIL:
+      Serial.println("Imaging error");
+      break;
+    default:
+      Serial.println("Unknown error");
+      break;
+    }
+  }
+
+  // OK success!
+
+  p = finger.image2Tz(2);
+  switch (p)
+  {
+  case FINGERPRINT_OK:
+    Serial.println("Image converted");
+    break;
+  case FINGERPRINT_IMAGEMESS:
+    Serial.println("Image too messy");
+    return p;
+  case FINGERPRINT_PACKETRECIEVEERR:
+    Serial.println("Communication error");
+    return p;
+  case FINGERPRINT_FEATUREFAIL:
+    Serial.println("Could not find fingerprint features");
+    return p;
+  case FINGERPRINT_INVALIDIMAGE:
+    Serial.println("Could not find fingerprint features");
+    return p;
+  default:
+    Serial.println("Unknown error");
+    return p;
+  }
+
+  // OK converted!
+  Serial.print("Creating model for #");
+  Serial.println(id);
+
+  p = finger.createModel();
+  if (p == FINGERPRINT_OK)
+  {
+    Serial.println("Prints matched!");
+  }
+  else if (p == FINGERPRINT_PACKETRECIEVEERR)
+  {
+    Serial.println("Communication error");
+    return p;
+  }
+  else if (p == FINGERPRINT_ENROLLMISMATCH)
+  {
+    Serial.println("Fingerprints did not match");
+    return p;
+  }
+  else
+  {
+    Serial.println("Unknown error");
+    return p;
+  }
+
+  Serial.print("ID ");
+  Serial.println(id);
+  p = finger.storeModel(id);
+  if (p == FINGERPRINT_OK)
+  {
+    Serial.println("Stored!");
+  }
+  else if (p == FINGERPRINT_PACKETRECIEVEERR)
+  {
+    Serial.println("Communication error");
+    return p;
+  }
+  else if (p == FINGERPRINT_BADLOCATION)
+  {
+    Serial.println("Could not store in that location");
+    return p;
+  }
+  else if (p == FINGERPRINT_FLASHERR)
+  {
+    Serial.println("Error writing to flash");
+    return p;
+  }
+  else
+  {
+    Serial.println("Unknown error");
+    return p;
+  }
+
+  return true;
+}
+
+void enrollFingerprint()
+{
+  Serial.println("Ready to enroll a fingerprint!");
+  Serial.println("Please type in the ID # (from 1 to 127) you want to save this finger as...");
+  id = readnumber();
+  if (id == 0)
+  { // ID #0 not allowed, try again!
+    return;
+  }
+  Serial.print("Enrolling ID #");
+  Serial.println(id);
+
+  while (!getFingerprintEnroll())
+    ;
 }
