@@ -2,7 +2,13 @@
 PIns
 D3 - Door lock
 D1 , D2 - Keypad & LCD
-D4 - Door Sensor
+D4 - Door Sensor(remove when uploading)
+D7 - trig 1 (remove when uploading)
+D8 - echo 1 (remove when uploading)
+RXD0 - buzzer
+TXD0 - red LED
+
+
 
 
 
@@ -25,6 +31,13 @@ D4 - Door Sensor
 #include <addons/RTDBHelper.h>
 
 // global variables
+
+// to cancel the user bookings
+String uid;
+String bookid;
+String uidStatePath;
+String bookidStatePath;
+String bookCancelPath;
 
 // to check reservation state  0 - reserved , 1 - available , 2 - booked and in use
 String state;
@@ -72,6 +85,16 @@ int prevDoorState = 0;
 int door = 0;
 int unlockLocked = 0;
 
+// biuzzer pins
+const unsigned char buzzer = 3;
+const unsigned char led = 1;
+
+// Ultrasonic Sensor
+const int trig1 = 13; // D7
+const int echo1 = 15; // D8
+long duration;
+int inches, sensor1;
+
 // for the firebase
 #define DATABASE_URL "slocker-6a0e7-default-rtdb.firebaseio.com/"
 #define API_KEY "AIzaSyAZ-1C80ncmZcB7ZreY3lienFpzc8jf3Ys"
@@ -96,6 +119,8 @@ void setup()
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(doorSensor, INPUT_PULLUP);
   pinMode(door, OUTPUT);
+  pinMode(trig1, OUTPUT); // Sets the trigPin as an Output
+  pinMode(echo1, INPUT);  // Sets the echoPin as an Input
 
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED)
@@ -110,23 +135,43 @@ void setup()
   lcd.backlight(); // Enable or Turn On the backlight
   lcd.print("Setting up...");
   // int e = componentcheck();
-  int e = 0;                                                                 // to store the component check value
-  firebaseSetup();                                                           // setting up the firebase
-  lockStatePath = "Lockers/" + locationName + "/" + lockerID + "/LockState"; // to make the lock state path of the locker
-  pinStatePath = "Lockers/" + locationName + "/" + lockerID + "/LockPin";    // to make the book state path of the locker
-  bookStatePath = "Lockers/" + locationName + "/" + lockerID + "/State";     // to make the book state path of the locker
-  state = Firebase.RTDB.getString(&fbdo, bookStatePath) ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
-  // Firebase.getString(&fbdo, (pinStatePath);
-  pin = Firebase.RTDB.getString(&fbdo, pinStatePath) ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
-  if (state == "connection lost" || pin == "connection lost" || pin.length() != 4 || state.length() != 4)
-  {
-    firebaseSetup();
-    state = Firebase.RTDB.getString(&fbdo, bookStatePath) ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
-    // Firebase.getString(&fbdo, (pinStatePath);
-    pin = Firebase.RTDB.getString(&fbdo, pinStatePath) ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
-  }
-  Serial.println("Pin:" + pin);
+  int e = 0;                                                                   // to store the component check value
+  firebaseSetup();                                                             // setting up the firebase
+  lockStatePath = "Lockers/" + locationName + "/" + lockerID + "/LockState";   // to make the lock state path of the locker
+  pinStatePath = "Lockers/" + locationName + "/" + lockerID + "/LockPin";      // to make the pin state path of the locker
+  bookStatePath = "Lockers/" + locationName + "/" + lockerID + "/State";       // to make the book state path of the locker
+  uidStatePath = "Lockers/" + locationName + "/" + lockerID + "/UID";          // to make the book state path of the locker
+  bookidStatePath = "Lockers/" + locationName + "/" + lockerID + "/BookingID"; // to make the book state path of the locker
+
+  int suc = Firebase.RTDB.getString(&fbdo, bookStatePath);
+  state = suc ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
   Serial.println("State:" + state);
+  sendDataPrevMillis = millis();
+  // Firebase.getString(&fbdo, (pinStatePath);
+
+  suc += Firebase.RTDB.getString(&fbdo, pinStatePath);
+  pin = suc ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+  Serial.println("Pin:" + pin);
+  sendDataPrevMillis = millis();
+  // pin = ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+  while (suc != 2)
+  {
+    // suc = 0;
+    firebaseSetup();
+
+    suc = Firebase.RTDB.getString(&fbdo, bookStatePath);
+    state = suc ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+    sendDataPrevMillis = millis();
+
+    Serial.println("State:" + state);
+    // Firebase.getString(&fbdo, (pinStatePath);
+
+    suc += Firebase.RTDB.getString(&fbdo, pinStatePath);
+    sendDataPrevMillis = millis();
+
+    pin = suc ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+    Serial.println("Pin:" + pin);
+  }
 
   // Serial.println(state);
   // lcd.clear();
@@ -168,6 +213,7 @@ void setup()
 
 void loop()
 {
+  int suc = 0;
   doorLock(door);
   if (Firebase.ready() && (millis() - sendDataPrevMillis > 15000 || sendDataPrevMillis == 0))
   {
@@ -207,6 +253,23 @@ void loop()
     // else
     // {
     lcd.clear();
+    suc = Firebase.RTDB.getString(&fbdo, bookStatePath);
+    sendDataPrevMillis = millis();
+    state = suc ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+    Serial.println("State:" + state);
+    while (suc != 1)
+    {
+      // suc = 0;
+      firebaseSetup();
+      suc = Firebase.RTDB.getString(&fbdo, bookStatePath);
+      state = suc ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+      sendDataPrevMillis = millis();
+
+      Serial.println("State:" + state);
+    }
+
+    // state = Firebase.RTDB.getString(&fbdo, bookStatePath) ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+
     while (state == "1")
     {
 
@@ -214,25 +277,56 @@ void loop()
       lcd.print("USE S-LOCKER APP");
       lcd.setCursor(0, 1);
       lcd.print("FOR RESERVATIONS");
-      state = Firebase.RTDB.getString(&fbdo, bookStatePath) ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+      suc = Firebase.RTDB.getString(&fbdo, bookStatePath);
       sendDataPrevMillis = millis();
+      state = suc ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+      Serial.println("State:" + state);
+      while (suc != 1)
+      {
+        // suc = 0;
+        firebaseSetup();
+
+        suc = Firebase.RTDB.getString(&fbdo, bookStatePath);
+        state = suc ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+        sendDataPrevMillis = millis();
+
+        Serial.println("State:" + state);
+      }
     }
     while (state == "0" || state == "3")
     { // if there is a reservation avaible to the locker or the locker is already in use
       // Serial.println("Pin:" + pin);
-      state = Firebase.RTDB.getString(&fbdo, bookStatePath) ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+      int suc = Firebase.RTDB.getString(&fbdo, bookStatePath);
+      suc = Firebase.RTDB.getString(&fbdo, bookStatePath);
       sendDataPrevMillis = millis();
-
-      // Firebase.getString(&fbdo, (pinStatePath);
-      // pin = Firebase.RTDB.getString(&fbdo, pinStatePath) ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
-      if (state == "connection lost" || pin == "connection lost" || pin.length() != 4 || state.length() != 4)
+      state = suc ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+      Serial.println("State:" + state);
+      suc += Firebase.RTDB.getString(&fbdo, uidStatePath);
+      sendDataPrevMillis = millis();
+      uid = suc ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+      Serial.println("UID:" + uid);
+      suc += Firebase.RTDB.getString(&fbdo, bookidStatePath);
+      sendDataPrevMillis = millis();
+      bookid = suc ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+      Serial.println("Book ID:" + bookid);
+      while (suc != 3)
       {
+        // suc = 0;
         firebaseSetup();
-        state = Firebase.RTDB.getString(&fbdo, bookStatePath) ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+
+        suc = Firebase.RTDB.getString(&fbdo, bookStatePath);
+        state = suc ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
         sendDataPrevMillis = millis();
 
-        // Firebase.getString(&fbdo, (pinStatePath);
-        // pin = Firebase.RTDB.getString(&fbdo, pinStatePath) ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+        Serial.println("State:" + state);
+        suc += Firebase.RTDB.getString(&fbdo, uidStatePath);
+        sendDataPrevMillis = millis();
+        uid = suc ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+        Serial.println("UID:" + uid);
+        suc += Firebase.RTDB.getString(&fbdo, bookidStatePath);
+        sendDataPrevMillis = millis();
+        bookid = suc ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+        Serial.println("Book ID:" + bookid);
       }
       if (state == "0")
       { // first time user is using the app
@@ -240,9 +334,9 @@ void loop()
         Serial.println("door unlocking.......");
         lcd.clear();
         lcd.setCursor(0, 0);
-        lcd.print("PUT THINGS");
+        lcd.print("PUT YOUR THINGS");
         lcd.setCursor(0, 1);
-        lcd.print("& CLOSE DOOR");
+        lcd.print(" & CLOSE DOOR");
         doorUnlock(door);
         while (Firebase.RTDB.setString(&fbdo, (bookStatePath), F("3")) != 1)
           ;
@@ -255,7 +349,7 @@ void loop()
           Serial.println("unlock = 0");
           while (doorState() == 1)
             ;
-          delay(100);
+          delay(2000);
           Serial.println("unlock = 1");
           doorLock(door);
           while (Firebase.RTDB.setString(&fbdo, (lockStatePath), F("0")) != 1)
@@ -264,6 +358,7 @@ void loop()
 
           Serial.print("firebase updated with lockstate 0 and state 3");
           unlockLocked = 1;
+          state = "3";
         }
       }
       else if (state == "3")
@@ -273,6 +368,11 @@ void loop()
         {
           unlockLocked = 0;
           doorUnlock(door);
+          lcd.clear();
+          lcd.setCursor(0, 0);
+          lcd.print("GET YOUR THINGS");
+          lcd.setCursor(0, 1);
+          lcd.print(" & CLOSE DOOR");
           delay(8000);
           while (!unlockLocked)
           {
@@ -280,14 +380,46 @@ void loop()
             Serial.println("unlock = 0");
             while (doorState() == 1)
               ;
-            delay(100);
+            delay(2000);
             Serial.println("unlock = 1");
             doorLock(door);
             while (Firebase.RTDB.setString(&fbdo, (lockStatePath), F("0")) != 1)
               ;
             sendDataPrevMillis = millis();
+            if (objCheck() == 1)
+            { // when door is open
+              Serial.println("object is there");
+              while (Firebase.RTDB.setString(&fbdo, (bookStatePath), F("3")) != 1)
+                ;
+              state = "3";
+              Serial.print("firebase updated with lockstate 0 and state 3");
+              // Serial.printf("Set string... %s\n", Firebase.RTDB.setString(&fbdo, (path), F("1")) ? "ok" : fbdo.errorReason().c_str());
+            }
+            else if (objCheck() == 0)
+            { // when door is closed
+              Serial.println("no object");
+              while (Firebase.RTDB.setString(&fbdo, (bookStatePath), F("1")) != 1)
+                ;
+              state = "1";
+              bookCancelPath = "Bookings/" + uid + "/" + bookid + "/" + "State";
+              while (Firebase.RTDB.setString(&fbdo, (bookCancelPath), F("1")) != 1)
+                ; // to cancel the booking in booking collection
+              if (finger.verifyPassword())
+              {
+                Serial.println("Found fingerprint sensor!");
+              }
+              else
+              {
+                Serial.println("Did not find fingerprint sensor :(");
+                while (1)
+                  ;
+              }
 
-            Serial.print("firebase updated with lockstate 0 and state 3");
+              finger.emptyDatabase();
+              Serial.print("firebase updated with lockstate 0 and state 1");
+              // Serial.printf("Set string... %s\n", Firebase.RTDB.setString(&fbdo, (path), F("0")) ? "ok" : fbdo.errorReason().c_str());
+            }
+
             unlockLocked = 1;
             mVal = 0;
           }
@@ -546,138 +678,172 @@ int getFingerprintIDez()
 
 void openMenu()
 {
-  // read input from the keypad
 
-  uint8_t idx = keyPad.getKey();
-  char key = v[idx];
-  input = "";
-
-  // navigate through the menu options
-  if (key == 'A')
+  int suc = Firebase.RTDB.getString(&fbdo, bookStatePath);
+  sendDataPrevMillis = millis();
+  state = suc ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+  Serial.println("State when in the open menu:" + state);
+  while (suc != 1)
   {
-    // move the selection up
-    selection--;
-    if (selection < 0)
-    {
-      selection = numOptions - 1;
-    }
+    // suc = 0;
+    firebaseSetup();
+
+    suc = Firebase.RTDB.getString(&fbdo, bookStatePath);
+    state = suc ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+    sendDataPrevMillis = millis();
+
+    Serial.println("State when in the open menu:" + state);
   }
-  else if (key == 'B')
+  while (state != "1")
   {
-    // move the selection down
-    selection++;
-    if (selection >= numOptions)
+    // read input from the keypad
+
+    uint8_t idx = keyPad.getKey();
+    char key = v[idx];
+    input = "";
+
+    // navigate through the menu options
+    if (key == 'A')
     {
-      selection = 0;
+      // move the selection up
+      selection--;
+      if (selection < 0)
+      {
+        selection = numOptions - 1;
+      }
     }
-  }
-
-  // display the menu options
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("SET-A   SELECT-D");
-
-  lcd.setCursor(0, 1);
-  for (int i = 0; i < numOptions; i++)
-  {
-    if (i == selection)
+    else if (key == 'B')
     {
-      lcd.print(">1.PIN  2.FINGER");
+      // move the selection down
+      selection++;
+      if (selection >= numOptions)
+      {
+        selection = 0;
+      }
     }
-    else
-    {
-      lcd.print(" 1.PIN >2.FINGER");
-    }
-  }
 
-  // handle the selected option
-
-  if (key == 'D')
-  {
+    // display the menu options
     lcd.clear();
     lcd.setCursor(0, 0);
-    lcd.print("BACK-C|");
-    switch (selection)
+    lcd.print("SET-A   SELECT-D");
+
+    lcd.setCursor(0, 1);
+    for (int i = 0; i < numOptions; i++)
     {
-    case 0:
-      lcd.print("ENTER PIN");
-      lcd.setCursor(0, 1);
-      key = v[keyPad.getKey()];
-      while (key != 'C')
+      if (i == selection)
       {
+        lcd.print(">1.PIN  2.FINGER");
+      }
+      else
+      {
+        lcd.print(" 1.PIN >2.FINGER");
+      }
+    }
 
-        uint32_t now = millis();
+    // handle the selected option
 
-        if (now - lastKeyPressed >= 100)
+    if (key == 'D')
+    {
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("BACK-C|");
+      switch (selection)
+      {
+      case 0:
+        lcd.print("ENTER PIN");
+        lcd.setCursor(0, 1);
+        key = v[keyPad.getKey()];
+        while (key != 'C')
         {
-          lastKeyPressed = now;
 
-          if (key && lastKey != key)
+          uint32_t now = millis();
+
+          if (now - lastKeyPressed >= 100)
           {
-            lastKey = key;
-            lcd.setCursor(0, 1);
-            Serial.print(key + '\n');
-            if (key == 35)
-            {
-              Serial.print("Hash Occured\n");
-              input = "";
-              // lcd.print(input);
-              lcd.print("                ");
-            }
-            else if (key == 42)
-            {
-              input = input.substring(0, input.length() - 1);
-              Serial.print("Star Occured\n");
-              lcd.print(input);
-              lcd.print("                ");
-              lcd.setCursor(input.length(), 1);
-            }
-            else
-            {
-              Serial.print("Number Occured\n");
-              if (key != 'N' && key != 'A' && key != 'B' && key != 'D')
-                input += key;
+            lastKeyPressed = now;
 
-              lcd.print(input);
-            }
-            if (input == "1234")
+            if (key && lastKey != key)
             {
-              // lcd.clear();
-              lcd.print("Correct PIN");
+              lastKey = key;
+              lcd.setCursor(0, 1);
+              Serial.print(key + '\n');
+              if (key == 35)
+              {
+                Serial.print("Hash Occured\n");
+                input = "";
+                // lcd.print(input);
+                lcd.print("                ");
+              }
+              else if (key == 42)
+              {
+                input = input.substring(0, input.length() - 1);
+                Serial.print("Star Occured\n");
+                lcd.print(input);
+                lcd.print("                ");
+                lcd.setCursor(input.length(), 1);
+              }
+              else
+              {
+                Serial.print("Number Occured\n");
+                if (key != 'N' && key != 'A' && key != 'B' && key != 'D')
+                  input += key;
+
+                lcd.print(input);
+              }
+              if (input == pin)
+              {
+                // lcd.clear();
+                lcd.print("Correct PIN");
+              }
             }
           }
+
+          key = v[keyPad.getKey()];
         }
 
-        key = v[keyPad.getKey()];
+        break;
+      case 1:
+        lcd.print("PUT THUMB");
+        lcd.setCursor(0, 1);
+        // lcd.print("2");
+        while (key != 'C')
+        {
+          getFingerprintID();
+          key = v[keyPad.getKey()];
+        }
+
+        while (key != 'C')
+        {
+          key = v[keyPad.getKey()];
+        }
+        break;
       }
 
-      break;
-    case 1:
-      lcd.print("PUT THUMB");
-      lcd.setCursor(0, 1);
-      // lcd.print("2");
-      while (key != 'C')
-      {
-        getFingerprintID();
-        key = v[keyPad.getKey()];
-      }
-
+      key = v[keyPad.getKey()];
       while (key != 'C')
       {
         key = v[keyPad.getKey()];
       }
-      break;
     }
 
-    key = v[keyPad.getKey()];
-    while (key != 'C')
+    // add a delay to prevent key debouncing
+    delay(200);
+    suc = Firebase.RTDB.getString(&fbdo, bookStatePath);
+    sendDataPrevMillis = millis();
+    state = suc ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+    Serial.println("State when in the use menu:" + state);
+    while (suc != 1)
     {
-      key = v[keyPad.getKey()];
+      // suc = 0;
+      firebaseSetup();
+
+      suc = Firebase.RTDB.getString(&fbdo, bookStatePath);
+      state = suc ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+      sendDataPrevMillis = millis();
+
+      Serial.println("State when in the use menu:" + state);
     }
   }
-
-  // add a delay to prevent key debouncing
-  delay(200);
 }
 
 void unlockOp()
@@ -712,73 +878,89 @@ void unlockOp()
   //   delay(2000);
   //   e = componentcheck();
   // }
-  // while (1)
-  // {
-  lcd.clear();
-  lcd.print("ENTER PIN");
-  lcd.setCursor(0, 1);
-  key = v[keyPad.getKey()];
-  String input = "";
-  while (key != 'C')
+  int suc = Firebase.RTDB.getString(&fbdo, bookStatePath);
+  sendDataPrevMillis = millis();
+  state = suc ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+  Serial.println("State when in the open menu:" + state);
+  while (suc != 1)
   {
+    // suc = 0;
+    firebaseSetup();
 
-    // Serial.println(pin);
-    uint32_t now = millis();
+    suc = Firebase.RTDB.getString(&fbdo, bookStatePath);
+    state = suc ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+    sendDataPrevMillis = millis();
 
-    if (now - lastKeyPressed >= 100)
+    Serial.println("State when in the open menu:" + state);
+  }
+  while (state != "1")
+  {
+    lcd.clear();
+    lcd.print("ENTER PIN");
+    lcd.setCursor(0, 1);
+    key = v[keyPad.getKey()];
+    String input = "";
+    while (key != 'C')
     {
-      lastKeyPressed = now;
 
-      if (key && lastKey != key)
+      // Serial.println(pin);
+      uint32_t now = millis();
+
+      if (now - lastKeyPressed >= 100)
       {
-        lastKey = key;
-        lcd.setCursor(0, 1);
-        // Serial.print(key + '\n');
-        if (key == 35)
-        {
-          // Serial.print("Hash Occured\n");
-          input = "";
-          // lcd.print(input);
-          lcd.print("                ");
-        }
-        else if (key == 42)
-        {
-          input = input.substring(0, input.length() - 1);
-          // Serial.print("Star Occured\n");
-          lcd.print(input);
-          lcd.print("                ");
-          lcd.setCursor(input.length(), 1);
-        }
-        else
-        {
-          // Serial.print("Number Occured\n");
-          if (key != 'N' && key != 'A' && key != 'B' && key != 'D')
-            input += key;
+        lastKeyPressed = now;
 
-          lcd.print(input);
-        }
-        if (input == pin)
+        if (key && lastKey != key)
         {
-          Serial.print(input);
-          Serial.print(pin);
-          lcd.clear();
-          lcd.print("Correct PIN");
-          delay(3000);
-          val = 0;
-          if (getFingerprintEnroll() == 1)
+          lastKey = key;
+          lcd.setCursor(0, 1);
+          // Serial.print(key + '\n');
+          if (key == 35)
           {
+            // Serial.print("Hash Occured\n");
+            input = "";
+            // lcd.print(input);
+            lcd.print("                ");
+          }
+          else if (key == 42)
+          {
+            input = input.substring(0, input.length() - 1);
+            // Serial.print("Star Occured\n");
+            lcd.print(input);
+            lcd.print("                ");
+            lcd.setCursor(input.length(), 1);
+          }
+          else
+          {
+            // Serial.print("Number Occured\n");
+            if (key != 'N' && key != 'A' && key != 'B' && key != 'D')
+              input += key;
+
+            lcd.print(input);
+          }
+          if (input == pin)
+          {
+            Serial.print(input);
+            Serial.print(pin);
             lcd.clear();
-            lcd.print("FINGER STORED");
-            return;
+            lcd.print("Correct PIN");
+            delay(3000);
+            val = 0;
+            if (getFingerprintEnroll() == 1)
+            {
+              lcd.clear();
+              lcd.print("FINGER STORED");
+              return;
+            }
           }
         }
       }
-    }
 
-    key = v[keyPad.getKey()];
+      key = v[keyPad.getKey()];
+    }
+    // e = componentcheck();
+    // }
   }
-  // e = componentcheck();
-  // }
 }
 
 void doorUnlock(int pin)
@@ -794,7 +976,21 @@ void doorLock(int pin)
 int menu()
 {
 
-  state = Firebase.RTDB.getString(&fbdo, bookStatePath) ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+  int suc = Firebase.RTDB.getString(&fbdo, bookStatePath);
+  sendDataPrevMillis = millis();
+  state = suc ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+  Serial.println("State when in the open menu:" + state);
+  while (suc != 1)
+  {
+    // suc = 0;
+    firebaseSetup();
+
+    suc = Firebase.RTDB.getString(&fbdo, bookStatePath);
+    state = suc ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+    sendDataPrevMillis = millis();
+
+    Serial.println("State when in the open menu:" + state);
+  }
   while (state != "1")
   { // loop to check wether user unlock from the mobile phone
     // menu option
@@ -933,7 +1129,21 @@ int menu()
 
     // add a delay to prevent key debouncing
     delay(200);
-    state = Firebase.RTDB.getString(&fbdo, bookStatePath) ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+    suc = Firebase.RTDB.getString(&fbdo, bookStatePath);
+    sendDataPrevMillis = millis();
+    state = suc ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+    Serial.println("State when in the open menu:" + state);
+    while (suc != 1)
+    {
+      // suc = 0;
+      firebaseSetup();
+
+      suc = Firebase.RTDB.getString(&fbdo, bookStatePath);
+      state = suc ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+      sendDataPrevMillis = millis();
+
+      Serial.println("State when in the open menu:" + state);
+    }
   }
   if (state == "1")
   {
@@ -1165,4 +1375,47 @@ uint8_t getFingerprintEnroll()
     key = v[keyPad.getKey()];
   }
   return val;
+}
+
+void sonarSensor(int trig, int echo)
+{ // function to get the distance value from the sensor
+  digitalWrite(trig, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trig, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trig, LOW);
+  duration = pulseIn(echo, HIGH);
+  inches = duration / 74 / 2;
+}
+
+int objCheck()
+{ // function to check whether goods are in the locker
+  sonarSensor(trig1, echo1);
+  sensor1 = inches;
+  delay(200);
+  // sonarSensor(trig2, echo2);
+  // sensor2 = inches;
+
+  if (sensor1 < 18)
+  {
+    return 1;
+  }
+  else
+  {
+    return 0;
+  }
+}
+
+void buzzerTone(int state)
+{
+  if (state == 1)
+  {
+    digitalWrite(led, LOW);     // Turn on the built in led
+    digitalWrite(buzzer, HIGH); // Turn on active buzzer
+    delay(200);
+
+    digitalWrite(led, HIGH);   // Turn off the built in led
+    digitalWrite(buzzer, LOW); // Turn off active buzzer
+    delay(200);
+  }
 }
