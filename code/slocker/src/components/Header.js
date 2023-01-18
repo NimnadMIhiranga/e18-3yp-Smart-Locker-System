@@ -2,17 +2,24 @@ import React, { useRef, useState } from "react";
 import "../css/home.css";
 import { Link, useHistory } from "react-router-dom";
 import { auth } from "../config/config";
+import { authPassword } from "../config/configPassword";
 import Model from "react-modal";
+import {sendPasswordResetEmail} from 'firebase/auth';
 
 export const Header = () => {
   const emailRef = useRef();
-  const resetemailRef = useRef();
+  // const resetemailRef = useRef();
   const passwordRef = useRef();
   const [error, setError] = useState("");
   const history = useHistory();
   const [message, setMessage] = useState("");
   const [visible, setvisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+
+  const emailChange = (e) => {
+    setEmail(e.target.value);
+  };
 
   async function signin(e) {
     e.preventDefault();
@@ -29,20 +36,10 @@ export const Header = () => {
     }
   }
 
-  async function changePassword(e) {
-    e.preventDefault();
-
-    try {
-      setMessage("");
-      setError("");
-      setLoading(true);
-      await auth.resetPassword(resetemailRef.current.value);
-      setMessage("Check your inbox for further instructions");
-    } catch {
-      setError("Failed to reset password");
-    }
-    setLoading(false);
-  }
+  const forgotPassword = () => {
+    return sendPasswordResetEmail(authPassword, email);
+  };
+ 
 
   return (
     <div className="locker__header section__padding" id="home">
@@ -94,7 +91,7 @@ export const Header = () => {
         >
           <h1>Change your password</h1>
           <br />
-          <form autoComplete="off" onSubmit={changePassword}>
+          <form autoComplete="off" >
             <label htmlFor="passowrd" className="changepassword">
               Enter your email
             </label>
@@ -103,9 +100,9 @@ export const Header = () => {
               type="email"
               className="form-password"
               required
-              ref={resetemailRef}
+              value={email} onChange={emailChange}
             />
-            <button type="submit" className="changebutton">
+            <button type="submit" className="changebutton" onClick={() => {forgotPassword();}}>
               Change
             </button>
           </form>
@@ -129,3 +126,20 @@ export const Header = () => {
 };
 
 export default Header;
+
+
+
+// async function changePassword(e) {
+//   e.preventDefault();
+
+//   try {
+//     setMessage("");
+//     setError("");
+//     setLoading(true);
+//     await auth.resetPassword(resetemailRef.current.value);
+//     setMessage("Check your inbox for further instructions");
+//   } catch {
+//     setError("Failed to reset password");
+//   }
+//   setLoading(false);
+// }

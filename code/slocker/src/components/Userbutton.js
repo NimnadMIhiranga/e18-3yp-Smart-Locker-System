@@ -9,25 +9,18 @@ import settings from '../assets/settings.png';
 export const Userbutton= () => {
   return (
     <div className="button_region section__padding" id="UserDashboard">
+      
     <div className='buttons'>
-      <div className="image1">
-            <img src={chat} alt="locker" className="image1"/>
-            <img src={settings} alt="settings" className="image2"/>
             </div>
-        <div className='topbuttons'>
-            <Link to="Chat" ><button className='button1'>Chat with admin</button></Link>
-            <Link to="Setting" ><button className='button2'>Go to setting</button></Link>
-            
-        </div>
-        <div className="image2">
-            <img src={lock} alt="locker" className="image3"/>
-            <img src={history} alt="lock" className="image4"/>
-            </div>
-        <div className = 'bottombuttons'>
-            <Link to="LockerDashboard" ><button className='button3'>Locker Room</button></Link>
-            <Link to="Bookings" ><button className='button4'>My Bookings</button></Link>
-        </div>
-    </div>
+  
+            <Link to="Chat" ><button className='button'>
+            <img src={chat} alt="locker" className='image'/>
+            <div className='text-button'>Chat with admin</div></button></Link>
+            <Link to="LockerDashboard" ><button className='button'><img src={lock} alt="locker" className='image'/><div className='text-button'>Locker Room</div></button></Link>
+            <Link to="Setting" ><button className='button'>
+            <img src={settings} alt="settings" className='image2'/><div className='text-button'>Go to setting</div></button></Link>
+            <Link to={{pathname:"Bookings",state:{Name: "0", LockID: "0"}}} ><button className='button' ><img src={history} alt="lock" className='image2'/><div className='text-button'>Reservations</div></button></Link>
+  
     </div>
   )
 }

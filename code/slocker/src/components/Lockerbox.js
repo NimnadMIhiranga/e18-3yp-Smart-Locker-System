@@ -13,6 +13,7 @@ export const Lockerbox = ({ user, userID }) => {
   const [name, setName] = useState("");
   const [visible, setvisible] = useState(false);
   const [visible1, setvisible1] = useState(false);
+  
 
   async function handleLogout() {
     setError("");
@@ -35,6 +36,8 @@ export const Lockerbox = ({ user, userID }) => {
   const addlocation =() =>{
     set(ref(realdb, 'Lockers/' + `/${name}`),{
       Name : name,
+      Count : 0,
+      Bookings:0,
     });
     setvisible(false);
     setName("");
@@ -67,7 +70,7 @@ export const Lockerbox = ({ user, userID }) => {
             onRequestClose={() => setvisible(false)}
             className="locker-modelbox"
           >
-            <h1>Add a new location</h1>
+            <h2  className="model-header">Add a new location</h2>
             <br />
             <form autoComplete="off">
               <label htmlFor="Location-name" className="addlocker-formtext">
@@ -133,7 +136,7 @@ export const Lockerbox = ({ user, userID }) => {
               GoBack
             </button></Link>
           <button variant="link" onClick={handleLogout} className="logout">
-            Log Out
+            LogOut
           </button>{" "}
         </div>
       )}
@@ -143,7 +146,7 @@ export const Lockerbox = ({ user, userID }) => {
               GoBack
             </button></Link>
           <button variant="link" onClick={handleLogout} className="logout">
-            Log Out
+            LogOut
           </button>{" "}
         </div>
       )}

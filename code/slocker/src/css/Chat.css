@@ -1,0 +1,26 @@
+.whatsapp-btn{
+    cursor: pointer;
+    background-color: transparent;
+    border-width: 10px;
+    border-color: yellow;
+    border-radius: 25px;
+    width: 20%;
+    align-content: center;
+    color : white;
+    margin: 2%;
+    padding: 2%;
+    margin-left: 9%;
+    
+}
+
+.image-chat{
+    width: 100%;;
+    height : 100%;
+    padding: 5px;
+}
+
+.chat-head{
+    text-align: center;
+    font-size: 60px;
+    padding: 15px;
+}

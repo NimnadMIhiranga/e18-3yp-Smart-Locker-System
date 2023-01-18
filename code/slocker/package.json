@@ -19,7 +19,9 @@
     "react-modal": "^3.16.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^5.0.1",
+    "react-telegram-embed": "^0.1.1",
     "react-time-picker": "^5.1.0",
+    "react-whatsapp": "^0.3.0",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -47,6 +49,8 @@
     ]
   },
   "devDependencies": {
-    "install-peers": "^1.0.4"
+    "cypress": "^12.3.0",
+    "install-peers": "^1.0.4",
+    "start-server-and-test": "^1.15.2"
   }
 }
