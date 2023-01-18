@@ -9,13 +9,8 @@ import { realdb } from "../config/configreal";
 
 export const Lockershow = ({ user, userID }) => {
   
-  const [visible, setvisible] = useState(false);
-  const [visible1, setvisible1] = useState(false);
-  const [visible2, setvisible2] = useState(false);
-  const [name, setName] = useState("");
-  const countref = useRef();
+  
   const [locations, setLocations] = useState([]);
-  const [error, setError] = useState("");
 
 
   useEffect(() => {
@@ -39,21 +34,38 @@ export const Lockershow = ({ user, userID }) => {
         </div>
       )}
       {locations.map((location) => (
-        <div className="card" >
-          <div className="name">Location - {location.Name}</div>
-            <div>
-              <Link to={{pathname:"ResDashboard",state:{
-                  Name: location.Name
-              }}}>
-                <button className="locker-go">Show lockers</button>
-              </Link>
-            </div>
-          
-        </div>
+        <Link to={{pathname:"ResDashboard",state:{Name: location.Name, Count: location.Count}}}>
+          <button className="locker-go">{location.Name}</button>
+        </Link>
       ))}
     </div>
   );
 };
+
+
+// return (
+//   <div>
+//     {locations.length !== 0 && <h1 className="show">Locations</h1>}
+//     {locations.length === 0 && (
+//       <div className="error-msg-location">
+//         slow internet...no locations to display
+//       </div>
+//     )}
+//     {locations.map((location) => (
+//       <div className="card" >
+//         <div className="name">Location - {location.Name}</div>
+//           <div>
+//             <Link to={{pathname:"ResDashboard",state:{
+//                 Name: location.Name
+//             }}}>
+//               <button className="locker-go">Show lockers</button>
+//             </Link>
+//           </div>
+        
+//       </div>
+//     ))}
+//   </div>
+// );
 
 
 

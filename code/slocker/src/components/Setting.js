@@ -2,11 +2,14 @@ import React, { useEffect, useState } from "react";
 import { auth, db } from "../config/config";
 import { useHistory } from "react-router-dom";
 import admin from "../assets/addadmin.png";
-import chat from "../assets/chat.png";
-import history from "../assets/history.png";
-import settings from "../assets/settings.png";
+import logout from "../assets/Logout.png";
+import passlogo from "../assets/Passlogo.png";
 import { Link } from "react-router-dom";
 import Model from "react-modal";
+import '../css/Setting.css'
+import {sendPasswordResetEmail} from 'firebase/auth';
+import { authPassword } from "../config/configPassword";
+
 
 export const Setting = ({ user, userID }) => {
   const history = useHistory();
@@ -15,6 +18,7 @@ export const Setting = ({ user, userID }) => {
   const [userName, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [visible1, setvisible1] = useState(false);
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
@@ -34,6 +38,14 @@ export const Setting = ({ user, userID }) => {
       setError("Failed to log out");
     }
   }
+
+  const forgotPassword = () => {
+    return sendPasswordResetEmail(authPassword, email);
+  };
+
+  const emailChange = (e) => {
+    setEmail(e.target.value);
+  };
 
   const signup = (e) => {
     e.preventDefault();
@@ -71,24 +83,15 @@ export const Setting = ({ user, userID }) => {
               GoBack
             </button>
           </Link>
-          <button variant="link" onClick={handleLogout} className="logout">
-            Log Out
-          </button>{" "}
         </div>
       </div>
 
       {userID && (
         <div className="button_region section__padding" id="UserDashboard">
-          <div className="buttons">
-            <div className="image1">
-              <img src={admin} alt="locker" className="image1" />
-              <img src={settings} alt="settings" className="image2" />
-            </div>
-            <div className="topbuttons">
-              <button className="button1" onClick={() => setvisible(true)}>
-                Add a new admin
-              </button>
-
+            <div >
+            <button className='button-settings' onClick={() => setvisible(true)}>
+            <img src={admin} alt="locker" className='image'/>
+            <div className='text-button'>Add a new Admin</div></button>
               <Model
                 isOpen={visible}
                 onRequestClose={() => setvisible(false)}
@@ -148,12 +151,83 @@ export const Setting = ({ user, userID }) => {
                   Cancel
                 </button>
               </Model>
-
-              <button className="button2">Remove a user</button>
+              <button className='button-settings' onClick={handleLogout}>
+            <img src={logout} alt="locker" className='image1'/>
+            <div className='text-button'>Log Out</div></button>
+            <button className='button-settings' onClick={() => setvisible1(true)}>
+            <img src={passlogo} alt="locker" className='image1'/>
+            <div className='text-button'>Change Password</div></button>
+            <Model
+          isOpen={visible1}
+          onRequestClose={() => setvisible1(false)}
+          className="modelbox"
+        >
+          <h1>Change your password</h1>
+          <br />
+          <form autoComplete="off" >
+            <label htmlFor="passowrd" className="changepassword">
+              Enter your email
+            </label>
+            <br />
+            <input
+              type="email"
+              className="form-password"
+              required
+              value={email} onChange={emailChange}
+            />
+            <button type="submit" className="changebutton" onClick={() => {forgotPassword();}}>
+              Change
+            </button>
+          </form>
+          <br />
+          <button onClick={() => setvisible1(false)} className="cancelbutton">
+            Cancel
+          </button>
+        </Model>
             </div>
-          </div>
+        </div>
+      )}
+      {!userID && (
+        <div className="button_region section__padding" id="UserDashboard">
+            <div >
+            <button className='button-settings' onClick={handleLogout}>
+            <img src={logout} alt="locker" className='image1'/>
+            <div className='text-button'>Log Out</div></button>
+            <button className='button-settings' onClick={() => setvisible1(true)}>
+            <img src={passlogo} alt="locker" className='image1'/>
+            <div className='text-button'>Change Password</div></button>
+            <Model
+          isOpen={visible1}
+          onRequestClose={() => setvisible1(false)}
+          className="modelbox"
+        >
+          <h1>Change your password</h1>
+          <br />
+          <form autoComplete="off" >
+            <label htmlFor="passowrd" className="changepassword">
+              Enter your email
+            </label>
+            <br />
+            <input
+              type="email"
+              className="form-password"
+              required
+              value={email} onChange={emailChange}
+            />
+            <button type="submit" className="changebutton" onClick={() => {forgotPassword();}}>
+              Change
+            </button>
+          </form>
+          <br />
+          <button onClick={() => setvisible1(false)} className="cancelbutton">
+            Cancel
+          </button>
+        </Model>
+            </div>
         </div>
       )}
     </div>
   );
 };
+
+

@@ -20,16 +20,19 @@ export const Userbox = ({ user }) =>  {
   }
 
     return (
+      <div>
         <div className='userbox'>
         <div className='leftside'>
-        <h1>{user}</h1>
+        <h1>Hello {user}</h1>
 
         </div>
         <div className='rightside'>
         <button variant="link" onClick={handleLogout} className='logout'>
-          Log Out
+          LogOut
         </button>
         </div>
+    </div>
+    <h1 className="show1">Home Page</h1>
     </div>
     )
   }

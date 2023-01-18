@@ -45,8 +45,10 @@
 
 }
 
-.lockhead{
-    margin-left: 40%;
+.locker-head{
+    text-align: center;
+    font-size: 50px;
+    padding: 20px;
 }
 
 .lockID{
@@ -87,4 +89,23 @@
     border-radius: 8px;
     margin-left: 30px;  
     margin-right: 5px;
+}
+
+.buttonSet{
+    margin-left: 8%;
+}
+
+
+.button-locker{
+    padding: 10px;
+    background-color: transparent;
+    border-width: 10px;
+    border-color: white;
+    color: white;
+    border-radius: 8px;
+    margin-left: 1%;
+    margin-right: 3%;
+    margin-top: 20px;
+    width: 20%;
+    font-size: 20px;
 }
