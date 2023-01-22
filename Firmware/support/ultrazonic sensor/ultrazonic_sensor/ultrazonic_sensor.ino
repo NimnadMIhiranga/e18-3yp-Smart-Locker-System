@@ -4,8 +4,8 @@
 
 const int trig1 = 13;  //D7
 const int echo1 = 15;  //D8
-const int trig2 = 0;  //d3
-const int echo2 = 4;  //d4
+// const int trig2 = 0;  //d3
+// const int echo2 = 4;  //d4
 
 long duration;
 int inches, sensor1, sensor2;
@@ -76,11 +76,11 @@ void firebaseSetup(){
 void setup() {
 pinMode(trig1, OUTPUT); // Sets the trigPin as an Output
 pinMode(echo1, INPUT); // Sets the echoPin as an Input
-pinMode(trig2, OUTPUT); // Sets the trigPin as an Output
-pinMode(echo2, INPUT); // Sets the echoPin as an Input
+// pinMode(trig2, OUTPUT); // Sets the trigPin as an Output
+// pinMode(echo2, INPUT); // Sets the echoPin as an Input
 Serial.begin(9600); // Starts the serial communication
-firebaseSetup();
-path = "Lockers/"+locationName+"/"+lockerID+"/objState";
+// firebaseSetup();
+// path = "Lockers/"+locationName+"/"+lockerID+"/objState";
 
 
 }
@@ -99,10 +99,10 @@ int objCheck(){
   sonarSensor(trig1, echo1);
   sensor1 = inches;
   delay(2000);
-  sonarSensor(trig2, echo2);
-  sensor2 = inches;  
-
-  if(sensor1<18 || sensor2<18){
+  // sonarSensor(trig2, echo2);
+  // sensor2 = inches;  
+  Serial.println(sensor1);  
+  if(sensor1<18){
     return 1;
   }else{
     return 0;
@@ -113,18 +113,18 @@ int objCheck(){
 
 
 void loop() {
-  
- if (Firebase.ready() && (millis() - sendDataPrevMillis > 1500 || sendDataPrevMillis == 0)){
-      sendDataPrevMillis = millis();
+      delay(1000);
+//  if (Firebase.ready() && (millis() - sendDataPrevMillis > 1500 || sendDataPrevMillis == 0)){
+      // sendDataPrevMillis = millis();
       if(objCheck()==1){ //when door is open
         Serial.print("object is there");
-        Serial.printf("Set string... %s\n", Firebase.RTDB.setString(&fbdo, (path), F("1")) ? "ok" : fbdo.errorReason().c_str());
+        // Serial.printf("Set string... %s\n", Firebase.RTDB.setString(&fbdo, (path), F("1")) ? "ok" : fbdo.errorReason().c_str());
       }
       else if(objCheck()==0){ //when door is closed
         Serial.print("no object");
-        Serial.printf("Set string... %s\n", Firebase.RTDB.setString(&fbdo, (path), F("0")) ? "ok" : fbdo.errorReason().c_str());        
+        // Serial.printf("Set string... %s\n", Firebase.RTDB.setString(&fbdo, (path), F("0")) ? "ok" : fbdo.errorReason().c_str());        
       }
-  }
+  // }
   
 }
 
