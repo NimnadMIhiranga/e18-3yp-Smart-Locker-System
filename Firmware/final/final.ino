@@ -8,11 +8,6 @@ D8 - echo 1 (remove when uploading)
 RXD0 - buzzer
 TXD0 - red LED
 
-
-
-
-
-
 */
 
 // including header files
@@ -64,7 +59,7 @@ char key;
 int val = 0;
 // variable to store the current menu selection
 int selection = 0;
-String input;
+String input = "NULL";
 char lastKey = 'Y';
 
 // for the lcd display
@@ -108,8 +103,8 @@ String lockStatePath;
 #define USER_PASSWORD "12345678"
 
 // for add the wifi networks that are used in mcu to connect(add the other networks below)
-const char *ssid = "Eng-Student";
-const char *password = "3nG5tuDt";
+const char *ssid = "Mi 11 Lite";
+const char *password = "denuwan55";
 
 void setup()
 {
@@ -134,6 +129,7 @@ void setup()
   lcd.init();      // initializing the LCD
   lcd.backlight(); // Enable or Turn On the backlight
   lcd.print("Setting up...");
+  // delay(20000);
   // int e = componentcheck();
   int e = 0;                                                                   // to store the component check value
   firebaseSetup();                                                             // setting up the firebase
@@ -269,10 +265,9 @@ void loop()
     }
 
     // state = Firebase.RTDB.getString(&fbdo, bookStatePath) ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
-
+    lcd.clear();
     while (state == "1")
     {
-
       lcd.setCursor(0, 0);
       lcd.print("USE S-LOCKER APP");
       lcd.setCursor(0, 1);
@@ -309,7 +304,12 @@ void loop()
       sendDataPrevMillis = millis();
       bookid = suc ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
       Serial.println("Book ID:" + bookid);
-      while (suc != 3)
+      suc += Firebase.RTDB.getString(&fbdo, pinStatePath);
+      pin = suc ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+      Serial.println("Pin:" + pin);
+      sendDataPrevMillis = millis();
+      ;
+      while (suc != 4)
       {
         // suc = 0;
         firebaseSetup();
@@ -327,6 +327,10 @@ void loop()
         sendDataPrevMillis = millis();
         bookid = suc ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
         Serial.println("Book ID:" + bookid);
+        suc += Firebase.RTDB.getString(&fbdo, pinStatePath);
+        pin = suc ? fbdo.to<const char *>() : fbdo.errorReason().c_str();
+        Serial.println("Pin:" + pin);
+        sendDataPrevMillis = millis();
       }
       if (state == "0")
       { // first time user is using the app
@@ -602,18 +606,23 @@ uint8_t getFingerprintID()
     break;
   case FINGERPRINT_IMAGEMESS:
     Serial.println("Image too messy");
+    getFingerprintEnroll();
     return p;
   case FINGERPRINT_PACKETRECIEVEERR:
     Serial.println("Communication error");
+    getFingerprintEnroll();
     return p;
   case FINGERPRINT_FEATUREFAIL:
     Serial.println("Could not find fingerprint features");
+    getFingerprintEnroll();
     return p;
   case FINGERPRINT_INVALIDIMAGE:
     Serial.println("Could not find fingerprint features");
+    getFingerprintEnroll();
     return p;
   default:
     Serial.println("Unknown error");
+    getFingerprintEnroll();
     return p;
   }
 
@@ -622,10 +631,12 @@ uint8_t getFingerprintID()
   if (p == FINGERPRINT_OK)
   {
     Serial.println("Found a print match!");
+    getFingerprintEnroll();
   }
   else if (p == FINGERPRINT_PACKETRECIEVEERR)
   {
     Serial.println("Communication error");
+    getFingerprintEnroll();
     return p;
   }
   else if (p == FINGERPRINT_NOTFOUND)
@@ -794,6 +805,7 @@ void openMenu()
               {
                 // lcd.clear();
                 lcd.print("Correct PIN");
+                input = "NULL";
               }
             }
           }
@@ -893,74 +905,75 @@ void unlockOp()
 
     Serial.println("State when in the open menu:" + state);
   }
-  while (state != "1")
+  // while (state != "1")
+  // {
+  lcd.clear();
+  lcd.print("ENTER PIN");
+  lcd.setCursor(0, 1);
+  key = v[keyPad.getKey()];
+  String input = "";
+  while (key != 'C')
   {
-    lcd.clear();
-    lcd.print("ENTER PIN");
-    lcd.setCursor(0, 1);
-    key = v[keyPad.getKey()];
-    String input = "";
-    while (key != 'C')
+
+    // Serial.println(pin);
+    uint32_t now = millis();
+
+    if (now - lastKeyPressed >= 100)
     {
+      lastKeyPressed = now;
 
-      // Serial.println(pin);
-      uint32_t now = millis();
-
-      if (now - lastKeyPressed >= 100)
+      if (key && lastKey != key)
       {
-        lastKeyPressed = now;
-
-        if (key && lastKey != key)
+        lastKey = key;
+        lcd.setCursor(0, 1);
+        // Serial.print(key + '\n');
+        if (key == 35)
         {
-          lastKey = key;
-          lcd.setCursor(0, 1);
-          // Serial.print(key + '\n');
-          if (key == 35)
-          {
-            // Serial.print("Hash Occured\n");
-            input = "";
-            // lcd.print(input);
-            lcd.print("                ");
-          }
-          else if (key == 42)
-          {
-            input = input.substring(0, input.length() - 1);
-            // Serial.print("Star Occured\n");
-            lcd.print(input);
-            lcd.print("                ");
-            lcd.setCursor(input.length(), 1);
-          }
-          else
-          {
-            // Serial.print("Number Occured\n");
-            if (key != 'N' && key != 'A' && key != 'B' && key != 'D')
-              input += key;
+          // Serial.print("Hash Occured\n");
+          input = "";
+          // lcd.print(input);
+          lcd.print("                ");
+        }
+        else if (key == 42)
+        {
+          input = input.substring(0, input.length() - 1);
+          // Serial.print("Star Occured\n");
+          lcd.print(input);
+          lcd.print("                ");
+          lcd.setCursor(input.length(), 1);
+        }
+        else
+        {
+          // Serial.print("Number Occured\n");
+          if (key != 'N' && key != 'A' && key != 'B' && key != 'D')
+            input += key;
 
-            lcd.print(input);
-          }
-          if (input == pin)
+          lcd.print(input);
+        }
+        if (input == pin)
+        {
+          Serial.print(input);
+          Serial.print(pin);
+          lcd.clear();
+          lcd.print("Correct PIN");
+          input = "NULL";
+          delay(3000);
+          val = 0;
+          if (getFingerprintEnroll() == 1)
           {
-            Serial.print(input);
-            Serial.print(pin);
             lcd.clear();
-            lcd.print("Correct PIN");
-            delay(3000);
-            val = 0;
-            if (getFingerprintEnroll() == 1)
-            {
-              lcd.clear();
-              lcd.print("FINGER STORED");
-              return;
-            }
+            lcd.print("FINGER STORED");
+            return;
           }
         }
       }
-
-      key = v[keyPad.getKey()];
     }
-    // e = componentcheck();
-    // }
+
+    key = v[keyPad.getKey()];
   }
+  // e = componentcheck();
+  // }
+  // }
 }
 
 void doorUnlock(int pin)
@@ -1092,6 +1105,7 @@ int menu()
               {
                 // lcd.clear();
                 lcd.print("Correct PIN");
+                input = "NULL";
                 return 1;
               }
             }
@@ -1396,7 +1410,7 @@ int objCheck()
   // sonarSensor(trig2, echo2);
   // sensor2 = inches;
 
-  if (sensor1 < 18)
+  if (sensor1 < 12)
   {
     return 1;
   }
