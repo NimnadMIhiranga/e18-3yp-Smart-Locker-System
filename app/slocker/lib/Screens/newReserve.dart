@@ -232,7 +232,7 @@ class _newReserveState extends State<newReserve> {
             " " +
             '$hours:$minutes:$seconds');
         final ref2 = FirebaseDatabase.instance.ref("Lockers/" + locationKey);
-        Future.delayed(Duration(minutes: 1)).then((_) async {
+        Future.delayed(Duration(minutes: 60)).then((_) async {
           if (ref.child('State') != 2) {
             ref2.child(snapshot.child('LockID').value.toString())
               ..update({

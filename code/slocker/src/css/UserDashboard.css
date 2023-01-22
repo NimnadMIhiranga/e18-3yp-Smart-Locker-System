@@ -10,7 +10,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 2rem 6rem;
+    padding: 2rem 3rem;
+    padding-bottom: 0px;
 }
 
 .userbox .leftside{
@@ -56,83 +57,48 @@
     border: none;
 }
 
-.image1, .image3{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 6.5rem;
-} 
-
-.image3{
-    width: 35%;
-}
-
-.image2{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 10rem;
-}
-
-.image4{
-    display: flex;
-    width: 35%;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 7rem;
-
-}
-
-.topbuttons,.bottombuttons{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0rem 5rem;
-}
-
-.button1,.button2,
-.button3,.button4{
-    margin-right: 2rem;
-    cursor: pointer;
-    flex: 1;
-    display: flex;
-    justify-content: flex-start;
-    padding: 1rem 10rem;
-    color: black;
-    background: var(--gradient-text);
-    font-weight: 700;
-    font-size: 22px;
-    line-height: 25px;
-    border: none;
-    outline: none;
-    border-radius: 5px;
-}
-
-
-.button3{
-    margin-right: 2rem;
-    cursor: pointer;
-    flex: 1;
-    display: flex;
-    justify-content: flex-start;
-    padding: 1rem 10.8rem;
-    color: black;
-    background: var(--gradient-text);
-    font-weight: 700;
-    font-size: 22px;
-    line-height: 25px;
-    border: none;
-    outline: none;
-    border-radius: 5px;
-}
-
 
 .section__padding{
     padding: 4rem 6rem;
 }
 
+.show1{
+    text-align: center;
+    font-size: 55px;
+    padding-top: 20px;
+}
+
+.image{
+    width: 100%;
+    height : 100%;
+    padding: 10px;
+}
+
+.image2{
+    width: 100%;;
+    height : 100%;
+    padding: 10px;
+}
 
 
+
+.button{
+    cursor: pointer;
+    background-color: transparent;
+    border-width: 10px;
+    border-color: yellow;
+    border-radius: 25px;
+    width: 20%;
+    align-content: center;
+    color : white;
+    margin: 2%;
+    padding: 2%;
+    
+}
+
+.text-button{
+    font-size: 20px;
+}
 
 
 

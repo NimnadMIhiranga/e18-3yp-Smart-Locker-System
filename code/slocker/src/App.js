@@ -10,6 +10,7 @@ import {auth, db} from "./config/config"
 import { LocationContextProvider } from './global/LocationContext'
 import { Setting } from "./components/Setting";
 import { Bookings } from "./components/Bookings";
+import { Chat } from "./components/Chat";
 
 
 export class App extends Component {
@@ -51,8 +52,9 @@ export class App extends Component {
           <Route path="/LockerDashboard" component={() =><LockerDashboard user={this.state.user} userID = {this.state.userID}/>} />
           <Route path="/AddLocation" component={() =><AddLocation userID={this.state.userID}/>} />
           <Route path="/ResDashboard" component={() =><ResDashboard user={this.state.user} userID = {this.state.userID} UID = {this.state.uID}/>} />
-          <Route path="/Bookings" component={() =><Bookings user={this.state.user} userID = {this.state.userID} uID = {this.state.uID}/>} />
+          <Route path="/Bookings" component={() =><Bookings user={this.state.user} userID = {this.state.userID} UID = {this.state.uID}/>} />
           <Route path="/Setting" component={() =><Setting user={this.state.user} userID = {this.state.userID}/>} />
+          <Route path="/Chat" component={() =><Chat user={this.state.user} userID = {this.state.userID}/>} />
         </Switch>
       </BrowserRouter>
       </LocationContextProvider>
